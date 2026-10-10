@@ -1,69 +1,223 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { Sparkles, MessageSquare, ArrowRight, ShieldCheck, CheckCircle2, FileText, Compass, Briefcase, Award, Zap, HeartHandshake } from "lucide-react";
+import Navbar from "@/components/common/Navbar";
+import FloatingChatWidget from "@/components/chat/FloatingChatWidget";
+import RegistrationModal from "@/components/modals/RegistrationModal";
+import { LanguagePref } from "@/lib/types";
 
 export default function Home() {
+  const [language, setLanguage] = useState<LanguagePref>("hinglish");
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  const toggleLanguage = () => {
+    setLanguage(prev => (prev === "hinglish" ? "en" : "hinglish"));
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors selection:bg-orange-500 selection:text-white">
+      <Navbar language={language} onToggleLanguage={toggleLanguage} onOpenAuth={() => setIsAuthOpen(true)} />
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-12 pb-20 sm:pt-20 sm:pb-28">
+        {/* Glow gradients */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-orange-500/20 via-amber-500/15 to-indigo-500/20 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 shadow-sm animate-pulse">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Tier 2 & 3 College Students Ka No-Judgment Career Co-Pilot</span>
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-zinc-900 dark:text-white max-w-4xl mx-auto leading-[1.15]">
+            {language === "hinglish" ? (
+              <>
+                College mein koi mentor nahi mila?{" "}
+                <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 bg-clip-text text-transparent">
+                  Senior Bhaiya/Didi
+                </span>{" "}
+                ab tere pocket mein hai!
+              </>
+            ) : (
+              <>
+                No campus mentor? Meet your pocket{" "}
+                <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 bg-clip-text text-transparent">
+                  Senior Co-Pilot
+                </span>{" "}
+                for honest career growth!
+              </>
+            )}
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 max-w-2xl mx-auto leading-relaxed">
+            {language === "hinglish"
+              ? "30 second mein profile banao. Honest ATS resume feedback, 90-day actionable roadmap, verified job matches, aur 5-min mock interview — bina kisi CGPA judgment ke."
+              : "Build your student profile in 30 seconds. Get honest ATS score breakdown, 90-day roadmap, scam-free job matches, and 5-min supportive mock interview."}
           </p>
+
+          {/* Primary Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+            <Link
+              href="/chat"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all flex items-center justify-center gap-2.5 hover:scale-105 active:scale-95"
+            >
+              <MessageSquare className="w-5 h-5" />
+              <span>{language === "hinglish" ? "Chat Shuru Karo (Free)" : "Start Chatting Free"}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <Link
+              href="/dashboard"
+              className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-bold text-sm sm:text-base border border-zinc-200 dark:border-zinc-800 transition-all flex items-center justify-center gap-2"
+            >
+              <Compass className="w-5 h-5 text-indigo-500" />
+              <span>{language === "hinglish" ? "My Space Portal" : "Student Dashboard"}</span>
+            </Link>
+          </div>
+
+          {/* Trust Highlights */}
+          <div className="pt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-500 dark:text-zinc-400 font-semibold">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" /> 100% Free for Students
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Zero CGPA Judgment
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Grounded Vetted Free Resources
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Scam Job Alert Heuristics
+            </span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* 4 Core Value Moments Grid */}
+      <section className="py-16 bg-white dark:bg-zinc-900 border-y border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">
+              Pehle Real Value, Fir Sign-Up
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 max-w-xl mx-auto">
+              Sabhi 4 features ka full interactive preview milta hai anonymous guest mode mein!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Feature 1 */}
+            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-orange-400 dark:hover:border-orange-600 transition-all group">
+              <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FileText className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-base text-zinc-900 dark:text-white">1. ATS Resume Checker</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Deterministic 100-point rubric breakdown. Exactly 3 fixable mistakes with clear Before → After bullet rewrites.
+              </p>
+              <div className="text-[11px] font-semibold text-orange-600 dark:text-orange-400">
+                Score + Mistake #1 Free Preview →
+              </div>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all group">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Compass className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-base text-zinc-900 dark:text-white">2. 90-Day Roadmap</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                12-week structured sequence (Foundation → Build → Job Ready). Grounded strictly with vetted free guides & projects.
+              </p>
+              <div className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+                First 2 Weeks Free Preview →
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-emerald-400 dark:hover:border-emerald-600 transition-all group">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Briefcase className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-base text-zinc-900 dark:text-white">3. Skill-Based Jobs</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Unbiased ranking on skills and gap metrics. Automatic detection of suspicious upfront payment scams.
+              </p>
+              <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                2 to 3 Curated Matches Free →
+              </div>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-purple-400 dark:hover:border-purple-600 transition-all group">
+              <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Award className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-base text-zinc-900 dark:text-white">4. 5-Min Mock Interview</h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                5-minute timer, 5-6 questions tuned for freshers. Supportive scoring report across 4 pillars with model answers.
+              </p>
+              <div className="text-[11px] font-semibold text-purple-600 dark:text-purple-400">
+                Full Feedback Report →
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Senior Tone & Anti-Judgment Promise */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-6">
+        <div className="inline-flex items-center gap-2 p-2 px-3 rounded-full bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 text-xs font-bold">
+          <HeartHandshake className="w-4 h-4" />
+          <span>Our Student Promise</span>
+        </div>
+
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
+          &quot;Tere college ya English se farak nahi padta, tere effort se padta hai.&quot;
+        </h2>
+
+        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+          Tier 2 aur Tier 3 colleges ke students ko aksar complex English tools mein reject kar diya jata hai.
+          CareerPilot AI friendly Roman Hinglish mein baat karta hai, har bot turn 2-3 short lines ka hota hai with quick-reply chips,
+          aur koi paid subscription nahi mangta.
+        </p>
+
+        <div className="pt-4">
+          <Link
+            href="/chat"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs sm:text-sm shadow-md hover:scale-105 transition-all"
+          >
+            <span>Launch Senior Chat Shell</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="mt-auto border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-8 text-center text-xs text-zinc-500">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold text-zinc-900 dark:text-white">CareerPilot AI</span>
+            <span>— India DPDP Act Compliant</span>
+          </div>
+          <div className="flex gap-4">
+            <Link href="/dashboard" className="hover:underline">
+              Privacy & Consent
+            </Link>
+            <Link href="/admin" className="hover:underline">
+              Admin & Telemetry
+            </Link>
+          </div>
+        </div>
+      </footer>
+
+      {/* Bottom Floating Senior Widget */}
+      <FloatingChatWidget language={language} />
+
+      {/* Registration Modal */}
+      <RegistrationModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   );
 }
