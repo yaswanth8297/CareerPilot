@@ -16,6 +16,7 @@ import {
 import Navbar from "@/components/common/Navbar";
 import FloatingChatWidget from "@/components/chat/FloatingChatWidget";
 import RegistrationModal from "@/components/modals/RegistrationModal";
+import ContactTrainingCard from "@/components/ContactTrainingCard";
 
 export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -181,6 +182,11 @@ export default function Home() {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+      </section>
+
+      {/* 1-on-1 Personalized Training & Guidance Section */}
+      <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+        <ContactTrainingCard />
       </section>
 
       {/* Footer */}

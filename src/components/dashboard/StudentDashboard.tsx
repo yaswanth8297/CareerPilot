@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { getInitialState, saveState, logAnalytics } from "@/lib/storage/mockDb";
 import { StudentProfile, ResumeAnalysisResult, RoadmapData, JobListing, InterviewReport } from "@/lib/types";
+import ContactTrainingCard from "@/components/ContactTrainingCard";
 
 export default function StudentDashboard() {
   const [tab, setTab] = useState<"overview" | "resume" | "roadmap" | "jobs" | "interviews" | "privacy">("overview");
@@ -301,6 +302,9 @@ export default function StudentDashboard() {
           </div>
         </div>
       )}
+
+      {/* 1-on-1 Personalized Training & Guidance Banner */}
+      <ContactTrainingCard className="mt-8" />
     </div>
   );
 }
