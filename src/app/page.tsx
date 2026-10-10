@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   MessageSquare,
   FileText,
@@ -19,7 +20,34 @@ import RegistrationModal from "@/components/modals/RegistrationModal";
 import ContactTrainingCard from "@/components/ContactTrainingCard";
 
 export default function Home() {
+  const router = useRouter();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [chatWidgetOpen, setChatWidgetOpen] = useState(false);
+  const [chatIntent, setChatIntent] = useState<string | null>(null);
+
+  // Detect URL parameter triggers (e.g., ?openChat=true&intent=resume_check)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const intentParam = params.get("intent");
+      const openChatParam = params.get("openChat");
+      if (intentParam || openChatParam === "true") {
+        if (intentParam) setChatIntent(intentParam);
+        setChatWidgetOpen(true);
+      }
+    }
+  }, []);
+
+  const handleFeatureClick = (intent: string) => {
+    // If mobile viewport, navigate directly to /chat route
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
+      router.push(`/chat?intent=${encodeURIComponent(intent)}`);
+    } else {
+      // On desktop / tablet, trigger floating chat widget with context
+      setChatIntent(intent);
+      setChatWidgetOpen(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors selection:bg-orange-500 selection:text-white">
@@ -100,7 +128,10 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 */}
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-orange-400 dark:hover:border-orange-600 transition-all group">
+            <div
+              onClick={() => handleFeatureClick("resume_check")}
+              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-orange-400 dark:hover:border-orange-600 hover:shadow-lg hover:shadow-orange-500/10 transition-all group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <FileText className="w-6 h-6" />
               </div>
@@ -108,13 +139,23 @@ export default function Home() {
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 Deterministic 100-point rubric breakdown. Exactly 3 fixable mistakes with clear Before → After bullet rewrites.
               </p>
-              <div className="text-[11px] font-semibold text-orange-600 dark:text-orange-400">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFeatureClick("resume_check");
+                }}
+                className="text-[11px] font-bold text-orange-600 dark:text-orange-400 group-hover:underline inline-flex items-center gap-1 cursor-pointer text-left"
+              >
                 Score + Mistake #1 Free Preview →
-              </div>
+              </button>
             </div>
 
             {/* Feature 2 */}
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all group">
+            <div
+              onClick={() => handleFeatureClick("roadmap")}
+              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-indigo-400 dark:hover:border-indigo-600 hover:shadow-lg hover:shadow-indigo-500/10 transition-all group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Compass className="w-6 h-6" />
               </div>
@@ -122,13 +163,23 @@ export default function Home() {
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 12-week structured sequence (Foundation → Build → Job Ready). Grounded strictly with vetted free guides & projects.
               </p>
-              <div className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFeatureClick("roadmap");
+                }}
+                className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline inline-flex items-center gap-1 cursor-pointer text-left"
+              >
                 First 2 Weeks Free Preview →
-              </div>
+              </button>
             </div>
 
             {/* Feature 3 */}
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-emerald-400 dark:hover:border-emerald-600 transition-all group">
+            <div
+              onClick={() => handleFeatureClick("jobs")}
+              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-emerald-400 dark:hover:border-emerald-600 hover:shadow-lg hover:shadow-emerald-500/10 transition-all group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Briefcase className="w-6 h-6" />
               </div>
@@ -136,13 +187,23 @@ export default function Home() {
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 Unbiased ranking on skills and gap metrics. Automatic detection of suspicious upfront payment scams.
               </p>
-              <div className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFeatureClick("jobs");
+                }}
+                className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 group-hover:underline inline-flex items-center gap-1 cursor-pointer text-left"
+              >
                 2 to 3 Curated Matches Free →
-              </div>
+              </button>
             </div>
 
             {/* Feature 4 */}
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-purple-400 dark:hover:border-purple-600 transition-all group">
+            <div
+              onClick={() => handleFeatureClick("mock_interview")}
+              className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/40 p-6 space-y-4 hover:border-purple-400 dark:hover:border-purple-600 hover:shadow-lg hover:shadow-purple-500/10 transition-all group cursor-pointer"
+            >
               <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Award className="w-6 h-6" />
               </div>
@@ -150,9 +211,16 @@ export default function Home() {
               <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 5-minute timer, 5-6 questions tuned for freshers. Supportive scoring report across 4 pillars with model answers.
               </p>
-              <div className="text-[11px] font-semibold text-purple-600 dark:text-purple-400">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFeatureClick("mock_interview");
+                }}
+                className="text-[11px] font-bold text-purple-600 dark:text-purple-400 group-hover:underline inline-flex items-center gap-1 cursor-pointer text-left"
+              >
                 Full Feedback Report →
-              </div>
+              </button>
             </div>
           </div>
         </div>
@@ -208,7 +276,11 @@ export default function Home() {
       </footer>
 
       {/* Bottom Floating Widget */}
-      <FloatingChatWidget />
+      <FloatingChatWidget
+        isOpen={chatWidgetOpen}
+        onOpenChange={setChatWidgetOpen}
+        intent={chatIntent}
+      />
 
       {/* Registration Modal */}
       <RegistrationModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />

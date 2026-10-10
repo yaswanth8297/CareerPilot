@@ -1,18 +1,54 @@
 "use client";
 
-import { useState } from "react";
-import { X, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { X, Sparkles, ExternalLink } from "lucide-react";
 import ChatContainer from "./ChatContainer";
 
-export default function FloatingChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+export interface FloatingChatWidgetProps {
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  intent?: string | null;
+}
+
+export default function FloatingChatWidget({
+  isOpen: controlledIsOpen,
+  onOpenChange,
+  intent: controlledIntent
+}: FloatingChatWidgetProps = {}) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const [internalIntent, setInternalIntent] = useState<string | null>(null);
+
+  const isControlled = typeof controlledIsOpen === "boolean";
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
+  const activeIntent = controlledIntent !== undefined ? controlledIntent : internalIntent;
+
+  const handleSetOpen = (openState: boolean) => {
+    if (!isControlled) {
+      setInternalIsOpen(openState);
+    }
+    onOpenChange?.(openState);
+  };
+
+  // Support custom window event for triggering from anywhere in the app
+  useEffect(() => {
+    const handleCustomOpen = (event: Event) => {
+      const customEvent = event as CustomEvent<{ intent?: string }>;
+      handleSetOpen(true);
+      if (customEvent.detail?.intent) {
+        setInternalIntent(customEvent.detail.intent);
+      }
+    };
+    window.addEventListener("careerpilot:open-chat", handleCustomOpen);
+    return () => window.removeEventListener("careerpilot:open-chat", handleCustomOpen);
+  }, []);
 
   return (
     <div className="fixed bottom-5 right-5 z-50">
       {/* Floating Trigger Button */}
       {!isOpen && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => handleSetOpen(true)}
           className="group relative flex items-center gap-3 pl-4 pr-5 py-3.5 rounded-full bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 text-white shadow-2xl hover:shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all"
         >
           <div className="relative">
@@ -30,7 +66,7 @@ export default function FloatingChatWidget() {
 
       {/* Expanded Floating Drawer / Window */}
       {isOpen && (
-        <div className="w-[360px] sm:w-[410px] h-[580px] max-h-[85vh] bg-white dark:bg-zinc-950 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-200">
+        <div className="w-[calc(100vw-2.5rem)] sm:w-[410px] h-[580px] max-h-[85vh] bg-white dark:bg-zinc-950 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-200">
           {/* Top Bar */}
           <div className="p-3.5 bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 text-white flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
@@ -43,17 +79,27 @@ export default function FloatingChatWidget() {
               </div>
             </div>
 
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              <Link
+                href={activeIntent ? `/chat?intent=${encodeURIComponent(activeIntent)}` : "/chat"}
+                className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+                title="Expand to Full Page"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </Link>
+              <button
+                onClick={() => handleSetOpen(false)}
+                className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+                title="Close Chat"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Embedded Chat */}
           <div className="flex-1 overflow-hidden">
-            <ChatContainer isEmbedded={true} />
+            <ChatContainer isEmbedded={true} initialIntent={activeIntent} />
           </div>
         </div>
       )}

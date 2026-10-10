@@ -36,10 +36,37 @@ import ResumeUploadModal from "./ResumeUploadModal";
 import MockInterviewModal from "./MockInterviewModal";
 import RegistrationModal from "@/components/modals/RegistrationModal";
 
+export type FeatureIntent = "resume_check" | "roadmap" | "jobs" | "mock_interview";
+
+export function normalizeIntent(raw?: string | null): FeatureIntent | null {
+  if (!raw) return null;
+  const lower = raw.toLowerCase().trim();
+  if (lower.includes("resume") || lower === "feature_resume") return "resume_check";
+  if (lower.includes("roadmap") || lower === "feature_roadmap") return "roadmap";
+  if (lower.includes("job") || lower === "feature_jobs") return "jobs";
+  if (lower.includes("interview") || lower.includes("mock") || lower === "feature_interview") return "mock_interview";
+  return null;
+}
+
+function getIntentGreeting(intent: FeatureIntent): string {
+  switch (intent) {
+    case "resume_check":
+      return "Ready to check your resume? 📄 Let's quickly build your profile in 30 seconds first so I can analyze it against your target role. Which college branch are you in?";
+    case "roadmap":
+      return "Ready for your 90-Day Roadmap? 🗺️ Let's quickly build your profile in 30 seconds first so we can map out your tailored weekly plan. Which college branch are you in?";
+    case "jobs":
+      return "Looking for curated, scam-free job matches? 💼 Let's quickly build your profile in 30 seconds first so I can match you with verified openings. Which college branch are you in?";
+    case "mock_interview":
+      return "Ready for your 5-Min Mock Interview? 🎯 Let's quickly build your profile in 30 seconds first so I can tailor the questions to your stream. Which college branch are you in?";
+  }
+}
+
 export default function ChatContainer({
-  isEmbedded = false
+  isEmbedded = false,
+  initialIntent
 }: {
   isEmbedded?: boolean;
+  initialIntent?: string | null;
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState("");
@@ -52,6 +79,11 @@ export default function ChatContainer({
   // null = opened, "branch" = step 1, "year" = step 2, "skills" = step 3, "goal" = step 4, "done" = onboarded
   const [onboardingStep, setOnboardingStep] = useState<string | null>(null);
   const [tempSkills, setTempSkills] = useState<string[]>([]);
+
+  // Queued feature intent when arriving from landing page cards
+  const [pendingIntent, setPendingIntent] = useState<FeatureIntent | null>(null);
+  const [activeIntent, setActiveIntent] = useState<string | null>(initialIntent || null);
+  const lastHandledIntentRef = useRef<string | null>(null);
 
   // Feature modals and state
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
@@ -72,33 +104,17 @@ export default function ChatContainer({
     scrollToBottom();
   }, [messages, isBotTyping]);
 
-  // Initialize or load state
+  // Sync activeIntent from prop or client URL parameter
   useEffect(() => {
-    const st = getInitialState();
-    setSessionId(st.sessionId);
-    setIsRegistered(st.isRegistered);
-    if (st.profile) {
-      setProfile(st.profile);
+    if (initialIntent) {
+      setActiveIntent(initialIntent);
+    } else if (typeof window !== "undefined") {
+      const urlIntent = new URLSearchParams(window.location.search).get("intent");
+      if (urlIntent) {
+        setActiveIntent(urlIntent);
+      }
     }
-    if (st.currentResumeResult) setResumeResult(st.currentResumeResult);
-    if (st.roadmap) setRoadmapData(st.roadmap);
-
-    if (st.messages && st.messages.length > 0) {
-      setMessages(st.messages);
-      if (st.profile) setOnboardingStep("done");
-    } else {
-      // First visit: send welcoming English greeting
-      const welcomeMsg: ChatMessage = {
-        id: "msg_welcome",
-        sender: "bot",
-        text: OPENING_MESSAGE,
-        timestamp: new Date().toISOString(),
-        chips: INITIAL_CHIPS
-      };
-      setMessages([welcomeMsg]);
-      logAnalytics("chat_widget_opened", { language: "en" });
-    }
-  }, []);
+  }, [initialIntent]);
 
   const addBotMessage = (text: string, chips?: ActionChip[], cardPayload?: any) => {
     setIsBotTyping(true);
@@ -147,6 +163,167 @@ export default function ChatContainer({
       });
     } catch (e) {}
   };
+
+  // Feature Trigger: Roadmap
+  const handleTriggerRoadmap = (overrideProfile?: StudentProfile | null) => {
+    const activeProf = overrideProfile || profile || getInitialState().profile;
+    const roleKey = activeProf?.targetRole || "software-developer";
+    const strings = CHAT_STRINGS;
+    const rMap = generatePersonalizedRoadmap({
+      targetRoleKey: roleKey,
+      userSkills: activeProf?.skills || [],
+      year: activeProf?.year || "3",
+      isRegistered
+    });
+    setRoadmapData(rMap);
+
+    const st = getInitialState();
+    st.roadmap = rMap;
+    saveState(st);
+
+    fireValueConfetti();
+    logAnalytics("roadmap_preview_viewed", { role: roleKey });
+
+    addBotMessage(
+      strings.roadmapReady,
+      [
+        { id: "c-unlock-rm", label: strings.unlockFullRoadmapChip, value: "open_reg" },
+        { id: "c-jobs", label: strings.checkJobsChip, value: "feature_jobs" }
+      ],
+      {
+        type: "roadmap_preview",
+        data: rMap
+      }
+    );
+  };
+
+  // Feature Trigger: Jobs
+  const handleTriggerJobs = (overrideProfile?: StudentProfile | null) => {
+    const activeProf = overrideProfile || profile || getInitialState().profile;
+    const roleKey = activeProf?.targetRole || "software-developer";
+    const userSkills = activeProf?.skills || ["JavaScript", "Python", "SQL"];
+    const strings = CHAT_STRINGS;
+
+    const ranked = filterAndRankJobs({
+      targetRole: roleKey,
+      userSkills
+    });
+    setMatchedJobs(ranked);
+
+    const st = getInitialState();
+    st.savedJobs = ranked.slice(0, 5);
+    saveState(st);
+
+    logAnalytics("job_preview_viewed", { count: ranked.length, role: roleKey });
+
+    addBotMessage(
+      strings.jobsReady,
+      [
+        { id: "c-apply", label: "📄 Improve Resume ATS For These Jobs", value: "feature_resume" },
+        { id: "c-rm", label: strings.seeRoadmapChip, value: "feature_roadmap" }
+      ],
+      {
+        type: "jobs_preview",
+        data: ranked.slice(0, 4)
+      }
+    );
+  };
+
+  // Immediate feature trigger when user already has a completed profile
+  const handleExecuteIntentForProfile = (intent: FeatureIntent, activeProfile: StudentProfile) => {
+    if (intent === "resume_check") {
+      logAnalytics("feature_selected", { feature: "resume_check" });
+      addBotMessage(
+        "Welcome back! Ready to check your ATS resume? 📄 Upload your PDF or paste your resume text to get your 100-point score breakdown & 3 key fixes.",
+        [
+          { id: "c-open-resume", label: "Upload Resume 📄", value: "feature_resume" },
+          ...getMainFeatureChips()
+        ]
+      );
+      setTimeout(() => setIsResumeModalOpen(true), 400);
+    } else if (intent === "roadmap") {
+      logAnalytics("feature_selected", { feature: "roadmap" });
+      addBotMessage(
+        `Generating your personalized 90-Day Placement Roadmap for ${activeProfile.targetRole || "your target role"}... 🗺️`
+      );
+      setTimeout(() => handleTriggerRoadmap(activeProfile), 400);
+    } else if (intent === "jobs") {
+      logAnalytics("feature_selected", { feature: "jobs" });
+      addBotMessage(
+        "Finding verified fresher jobs and scam-free matches based on your skills... 💼"
+      );
+      setTimeout(() => handleTriggerJobs(activeProfile), 400);
+    } else if (intent === "mock_interview") {
+      logAnalytics("feature_selected", { feature: "mock_interview" });
+      addBotMessage(
+        "Preparing your 5-Minute Mock Interview session with fresher-tuned questions... 🎯"
+      );
+      setTimeout(() => {
+        const currSt = getInitialState();
+        if (!currSt.isRegistered) {
+          setIsRegModalOpen(true);
+        } else {
+          setIsInterviewModalOpen(true);
+        }
+      }, 400);
+    }
+  };
+
+  // Initialize or load state with intent awareness
+  useEffect(() => {
+    const st = getInitialState();
+    setSessionId(st.sessionId);
+    setIsRegistered(st.isRegistered);
+    if (st.profile) {
+      setProfile(st.profile);
+    }
+    if (st.currentResumeResult) setResumeResult(st.currentResumeResult);
+    if (st.roadmap) setRoadmapData(st.roadmap);
+
+    const normIntent = normalizeIntent(activeIntent);
+
+    if (st.profile) {
+      setOnboardingStep("done");
+      if (st.messages && st.messages.length > 0) {
+        setMessages(st.messages);
+      }
+      if (normIntent && lastHandledIntentRef.current !== normIntent) {
+        lastHandledIntentRef.current = normIntent;
+        handleExecuteIntentForProfile(normIntent, st.profile);
+      }
+    } else {
+      // Guest / Anonymous student without profile
+      if (normIntent && lastHandledIntentRef.current !== normIntent) {
+        lastHandledIntentRef.current = normIntent;
+        setPendingIntent(normIntent);
+        setOnboardingStep("branch");
+
+        const intentGreeting = getIntentGreeting(normIntent);
+        const welcomeMsg: ChatMessage = {
+          id: "msg_welcome_intent",
+          sender: "bot",
+          text: intentGreeting,
+          timestamp: new Date().toISOString(),
+          chips: BRANCH_CHIPS
+        };
+        setMessages(prev => (prev.length > 0 ? [...prev, welcomeMsg] : [welcomeMsg]));
+        logAnalytics("chat_widget_opened", { language: "en", intent: normIntent });
+      } else if (st.messages && st.messages.length > 0) {
+        setMessages(st.messages);
+      } else {
+        // First visit: send welcoming English greeting
+        const welcomeMsg: ChatMessage = {
+          id: "msg_welcome",
+          sender: "bot",
+          text: OPENING_MESSAGE,
+          timestamp: new Date().toISOString(),
+          chips: INITIAL_CHIPS
+        };
+        setMessages([welcomeMsg]);
+        logAnalytics("chat_widget_opened", { language: "en" });
+      }
+    }
+  }, [activeIntent]);
 
   // Handle Quick Reply Chip Click
   const handleChipClick = (chip: ActionChip) => {
@@ -269,6 +446,42 @@ export default function ChatContainer({
       fireValueConfetti();
 
       // Show Profile Summary Card and offer 4 main features per PRD
+      if (pendingIntent) {
+        const intentToRun = pendingIntent;
+        setPendingIntent(null);
+
+        addBotMessage(
+          `${strings.profileCreated}\n\nLaunching your selected preview now! 🚀`,
+          getMainFeatureChips(),
+          {
+            type: "onboarding_summary",
+            data: completeProfile
+          }
+        );
+
+        setTimeout(() => {
+          if (intentToRun === "resume_check") {
+            logAnalytics("feature_selected", { feature: "resume_check" });
+            setIsResumeModalOpen(true);
+          } else if (intentToRun === "roadmap") {
+            logAnalytics("feature_selected", { feature: "roadmap" });
+            handleTriggerRoadmap(completeProfile);
+          } else if (intentToRun === "jobs") {
+            logAnalytics("feature_selected", { feature: "jobs" });
+            handleTriggerJobs(completeProfile);
+          } else if (intentToRun === "mock_interview") {
+            logAnalytics("feature_selected", { feature: "mock_interview" });
+            const currSt = getInitialState();
+            if (!currSt.isRegistered) {
+              setIsRegModalOpen(true);
+            } else {
+              setIsInterviewModalOpen(true);
+            }
+          }
+        }, 600);
+        return;
+      }
+
       addBotMessage(
         strings.profileCreated,
         getMainFeatureChips(),
@@ -346,69 +559,6 @@ export default function ChatContainer({
     // Intelligent Career Guide Dialog & Intent Responder
     const aiResponse = generateCareerGuideReply(text, profile);
     addBotMessage(aiResponse.text, aiResponse.chips);
-  };
-
-  // Feature Trigger: Roadmap
-  const handleTriggerRoadmap = () => {
-    const roleKey = profile?.targetRole || "software-developer";
-    const strings = CHAT_STRINGS;
-    const rMap = generatePersonalizedRoadmap({
-      targetRoleKey: roleKey,
-      userSkills: profile?.skills || [],
-      year: profile?.year || "3",
-      isRegistered
-    });
-    setRoadmapData(rMap);
-
-    const st = getInitialState();
-    st.roadmap = rMap;
-    saveState(st);
-
-    fireValueConfetti();
-    logAnalytics("roadmap_preview_viewed", { role: roleKey });
-
-    addBotMessage(
-      strings.roadmapReady,
-      [
-        { id: "c-unlock-rm", label: strings.unlockFullRoadmapChip, value: "open_reg" },
-        { id: "c-jobs", label: strings.checkJobsChip, value: "feature_jobs" }
-      ],
-      {
-        type: "roadmap_preview",
-        data: rMap
-      }
-    );
-  };
-
-  // Feature Trigger: Jobs
-  const handleTriggerJobs = () => {
-    const roleKey = profile?.targetRole || "software-developer";
-    const userSkills = profile?.skills || ["JavaScript", "Python", "SQL"];
-    const strings = CHAT_STRINGS;
-
-    const ranked = filterAndRankJobs({
-      targetRole: roleKey,
-      userSkills
-    });
-    setMatchedJobs(ranked);
-
-    const st = getInitialState();
-    st.savedJobs = ranked.slice(0, 5);
-    saveState(st);
-
-    logAnalytics("job_preview_viewed", { count: ranked.length, role: roleKey });
-
-    addBotMessage(
-      strings.jobsReady,
-      [
-        { id: "c-apply", label: "📄 Improve Resume ATS For These Jobs", value: "feature_resume" },
-        { id: "c-rm", label: strings.seeRoadmapChip, value: "feature_roadmap" }
-      ],
-      {
-        type: "jobs_preview",
-        data: ranked.slice(0, 4)
-      }
-    );
   };
 
   // Resume Upload Callback
