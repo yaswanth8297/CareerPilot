@@ -105,8 +105,7 @@ const validProfile = ProfileOnboardingSchema.safeParse({
   branch: "CSE",
   year: "3",
   skills: ["Python", "SQL"],
-  careerGoal: "data-analyst",
-  languagePref: "hinglish"
+  careerGoal: "data-analyst"
 });
 assert(validProfile.success, "Schema: Zod validates correct profile onboarding payload");
 

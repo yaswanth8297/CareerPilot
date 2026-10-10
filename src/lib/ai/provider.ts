@@ -17,9 +17,9 @@ export class MockLLMProvider implements LLMProvider {
   name = "MockDeterministicProvider";
 
   async generateText(prompt: string, systemPrompt?: string): Promise<LLMResponse> {
-    // Return grounded simulated response adhering to the 2-3 line senior bhaiya/didi rule
+    // Return grounded simulated response adhering to the 2-3 line personal career guide rule
     return {
-      text: "Bilkul dost! Main tere saath hoon. Next step check karte hain aur career journey ko boost karte hain! 🚀",
+      text: "Absolutely! I'm here to help. Let's review your next milestone and accelerate your career journey! 🚀",
       usage: {
         promptTokens: 42,
         completionTokens: 28,

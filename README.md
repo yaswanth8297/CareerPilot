@@ -1,14 +1,14 @@
 # CareerPilot AI 🚀
-### Hinglish-First Career Co-Pilot Chatbot for Tier 2 and Tier 3 College Students
+### Personal Career Co-Pilot Chatbot for College Students
 
-CareerPilot AI turns an anonymous visitor into a registered user in under 2 minutes by delivering personalised career value first and asking for registration only after value lands. Built with a supportive "senior bhaiya/didi" tone, simple language, and zero judgment about college tier, CGPA, or English fluency.
+CareerPilot AI turns an anonymous visitor into a registered user in under 2 minutes by delivering personalised career value first and asking for registration only after value lands. Built with a supportive personal career guide tone, clear professional English, and zero judgment about college tier or CGPA.
 
 ---
 
 ## 🌟 Key Features Delivered (Per PRD)
 
-1. **Friendly Senior Bhaiya/Didi Chat Shell**:
-   - **Hinglish-First** with Roman script (with instant toggle to English).
+1. **Friendly Personal Career Guide Chat Shell**:
+   - **Professional English-Only** conversation experience.
    - Strict response length budget: max 2 to 3 short lines before interactive quick-reply chips.
    - Dual surfaces: Floating bottom-right widget and dedicated full-screen chat (`/chat`).
    - 4-step progressive onboarding (Branch → Year → Skills → Career Goal) in under 30 seconds.

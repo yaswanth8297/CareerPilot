@@ -91,14 +91,14 @@ export function evaluateInterviewSession(params: {
     confidenceScore: avgConfidence,
     communicationScore: avgComm,
     strengths: [
-      "Natural conversational delivery aur honest answers diye bina fake claims ke.",
-      "Technical core concepts par fundamentals clear dikhe.",
-      "5-minute target time limit ke andar sabhi questions attempt kiye."
+      "Natural conversational delivery with authentic answers and genuine project examples.",
+      "Strong grasp of core technical fundamentals and concept clarity.",
+      "Successfully attempted all questions within the target 5-minute time window."
     ],
     improvements: [
-      "Technical answers mein exact terminology aur internal working depth add karo.",
-      "STAR framework (Situation -> Task -> Action -> Result) follow karo taaki project answers crisp rahein.",
-      "Sample numbers ya measurable outcomes cite karo (e.g. latency, users, code modules)."
+      "Include deeper technical terminology and describe internal mechanisms in your answers.",
+      "Apply the STAR framework (Situation → Task → Action → Result) to structure project explanations.",
+      "Cite measurable outcomes and quantifiable metrics (e.g., latency, active users, test coverage)."
     ],
     weakestQuestionIndex: weakestIndex,
     idealAnswerForWeakest: weakestQ ? weakestQ.sampleIdealAnswer : "Focus on clear cause-and-effect reasoning with STAR framework.",

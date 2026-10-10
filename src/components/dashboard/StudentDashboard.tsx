@@ -90,7 +90,7 @@ export default function StudentDashboard() {
               href="/chat"
               className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5"
             >
-              <span>Chat with Senior Bhaiya</span>
+              <span>Chat with Career Guide</span>
               <span>→</span>
             </Link>
           </div>

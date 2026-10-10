@@ -2,23 +2,27 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Sparkles, MessageSquare, ArrowRight, ShieldCheck, CheckCircle2, FileText, Compass, Briefcase, Award, Zap, HeartHandshake } from "lucide-react";
+import {
+  MessageSquare,
+  FileText,
+  Compass,
+  Briefcase,
+  Award,
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  HeartHandshake
+} from "lucide-react";
 import Navbar from "@/components/common/Navbar";
 import FloatingChatWidget from "@/components/chat/FloatingChatWidget";
 import RegistrationModal from "@/components/modals/RegistrationModal";
-import { LanguagePref } from "@/lib/types";
 
 export default function Home() {
-  const [language, setLanguage] = useState<LanguagePref>("hinglish");
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-
-  const toggleLanguage = () => {
-    setLanguage(prev => (prev === "hinglish" ? "en" : "hinglish"));
-  };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors selection:bg-orange-500 selection:text-white">
-      <Navbar language={language} onToggleLanguage={toggleLanguage} onOpenAuth={() => setIsAuthOpen(true)} />
+      <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-20 sm:pt-20 sm:pb-28">
@@ -28,33 +32,19 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800 shadow-sm animate-pulse">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Tier 2 & 3 College Students Ka No-Judgment Career Co-Pilot</span>
+            <span>Zero-Judgment Career Co-Pilot for College Students</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-zinc-900 dark:text-white max-w-4xl mx-auto leading-[1.15]">
-            {language === "hinglish" ? (
-              <>
-                College mein koi mentor nahi mila?{" "}
-                <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 bg-clip-text text-transparent">
-                  Senior Bhaiya/Didi
-                </span>{" "}
-                ab tere pocket mein hai!
-              </>
-            ) : (
-              <>
-                No campus mentor? Meet your pocket{" "}
-                <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 bg-clip-text text-transparent">
-                  Senior Co-Pilot
-                </span>{" "}
-                for honest career growth!
-              </>
-            )}
+            No campus mentor? Meet your personal{" "}
+            <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 bg-clip-text text-transparent">
+              Career Guide
+            </span>{" "}
+            for honest career growth!
           </h1>
 
           <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-300 max-w-2xl mx-auto leading-relaxed">
-            {language === "hinglish"
-              ? "30 second mein profile banao. Honest ATS resume feedback, 90-day actionable roadmap, verified job matches, aur 5-min mock interview — bina kisi CGPA judgment ke."
-              : "Build your student profile in 30 seconds. Get honest ATS score breakdown, 90-day roadmap, scam-free job matches, and 5-min supportive mock interview."}
+            Build your student profile in 30 seconds. Get an honest ATS score breakdown, 90-day actionable roadmap, verified job matches, and 5-min supportive mock interview practice — with zero CGPA judgment.
           </p>
 
           {/* Primary Action Buttons */}
@@ -64,7 +54,7 @@ export default function Home() {
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 transition-all flex items-center justify-center gap-2.5 hover:scale-105 active:scale-95"
             >
               <MessageSquare className="w-5 h-5" />
-              <span>{language === "hinglish" ? "Chat Shuru Karo (Free)" : "Start Chatting Free"}</span>
+              <span>Start Chatting Free</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 
@@ -73,7 +63,7 @@ export default function Home() {
               className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-bold text-sm sm:text-base border border-zinc-200 dark:border-zinc-800 transition-all flex items-center justify-center gap-2"
             >
               <Compass className="w-5 h-5 text-indigo-500" />
-              <span>{language === "hinglish" ? "My Space Portal" : "Student Dashboard"}</span>
+              <span>Student Dashboard</span>
             </Link>
           </div>
 
@@ -100,10 +90,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">
-              Pehle Real Value, Fir Sign-Up
+              Real Value First, Sign-Up Second
             </h2>
             <p className="text-xs sm:text-sm text-zinc-500 max-w-xl mx-auto">
-              Sabhi 4 features ka full interactive preview milta hai anonymous guest mode mein!
+              All 4 core features include a full interactive preview in anonymous guest mode!
             </p>
           </div>
 
@@ -167,7 +157,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Senior Tone & Anti-Judgment Promise */}
+      {/* Student Promise Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-6">
         <div className="inline-flex items-center gap-2 p-2 px-3 rounded-full bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 text-xs font-bold">
           <HeartHandshake className="w-4 h-4" />
@@ -175,13 +165,11 @@ export default function Home() {
         </div>
 
         <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white">
-          &quot;Tere college ya English se farak nahi padta, tere effort se padta hai.&quot;
+          &quot;Your college tier or background doesn&apos;t limit your potential — your skills and effort define your trajectory.&quot;
         </h2>
 
         <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl mx-auto">
-          Tier 2 aur Tier 3 colleges ke students ko aksar complex English tools mein reject kar diya jata hai.
-          CareerPilot AI friendly Roman Hinglish mein baat karta hai, har bot turn 2-3 short lines ka hota hai with quick-reply chips,
-          aur koi paid subscription nahi mangta.
+          CareerPilot AI delivers concise, supportive 2-3 line guidance with interactive quick-reply chips, actionable feedback, and zero judgment.
         </p>
 
         <div className="pt-4">
@@ -189,7 +177,7 @@ export default function Home() {
             href="/chat"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs sm:text-sm shadow-md hover:scale-105 transition-all"
           >
-            <span>Launch Senior Chat Shell</span>
+            <span>Launch Career Guide Chat</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -213,8 +201,8 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Bottom Floating Senior Widget */}
-      <FloatingChatWidget language={language} />
+      {/* Bottom Floating Widget */}
+      <FloatingChatWidget />
 
       {/* Registration Modal */}
       <RegistrationModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />

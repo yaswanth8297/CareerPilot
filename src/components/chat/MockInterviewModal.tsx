@@ -262,21 +262,18 @@ export default function MockInterviewModal({
               </div>
             </div>
 
-            {/* Senior Bhaiya/Didi Question Prompt */}
+            {/* Question Prompt */}
             <div className="rounded-2xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/50 dark:bg-indigo-950/20 p-4 space-y-2">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-bold">
-                  B
+                  CP
                 </span>
                 <span className="text-xs font-bold text-indigo-900 dark:text-indigo-300">
-                  Senior Interviewer (Hinglish):
+                  Career Interviewer:
                 </span>
               </div>
               <p className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-white leading-relaxed">
-                {currentQ?.questionHinglish}
-              </p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 italic">
-                English: &quot;{currentQ?.questionEnglish}&quot;
+                {currentQ?.question}
               </p>
             </div>
 

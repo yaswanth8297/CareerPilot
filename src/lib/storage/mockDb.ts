@@ -7,15 +7,13 @@ import {
   FeatureFlags,
   AnalyticsEvent,
   User,
-  ChatMessage,
-  LanguagePref
+  ChatMessage
 } from "../types";
 
 export interface AppStoreState {
   user: User | null;
   sessionId: string;
   isRegistered: boolean;
-  languagePref: LanguagePref;
   profile: StudentProfile | null;
   messages: ChatMessage[];
   currentResumeResult: ResumeAnalysisResult | null;
@@ -42,7 +40,6 @@ export function getInitialState(): AppStoreState {
       user: null,
       sessionId: "session_server",
       isRegistered: false,
-      languagePref: "hinglish",
       profile: null,
       messages: [],
       currentResumeResult: null,
@@ -59,7 +56,6 @@ export function getInitialState(): AppStoreState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (!parsed.languagePref) parsed.languagePref = "hinglish";
       return parsed;
     }
   } catch (e) {
@@ -72,7 +68,6 @@ export function getInitialState(): AppStoreState {
     user: null,
     sessionId: newSessionId,
     isRegistered: false,
-    languagePref: "hinglish",
     profile: null,
     messages: [],
     currentResumeResult: null,
@@ -89,24 +84,6 @@ export function getInitialState(): AppStoreState {
   } catch (e) {}
 
   return fresh;
-}
-
-export function getStoredLanguage(): LanguagePref {
-  if (typeof window === "undefined") return "hinglish";
-  const state = getInitialState();
-  return state.languagePref || "hinglish";
-}
-
-export function setStoredLanguage(lang: LanguagePref): void {
-  if (typeof window === "undefined") return;
-  const state = getInitialState();
-  state.languagePref = lang;
-  if (state.profile) {
-    state.profile.languagePref = lang;
-    state.profile.updatedAt = new Date().toISOString();
-  }
-  saveState(state);
-  window.dispatchEvent(new CustomEvent("careerpilot_language_changed", { detail: lang }));
 }
 
 export function saveState(state: AppStoreState): void {

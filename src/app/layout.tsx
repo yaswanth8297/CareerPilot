@@ -13,17 +13,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CareerPilot AI — Senior Bhaiya/Didi Career Co-Pilot for Tier 2/3 Students",
+  title: "CareerPilot AI — Personal Career Guide for College Students",
   description:
-    "Hinglish-first AI career co-pilot for Tier 2 and Tier 3 Indian college students. 30-second profile, deterministic ATS resume scoring with 3 fixable mistakes, 90-day roadmap with vetted free resources, scam-free job matches, and 5-min mock interview practice.",
+    "AI personal career guide for college students. 30-second profile, deterministic ATS resume scoring with 3 fixable mistakes, 90-day roadmap with vetted free resources, verified job matches, and 5-min mock interview practice.",
   keywords: [
     "CareerPilot AI",
     "ATS Resume Checker",
-    "Tier 2 3 College Students",
-    "Hinglish AI",
+    "College Career Guide",
     "Mock Interview",
     "90 Day Roadmap",
-    "Fresher Jobs India"
+    "Fresher Jobs"
   ],
   authors: [{ name: "CareerPilot AI Team" }]
 };

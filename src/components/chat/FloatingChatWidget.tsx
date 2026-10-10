@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { MessageSquare, X, Sparkles, ChevronUp } from "lucide-react";
+import { X, Sparkles } from "lucide-react";
 import ChatContainer from "./ChatContainer";
-import { LanguagePref } from "@/lib/types";
 
-export default function FloatingChatWidget({ language = "hinglish" }: { language?: LanguagePref }) {
+export default function FloatingChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -23,7 +22,7 @@ export default function FloatingChatWidget({ language = "hinglish" }: { language
           </div>
 
           <div className="text-left">
-            <div className="text-xs font-bold leading-none">Senior Bhaiya / Didi</div>
+            <div className="text-xs font-bold leading-none">Personal Career Guide</div>
             <div className="text-[10px] text-orange-100 font-medium mt-0.5">CareerPilot AI • 30s Check</div>
           </div>
         </button>
@@ -36,11 +35,11 @@ export default function FloatingChatWidget({ language = "hinglish" }: { language
           <div className="p-3.5 bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 text-white flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-xs">
-                B
+                CP
               </div>
               <div>
                 <h4 className="font-bold text-xs">CareerPilot AI</h4>
-                <p className="text-[10px] text-orange-100">Hinglish Senior Co-pilot</p>
+                <p className="text-[10px] text-orange-100">Personal Career Guide</p>
               </div>
             </div>
 
@@ -54,7 +53,7 @@ export default function FloatingChatWidget({ language = "hinglish" }: { language
 
           {/* Embedded Chat */}
           <div className="flex-1 overflow-hidden">
-            <ChatContainer isEmbedded={true} language={language} />
+            <ChatContainer isEmbedded={true} />
           </div>
         </div>
       )}

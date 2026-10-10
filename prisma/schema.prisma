@@ -77,7 +77,6 @@ model Profile {
   skills       String[]
   careerGoal   String
   targetRole   String
-  languagePref String   @default("hinglish") // en, hinglish
   collegeName  String?
   location     String?
   resumeFileId String?

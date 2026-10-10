@@ -125,7 +125,7 @@ export default function JobsCard({
                 </div>
 
                 <div className="bg-rose-100 dark:bg-rose-900/30 p-2.5 rounded-lg text-xs text-rose-800 dark:text-rose-300 space-y-1">
-                  <p className="font-bold">Senior Bhaiya Warning (Heuristics detected):</p>
+                  <p className="font-bold">CareerPilot Advisory (Heuristics detected):</p>
                   <ul className="list-disc list-inside text-[11px] space-y-0.5">
                     {job.scamReasons?.map((r, i) => (
                       <li key={i}>{r}</li>

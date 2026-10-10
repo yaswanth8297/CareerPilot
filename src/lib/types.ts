@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 // --- Profile & User ---
-export type LanguagePref = "hinglish" | "en";
 export type StudentYear = "1" | "2" | "3" | "4" | "passed_out";
 
 export interface StudentProfile {
@@ -13,7 +12,6 @@ export interface StudentProfile {
   skills: string[];
   careerGoal: string;
   targetRole: string;
-  languagePref: LanguagePref;
   collegeName?: string;
   location?: string;
   createdAt: string;
@@ -151,8 +149,7 @@ export interface InterviewQuestion {
   id: string;
   role: string;
   category: "Introduction" | "Technical" | "Project" | "HR/Behavioral";
-  questionHinglish: string;
-  questionEnglish: string;
+  question: string;
   expectedKeywords: string[];
   sampleIdealAnswer: string;
 }
@@ -199,5 +196,4 @@ export const ProfileOnboardingSchema = z.object({
   year: z.enum(["1", "2", "3", "4", "passed_out"]),
   skills: z.array(z.string()).min(1, "Select at least 1 skill"),
   careerGoal: z.string().min(1, "Career goal is required"),
-  languagePref: z.enum(["hinglish", "en"]).default("hinglish"),
 });

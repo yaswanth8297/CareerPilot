@@ -3,17 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Sparkles, MessageSquare, Compass, ShieldCheck, UserCheck, LogIn, Globe } from "lucide-react";
+import { Sparkles, MessageSquare, Compass, ShieldCheck, UserCheck, LogIn } from "lucide-react";
 import { getInitialState } from "@/lib/storage/mockDb";
-import { LanguagePref } from "@/lib/types";
 
 export default function Navbar({
-  language,
-  onToggleLanguage,
   onOpenAuth
 }: {
-  language?: LanguagePref;
-  onToggleLanguage?: () => void;
   onOpenAuth?: () => void;
 }) {
   const pathname = usePathname();
@@ -44,7 +39,7 @@ export default function Navbar({
               </span>
             </div>
             <p className="text-[11px] text-zinc-500 dark:text-zinc-400 -mt-0.5 hidden sm:block">
-              Tere career ka senior bhaiya/didi
+              Your personal career guide
             </p>
           </div>
         </Link>
@@ -87,18 +82,6 @@ export default function Navbar({
             <ShieldCheck className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Admin</span>
           </Link>
-
-          {/* Language Toggle */}
-          {onToggleLanguage && (
-            <button
-              onClick={onToggleLanguage}
-              className="ml-1 sm:ml-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 transition-all"
-              title="Toggle Hinglish / English"
-            >
-              <Globe className="w-3.5 h-3.5 text-orange-500" />
-              <span>{language === "en" ? "🇬🇧 English" : "🇮🇳 Hinglish"}</span>
-            </button>
-          )}
 
           {/* Auth Button */}
           {isRegistered ? (

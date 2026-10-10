@@ -8,8 +8,8 @@ export interface RoleTemplate {
   atsKeywords: string[];
   recommendedProjects: string[];
   interviewTopics: string[];
-  descriptionHinglish: string;
-  descriptionEnglish: string;
+  
+  description: string;
 }
 
 export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
@@ -23,8 +23,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["Full Stack", "React.js", "RESTful APIs", "State Management", "Git", "Database Schema", "Agile", "Responsive Design"],
     recommendedProjects: ["E-commerce Store with Cart & Auth", "Realtime Collaborative Notes App", "Task Kanban Board with Drag & Drop"],
     interviewTopics: ["JavaScript Event Loop & Closures", "React Hooks & Component Lifecycle", "Async/Await & Promises", "REST API Status Codes", "Basic SQL Joins"],
-    descriptionHinglish: "Web apps aur modern fullstack systems build karne ka high-growth role.",
-    descriptionEnglish: "Build modern web applications, client interfaces, and robust backend APIs."
+    description: "Build modern web applications, client interfaces, and robust backend APIs."
   },
   "data-analyst": {
     id: "data-analyst",
@@ -36,8 +35,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["SQL Queries", "Data Visualization", "Power BI Dashboards", "EDA", "Pivot Tables", "Business Insights", "Data Wrangling"],
     recommendedProjects: ["Sales & Revenue Performance Dashboard", "Customer Churn Prediction Analysis", "E-commerce Metric Explorer"],
     interviewTopics: ["SQL Window Functions & GROUP BY", "Data Cleaning Techniques", "KPI Formulation", "Excel VLOOKUP vs XLOOKUP", "Dashboard Storytelling"],
-    descriptionHinglish: "Raw data se business decisions aur attractive visual dashboards banana.",
-    descriptionEnglish: "Turn raw business data into actionable dashboards and strategic insights."
+    description: "Turn raw business data into actionable dashboards and strategic insights."
   },
   "python-developer": {
     id: "python-developer",
@@ -49,8 +47,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["FastAPI", "Django ORM", "Microservices", "Data Pipelines", "Multithreading", "API Integration", "Automated Testing"],
     recommendedProjects: ["Scalable REST API with Auth & Caching", "Automated Web Scraping Pipeline", "Inventory Management System"],
     interviewTopics: ["Python Generators & Decorators", "GIL (Global Interpreter Lock)", "Django ORM vs Raw SQL", "FastAPI Pydantic Validation", "Exception Handling"],
-    descriptionHinglish: "Backend APIs, automation scripts aur data pipeline systems Python mein develop karna.",
-    descriptionEnglish: "Develop high-performance backend systems, automation scripts, and REST services."
+    description: "Develop high-performance backend systems, automation scripts, and REST services."
   },
   "qa-test-engineer": {
     id: "qa-test-engineer",
@@ -62,8 +59,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["Test Case Design", "Regression Testing", "Selenium WebDriver", "Postman API Automation", "Bug Lifecycle", "Smoke Testing"],
     recommendedProjects: ["Automation Framework for E-commerce App", "Postman API Test Suite with CI Mock", "Bug Tracking Case Study in Jira"],
     interviewTopics: ["SDLC vs STLC", "Severity vs Priority", "Selenium Locators & Waits", "API Response Codes Validation", "Writing Edge-Case Test Scenarios"],
-    descriptionHinglish: "Software quality assure karna, bugs dhoondhna aur automation test scripts likhna.",
-    descriptionEnglish: "Validate software quality, hunt critical bugs, and build test automation suites."
+    description: "Validate software quality, hunt critical bugs, and build test automation suites."
   },
   "java-developer": {
     id: "java-developer",
@@ -75,8 +71,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["Spring Boot", "Enterprise Java", "Hibernate ORM", "JPA", "Microservices Architecture", "Multithreading", "RESTful Web Services"],
     recommendedProjects: ["Banking Transaction Simulator with Spring Boot", "Student Management Portal with JWT Auth", "Online Food Ordering Backend"],
     interviewTopics: ["Core Java OOPs Concepts", "Collections Framework (HashMap internal workings)", "Spring Boot Annotations & DI", "Database Transaction ACID", "Exception Hierarchy"],
-    descriptionHinglish: "Enterprise grade, scalable aur stable banking/fintech backend services build karna.",
-    descriptionEnglish: "Engineer robust enterprise-grade backend systems and scalable microservices."
+    description: "Engineer robust enterprise-grade backend systems and scalable microservices."
   },
   "digital-marketing": {
     id: "digital-marketing",
@@ -88,8 +83,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["Search Engine Optimization", "Google Ads ROI", "Keyword Research", "GA4 Traffic Funnels", "Campaign Optimization", "Conversion Rate"],
     recommendedProjects: ["Live Website SEO Growth Audit", "Paid Meta Ad Campaign Mock Case Study", "Viral Content Strategy Playbook"],
     interviewTopics: ["On-page vs Off-page SEO", "CPC, CPM, and ROAS calculations", "Keyword Intent Classification", "A/B Testing Ad Creatives", "User Acquisition Funnels"],
-    descriptionHinglish: "Organic search, ads aur social content se online brand growth aur leads generate karna.",
-    descriptionEnglish: "Drive high-converting traffic, optimize paid campaigns, and scale organic brand reach."
+    description: "Drive high-converting traffic, optimize paid campaigns, and scale organic brand reach."
   },
   "core-mechanical": {
     id: "core-mechanical",
@@ -101,8 +95,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["3D CAD Modeling", "SolidWorks Assemblies", "FEA Analysis", "GD&T Tolerance", "Lean Manufacturing", "Sheet Metal Design"],
     recommendedProjects: ["Gearbox Redesign & Stress FEA Simulation", "Automated Fixture Design in SolidWorks", "Thermal Heat Exchanger Optimization"],
     interviewTopics: ["Stress-Strain Curve & Yield Strength", "Thermodynamic Cycles (Otto/Diesel)", "GD&T Symbols & Datum Planes", "Machining Tolerances", "Material Selection for Fatigue"],
-    descriptionHinglish: "Machinery, automotive parts aur manufacturing systems ka CAD design aur analysis.",
-    descriptionEnglish: "Design mechanical assemblies, conduct structural simulations, and optimize production lines."
+    description: "Design mechanical assemblies, conduct structural simulations, and optimize production lines."
   },
   "core-civil": {
     id: "core-civil",
@@ -114,8 +107,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["Structural Design", "STAAD.Pro Modeling", "RCC Detailing", "Site Estimation", "BIM Revit", "IS 456 Code Compliance"],
     recommendedProjects: ["G+4 Residential Building Structural Analysis", "Quantity Survey & Cost Estimation Spreadsheet", "Water Drainage Layout Blueprint"],
     interviewTopics: ["Bending Moment vs Shear Force Diagrams", "IS 456 Design Fundamentals", "Soil Bearing Capacity Tests", "Concrete Slump Test & Mix Grades", "Bar Bending Schedules"],
-    descriptionHinglish: "Building structures, layout planning aur construction estimation handle karna.",
-    descriptionEnglish: "Plan structural layouts, verify load calculations, and manage civil construction sites."
+    description: "Plan structural layouts, verify load calculations, and manage civil construction sites."
   },
   "core-electrical": {
     id: "core-electrical",
@@ -127,8 +119,7 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["Power Distribution", "MATLAB Simulink", "PLC Ladder Logic", "Transformer Testing", "Substation Design", "Embedded Microcontrollers"],
     recommendedProjects: ["Smart Energy Meter with Arduino & IoT", "Motor Speed Control Simulation in MATLAB", "PLC Automation for Bottle Filling Plant"],
     interviewTopics: ["Transformer Working & Losses", "Induction Motor Slip & Torque Characteristics", "Three-Phase Power Formulas", "Substation Protection Relays", "Power Factor Correction"],
-    descriptionHinglish: "Power distribution, transformer substations aur industrial automation systems manage karna.",
-    descriptionEnglish: "Analyze power grid systems, design electrical schematics, and implement automation logic."
+    description: "Analyze power grid systems, design electrical schematics, and implement automation logic."
   },
   "sales-bda": {
     id: "sales-bda",
@@ -140,7 +131,6 @@ export const ROLE_TEMPLATES: Record<string, RoleTemplate> = {
     atsKeywords: ["B2B Prospecting", "Sales Pipeline Management", "Client Pitching", "Revenue Quota Achievement", "HubSpot CRM", "Cold Outreach"],
     recommendedProjects: ["EdTech Sales Pitch & Objection Playbook", "Outreach Script & Mock Cold Call Recordings", "Territory Market Penetration Plan"],
     interviewTopics: ["Handling 'Your price is too high' objection", "SPIN Selling Framework", "Closing Techniques", "Managing High-Rejection Scenarios", "Explaining Customer Lifetime Value"],
-    descriptionHinglish: "Prospects se connect karna, pitch dena aur deals close karke business revenue generate karna.",
-    descriptionEnglish: "Drive sales pipeline growth, pitch products to prospects, and close high-value deals."
+    description: "Drive sales pipeline growth, pitch products to prospects, and close high-value deals."
   }
 };
