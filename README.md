@@ -157,6 +157,19 @@ REDIS_URL=redis://localhost:6379
 NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 ```
 
+### Environment Variable Manifest
+
+| Variable | Required? | Default / Fallback | Description |
+| :--- | :--- | :--- | :--- |
+| `GEMINI_API_KEY` | Optional | `MockLLMProvider` | Google Gen AI API Key. When provided, initializes `GeminiProvider` using `@google/generative-ai` SDK (`gemini-1.5-flash` for low-latency chat, `gemini-1.5-pro` for deep tasks). If absent, gracefully falls back to deterministic zero-cost Mock Provider. |
+| `DATABASE_URL` | Optional | In-memory / Mock DB | PostgreSQL connection string for Prisma. Zero-config local storage fallback active if omitted. |
+| `REDIS_URL` | Optional | `InMemoryAsyncQueue` | Redis connection URL for BullMQ background queues. Falls back to in-memory async processing. |
+| `STORAGE_ACCESS_KEY` | Optional | Local storage | S3 / Cloudflare R2 access key for resume uploads. Falls back to local secure storage. |
+| `STORAGE_SECRET_KEY` | Optional | Local storage | S3 / Cloudflare R2 secret key for resume uploads. |
+| `NEXT_PUBLIC_POSTHOG_KEY` | Optional | Console fallback | PostHog telemetry key with automated PII redaction. |
+| `LOCK_ATS_MISTAKES_2_AND_3`| Optional | `true` | Feature flag gating ATS mistakes #2 & #3 behind registration. |
+
+
 ---
 
 ## 🐳 Docker Services (PostgreSQL + pgvector + Redis)

@@ -15,12 +15,7 @@ import {
 import {
   OPENING_MESSAGE,
   INITIAL_CHIPS,
-  BRANCH_CHIPS,
-  getYearChips,
-  getSkillChips,
-  getGoalChips,
   getMainFeatureChips,
-  getRecommendedRolesForStudent,
   generateCareerGuideReply,
   CHAT_STRINGS
 } from "@/lib/ai/chatBotEngine";
@@ -51,13 +46,13 @@ export function normalizeIntent(raw?: string | null): FeatureIntent | null {
 function getIntentGreeting(intent: FeatureIntent): string {
   switch (intent) {
     case "resume_check":
-      return "Ready to check your resume? 📄 Let's quickly build your profile in 30 seconds first so I can analyze it against your target role. Which college branch are you in?";
+      return "Ready to check your resume? 📄 Upload your PDF or paste your text to get your ATS score breakdown & 3 key fixes!";
     case "roadmap":
-      return "Ready for your 90-Day Roadmap? 🗺️ Let's quickly build your profile in 30 seconds first so we can map out your tailored weekly plan. Which college branch are you in?";
+      return "Ready for your 90-Day Roadmap? 🗺️ Tell me what role you're targeting or what skills you know, and we'll craft your weekly plan!";
     case "jobs":
-      return "Looking for curated, scam-free job matches? 💼 Let's quickly build your profile in 30 seconds first so I can match you with verified openings. Which college branch are you in?";
+      return "Looking for curated, scam-free job matches? 💼 Tell me your stream and skills to see verified fresher openings!";
     case "mock_interview":
-      return "Ready for your 5-Min Mock Interview? 🎯 Let's quickly build your profile in 30 seconds first so I can tailor the questions to your stream. Which college branch are you in?";
+      return "Ready for your 5-Min Mock Interview? 🎯 Let's practice with fresher-tuned technical and behavioral questions!";
   }
 }
 
@@ -75,13 +70,7 @@ export default function ChatContainer({
   const [sessionId, setSessionId] = useState("");
   const [isBotTyping, setIsBotTyping] = useState(false);
 
-  // Active onboarding step
-  // null = opened, "branch" = step 1, "year" = step 2, "skills" = step 3, "goal" = step 4, "done" = onboarded
-  const [onboardingStep, setOnboardingStep] = useState<string | null>(null);
-  const [tempSkills, setTempSkills] = useState<string[]>([]);
-
   // Queued feature intent when arriving from landing page cards
-  const [pendingIntent, setPendingIntent] = useState<FeatureIntent | null>(null);
   const [activeIntent, setActiveIntent] = useState<string | null>(initialIntent || null);
   const lastHandledIntentRef = useRef<string | null>(null);
 
@@ -117,25 +106,21 @@ export default function ChatContainer({
   }, [initialIntent]);
 
   const addBotMessage = (text: string, chips?: ActionChip[], cardPayload?: any) => {
-    setIsBotTyping(true);
-    setTimeout(() => {
-      setIsBotTyping(false);
-      const botMsg: ChatMessage = {
-        id: "bot_" + Math.random().toString(36).substring(2, 9),
-        sender: "bot",
-        text,
-        timestamp: new Date().toISOString(),
-        chips,
-        cardPayload
-      };
-      setMessages(prev => {
-        const next = [...prev, botMsg];
-        const st = getInitialState();
-        st.messages = next;
-        saveState(st);
-        return next;
-      });
-    }, 450);
+    const botMsg: ChatMessage = {
+      id: "bot_" + Math.random().toString(36).substring(2, 9),
+      sender: "bot",
+      text,
+      timestamp: new Date().toISOString(),
+      chips,
+      cardPayload
+    };
+    setMessages(prev => {
+      const next = [...prev, botMsg];
+      const st = getInitialState();
+      st.messages = next;
+      saveState(st);
+      return next;
+    });
   };
 
   const addUserMessage = (text: string) => {
@@ -229,35 +214,29 @@ export default function ChatContainer({
     );
   };
 
-  // Immediate feature trigger when user already has a completed profile
-  const handleExecuteIntentForProfile = (intent: FeatureIntent, activeProfile: StudentProfile) => {
+  // Immediate feature trigger when user arrives with intent
+  const handleExecuteIntent = (intent: FeatureIntent) => {
     if (intent === "resume_check") {
       logAnalytics("feature_selected", { feature: "resume_check" });
       addBotMessage(
-        "Welcome back! Ready to check your ATS resume? 📄 Upload your PDF or paste your resume text to get your 100-point score breakdown & 3 key fixes.",
+        "Welcome! Ready to check your ATS resume? 📄 Upload your PDF or paste your resume text to get your 100-point score breakdown & 3 key fixes.",
         [
           { id: "c-open-resume", label: "Upload Resume 📄", value: "feature_resume" },
           ...getMainFeatureChips()
         ]
       );
-      setTimeout(() => setIsResumeModalOpen(true), 400);
+      setTimeout(() => setIsResumeModalOpen(true), 300);
     } else if (intent === "roadmap") {
       logAnalytics("feature_selected", { feature: "roadmap" });
-      addBotMessage(
-        `Generating your personalized 90-Day Placement Roadmap for ${activeProfile.targetRole || "your target role"}... 🗺️`
-      );
-      setTimeout(() => handleTriggerRoadmap(activeProfile), 400);
+      addBotMessage("Generating your personalized 90-Day Placement Roadmap... 🗺️");
+      setTimeout(() => handleTriggerRoadmap(), 300);
     } else if (intent === "jobs") {
       logAnalytics("feature_selected", { feature: "jobs" });
-      addBotMessage(
-        "Finding verified fresher jobs and scam-free matches based on your skills... 💼"
-      );
-      setTimeout(() => handleTriggerJobs(activeProfile), 400);
+      addBotMessage("Finding verified fresher jobs and scam-free matches... 💼");
+      setTimeout(() => handleTriggerJobs(), 300);
     } else if (intent === "mock_interview") {
       logAnalytics("feature_selected", { feature: "mock_interview" });
-      addBotMessage(
-        "Preparing your 5-Minute Mock Interview session with fresher-tuned questions... 🎯"
-      );
+      addBotMessage("Preparing your 5-Minute Mock Interview session with fresher-tuned questions... 🎯");
       setTimeout(() => {
         const currSt = getInitialState();
         if (!currSt.isRegistered) {
@@ -265,7 +244,7 @@ export default function ChatContainer({
         } else {
           setIsInterviewModalOpen(true);
         }
-      }, 400);
+      }, 300);
     }
   };
 
@@ -274,44 +253,33 @@ export default function ChatContainer({
     const st = getInitialState();
     setSessionId(st.sessionId);
     setIsRegistered(st.isRegistered);
-    if (st.profile) {
-      setProfile(st.profile);
-    }
+    if (st.profile) setProfile(st.profile);
     if (st.currentResumeResult) setResumeResult(st.currentResumeResult);
     if (st.roadmap) setRoadmapData(st.roadmap);
 
     const normIntent = normalizeIntent(activeIntent);
 
-    if (st.profile) {
-      setOnboardingStep("done");
-      if (st.messages && st.messages.length > 0) {
-        setMessages(st.messages);
-      }
+    if (st.messages && st.messages.length > 0) {
+      setMessages(st.messages);
       if (normIntent && lastHandledIntentRef.current !== normIntent) {
         lastHandledIntentRef.current = normIntent;
-        handleExecuteIntentForProfile(normIntent, st.profile);
+        handleExecuteIntent(normIntent);
       }
     } else {
-      // Guest / Anonymous student without profile
+      // First visit: send welcoming open-ended English greeting
       if (normIntent && lastHandledIntentRef.current !== normIntent) {
         lastHandledIntentRef.current = normIntent;
-        setPendingIntent(normIntent);
-        setOnboardingStep("branch");
-
         const intentGreeting = getIntentGreeting(normIntent);
         const welcomeMsg: ChatMessage = {
           id: "msg_welcome_intent",
           sender: "bot",
           text: intentGreeting,
           timestamp: new Date().toISOString(),
-          chips: BRANCH_CHIPS
+          chips: getMainFeatureChips()
         };
-        setMessages(prev => (prev.length > 0 ? [...prev, welcomeMsg] : [welcomeMsg]));
-        logAnalytics("chat_widget_opened", { language: "en", intent: normIntent });
-      } else if (st.messages && st.messages.length > 0) {
-        setMessages(st.messages);
+        setMessages([welcomeMsg]);
+        handleExecuteIntent(normIntent);
       } else {
-        // First visit: send welcoming English greeting
         const welcomeMsg: ChatMessage = {
           id: "msg_welcome",
           sender: "bot",
@@ -320,245 +288,150 @@ export default function ChatContainer({
           chips: INITIAL_CHIPS
         };
         setMessages([welcomeMsg]);
-        logAnalytics("chat_widget_opened", { language: "en" });
       }
+      logAnalytics("chat_widget_opened", { language: "en" });
     }
   }, [activeIntent]);
 
+  // Send user message directly to LLM with real-time token streaming
+  const sendUserQueryToAI = async (text: string) => {
+    addUserMessage(text);
+    setIsBotTyping(true);
+
+    const botMsgId = "bot_" + Math.random().toString(36).substring(2, 9);
+    let accumulatedText = "";
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, profile })
+      });
+
+      if (!res.ok) {
+        throw new Error(`Chat API error: ${res.status}`);
+      }
+
+      if (!res.body) {
+        throw new Error("No readable stream response in body");
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let hasFirstChunk = false;
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        if (chunk) {
+          accumulatedText += chunk;
+          if (!hasFirstChunk) {
+            hasFirstChunk = true;
+            setIsBotTyping(false);
+            setMessages(prev => [
+              ...prev,
+              {
+                id: botMsgId,
+                sender: "bot",
+                text: accumulatedText,
+                timestamp: new Date().toISOString(),
+                chips: []
+              }
+            ]);
+          } else {
+            setMessages(prev =>
+              prev.map(m => (m.id === botMsgId ? { ...m, text: accumulatedText } : m))
+            );
+          }
+        }
+      }
+
+      // Finalize message with feature chips and persist
+      setIsBotTyping(false);
+      setMessages(prev => {
+        const finalMsgExists = prev.some(m => m.id === botMsgId);
+        let updated: ChatMessage[];
+        if (finalMsgExists) {
+          updated = prev.map(m =>
+            m.id === botMsgId
+              ? { ...m, text: accumulatedText, chips: getMainFeatureChips() }
+              : m
+          );
+        } else {
+          updated = [
+            ...prev,
+            {
+              id: botMsgId,
+              sender: "bot",
+              text: accumulatedText || "I'm here to help! What questions do you have about your career?",
+              timestamp: new Date().toISOString(),
+              chips: getMainFeatureChips()
+            }
+          ];
+        }
+        const st = getInitialState();
+        st.messages = updated;
+        saveState(st);
+        return updated;
+      });
+    } catch (err) {
+      console.warn("Client fallback due to fetch error:", err);
+      setIsBotTyping(false);
+      const fallback = generateCareerGuideReply(text, profile);
+      addBotMessage(fallback.text, fallback.chips);
+    }
+  };
+
   // Handle Quick Reply Chip Click
   const handleChipClick = (chip: ActionChip) => {
-    addUserMessage(chip.label);
-    const strings = CHAT_STRINGS;
-
-    // Opening greeting click
-    if (chip.value === "ready") {
-      logAnalytics("chat_started");
-      setOnboardingStep("branch");
-      logAnalytics("onboarding_step_viewed", { step: 1 });
-      addBotMessage(strings.askBranch, BRANCH_CHIPS);
-      return;
-    }
-
-    if (chip.value === "tell_more") {
-      addBotMessage(
-        "CareerPilot AI delivers instant career clarity:\n1. ATS Resume Score & 3 key fixes\n2. 90-Day Roadmap with vetted free resources\n3. Skill-matched Jobs with scam protection\n4. 5-Min Mock Interview with score breakdown.\n\nReady to get started?",
-        INITIAL_CHIPS
-      );
-      return;
-    }
-
-    // Step 1: Branch chosen
-    if (onboardingStep === "branch") {
-      const selectedBranch = chip.value;
-      const initialProf: StudentProfile = {
-        sessionId,
-        branch: selectedBranch,
-        year: "3",
-        skills: [],
-        careerGoal: "",
-        targetRole: "software-developer",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setProfile(initialProf);
-      setOnboardingStep("year");
-      logAnalytics("onboarding_step_completed", { step: 1, branch: selectedBranch });
-
-      addBotMessage(strings.askYear, getYearChips());
-      return;
-    }
-
-    // Step 2: Year chosen
-    if (onboardingStep === "year") {
-      const selectedYear = chip.value.replace("-en", "") as any;
-      if (profile) {
-        setProfile({ ...profile, year: selectedYear });
-      }
-      setOnboardingStep("skills");
-      logAnalytics("onboarding_step_completed", { step: 2, year: selectedYear });
-
-      addBotMessage(strings.askSkills, getSkillChips());
-      return;
-    }
-
-    // Step 3: Skills chosen
-    if (onboardingStep === "skills") {
-      if (chip.value === "done_skills") {
-        const finalSkills = tempSkills.length > 0 ? tempSkills : ["Basics"];
-        if (profile) {
-          setProfile({ ...profile, skills: finalSkills });
-        }
-        setOnboardingStep("goal");
-        logAnalytics("onboarding_step_completed", { step: 3, skillsCount: finalSkills.length });
-
-        addBotMessage(strings.askGoal, getGoalChips());
-        return;
-      } else {
-        // Toggle skill
-        const skillName = chip.value.replace("-en", "");
-        const nextSkills = tempSkills.includes(skillName)
-          ? tempSkills.filter(s => s !== skillName)
-          : [...tempSkills, skillName];
-        setTempSkills(nextSkills);
-
-        addBotMessage(
-          strings.skillAdded(skillName, nextSkills.length),
-          getSkillChips()
-        );
-        return;
-      }
-    }
-
-    // Step 4: Career Goal chosen
-    if (onboardingStep === "goal") {
-      if (chip.value === "not_sure") {
-        // AI recommends 2-3 roles from branch & skills
-        const recommended = getRecommendedRolesForStudent(profile?.branch || "CSE", tempSkills);
-        addBotMessage(strings.recommendRolesPrompt, recommended);
-        return;
-      }
-
-      const chosenRoleKey = chip.value.replace("-en", "");
-      const completeProfile: StudentProfile = {
-        ...(profile || {
-          sessionId,
-          branch: "CSE",
-          year: "3",
-          skills: tempSkills,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          careerGoal: chosenRoleKey,
-          targetRole: chosenRoleKey
-        }),
-        careerGoal: chosenRoleKey,
-        targetRole: chosenRoleKey,
-        skills: tempSkills.length > 0 ? tempSkills : ["Basics", "Problem Solving"]
-      };
-
-      setProfile(completeProfile);
-      setOnboardingStep("done");
-
-      // Save to local storage
-      const st = getInitialState();
-      st.profile = completeProfile;
-      saveState(st);
-      logAnalytics("profile_created", { role: chosenRoleKey });
-      fireValueConfetti();
-
-      // Show Profile Summary Card and offer 4 main features per PRD
-      if (pendingIntent) {
-        const intentToRun = pendingIntent;
-        setPendingIntent(null);
-
-        addBotMessage(
-          `${strings.profileCreated}\n\nLaunching your selected preview now! 🚀`,
-          getMainFeatureChips(),
-          {
-            type: "onboarding_summary",
-            data: completeProfile
-          }
-        );
-
-        setTimeout(() => {
-          if (intentToRun === "resume_check") {
-            logAnalytics("feature_selected", { feature: "resume_check" });
-            setIsResumeModalOpen(true);
-          } else if (intentToRun === "roadmap") {
-            logAnalytics("feature_selected", { feature: "roadmap" });
-            handleTriggerRoadmap(completeProfile);
-          } else if (intentToRun === "jobs") {
-            logAnalytics("feature_selected", { feature: "jobs" });
-            handleTriggerJobs(completeProfile);
-          } else if (intentToRun === "mock_interview") {
-            logAnalytics("feature_selected", { feature: "mock_interview" });
-            const currSt = getInitialState();
-            if (!currSt.isRegistered) {
-              setIsRegModalOpen(true);
-            } else {
-              setIsInterviewModalOpen(true);
-            }
-          }
-        }, 600);
-        return;
-      }
-
-      addBotMessage(
-        strings.profileCreated,
-        getMainFeatureChips(),
-        {
-          type: "onboarding_summary",
-          data: completeProfile
-        }
-      );
-      return;
-    }
-
     // Feature selection triggers
     if (chip.value === "feature_resume") {
       logAnalytics("feature_selected", { feature: "resume_check" });
       setIsResumeModalOpen(true);
-    } else if (chip.value === "feature_roadmap") {
+      return;
+    }
+    if (chip.value === "feature_roadmap") {
       logAnalytics("feature_selected", { feature: "roadmap" });
       handleTriggerRoadmap();
-    } else if (chip.value === "feature_jobs") {
+      return;
+    }
+    if (chip.value === "feature_jobs") {
       logAnalytics("feature_selected", { feature: "jobs" });
       handleTriggerJobs();
-    } else if (chip.value === "feature_interview") {
+      return;
+    }
+    if (chip.value === "feature_interview") {
       logAnalytics("feature_selected", { feature: "mock_interview" });
       if (!isRegistered) {
         setIsRegModalOpen(true);
       } else {
         setIsInterviewModalOpen(true);
       }
+      return;
     }
+    if (chip.value === "open_reg") {
+      setIsRegModalOpen(true);
+      return;
+    }
+    if (chip.value === "go_dashboard") {
+      window.location.href = "/dashboard";
+      return;
+    }
+
+    // Conversational text chip -> route directly to LLM
+    sendUserQueryToAI(chip.label);
   };
 
-  // Handle Free Text Input with Personal Career Guide Responder
+  // Handle Free Text Input
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || isBotTyping) return;
 
     const text = inputText.trim();
     setInputText("");
-    addUserMessage(text);
-    const strings = CHAT_STRINGS;
-
-    // Contextual handling if during onboarding
-    if (onboardingStep === "branch") {
-      const prof: StudentProfile = {
-        sessionId,
-        branch: text,
-        year: "3",
-        skills: [],
-        careerGoal: "",
-        targetRole: "software-developer",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setProfile(prof);
-      setOnboardingStep("year");
-      addBotMessage(
-        `Noted branch: ${text}! Which year of college are you in?`,
-        getYearChips()
-      );
-      return;
-    }
-
-    if (onboardingStep === "skills") {
-      const skillsParsed = text.split(/[,/ ]+/).filter(Boolean);
-      const combined = [...tempSkills, ...skillsParsed];
-      setTempSkills(combined);
-      addBotMessage(
-        `Great! Skills saved: ${combined.join(", ")}. Now choose your career target role:`,
-        getGoalChips()
-      );
-      setOnboardingStep("goal");
-      return;
-    }
-
-    // Intelligent Career Guide Dialog & Intent Responder
-    const aiResponse = generateCareerGuideReply(text, profile);
-    addBotMessage(aiResponse.text, aiResponse.chips);
+    sendUserQueryToAI(text);
   };
 
   // Resume Upload Callback
@@ -668,22 +541,16 @@ export default function ChatContainer({
                 <strong>{profile.branch}</strong> ({profile.year} Year) • Target: <strong>{profile.targetRole}</strong>
               </>
             ) : (
-              <span>CareerPilot Personal Guide Online 👋</span>
+              <span>CareerPilot AI Personal Career Guide Online 👋</span>
             )}
           </span>
         </div>
 
         <div className="flex items-center gap-2.5">
           {profile && (
-            <button
-              onClick={() => {
-                setOnboardingStep("branch");
-                addBotMessage(CHAT_STRINGS.editProfilePrompt, BRANCH_CHIPS);
-              }}
-              className="text-[11px] text-orange-600 dark:text-orange-400 hover:underline font-semibold"
-            >
-              Edit Profile
-            </button>
+            <span className="text-[11px] text-zinc-500 font-medium">
+              Profile Active
+            </span>
           )}
         </div>
       </div>
@@ -738,7 +605,7 @@ export default function ChatContainer({
                         </h4>
                       </div>
                       <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-bold">
-                        30s Fast Onboard
+                        Fast Onboard
                       </span>
                     </div>
 
@@ -789,14 +656,8 @@ export default function ChatContainer({
                 {msg.chips.map(chip => (
                   <button
                     key={chip.id}
-                    onClick={() => {
-                      if (chip.value === "open_reg") {
-                        setIsRegModalOpen(true);
-                      } else {
-                        handleChipClick(chip);
-                      }
-                    }}
-                    className="px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-zinc-900 hover:bg-orange-50 dark:hover:bg-orange-950/40 text-zinc-800 dark:text-zinc-200 hover:text-orange-600 dark:hover:text-orange-400 border border-zinc-200 dark:border-zinc-800 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition-all flex items-center gap-1 active:scale-95"
+                    onClick={() => handleChipClick(chip)}
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-zinc-900 hover:bg-orange-50 dark:hover:bg-orange-950/40 text-zinc-800 dark:text-zinc-200 hover:text-orange-600 dark:hover:text-orange-400 border border-zinc-200 dark:border-zinc-800 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition-all flex items-center gap-1 active:scale-95 cursor-pointer"
                   >
                     <span>{chip.label}</span>
                   </button>
@@ -813,7 +674,7 @@ export default function ChatContainer({
             <span className="w-2 h-2 rounded-full bg-orange-500 animate-bounce delay-150" />
             <span className="w-2 h-2 rounded-full bg-orange-500 animate-bounce delay-300" />
             <span className="text-xs text-zinc-400 font-medium ml-1">
-              Career guide typing...
+              Career guide thinking...
             </span>
           </div>
         )}
@@ -821,7 +682,7 @@ export default function ChatContainer({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Bottom Input Area */}
+      {/* Bottom Input Area — Active immediately */}
       <div className="p-3 sm:p-4 bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800">
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
           {/* Quick Upload Icon Shortcut */}
@@ -838,14 +699,15 @@ export default function ChatContainer({
             type="text"
             value={inputText}
             onChange={e => setInputText(e.target.value)}
-            placeholder="Type any career question or message..."
+            placeholder="Type any question about your branch, career goal, or interview prep..."
             className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+            autoFocus
           />
 
           <button
             type="submit"
-            disabled={!inputText.trim()}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-40 text-white shadow-md shadow-orange-500/20 transition-all"
+            disabled={!inputText.trim() || isBotTyping}
+            className="p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-40 text-white shadow-md shadow-orange-500/20 transition-all cursor-pointer"
           >
             <Send className="w-4 h-4" />
           </button>

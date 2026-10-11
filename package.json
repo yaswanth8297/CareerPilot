@@ -10,9 +10,11 @@
     "postinstall": "prisma generate",
     "test": "npx -y tsx scripts/test-contracts.ts",
     "test:golden": "npx -y tsx scripts/evaluate-golden-datasets.ts",
-    "test:all": "npx -y tsx scripts/test-contracts.ts && npx -y tsx scripts/evaluate-golden-datasets.ts"
+    "test:gemini": "npx -y tsx scripts/test-gemini.ts",
+    "test:all": "npx -y tsx scripts/test-contracts.ts && npx -y tsx scripts/evaluate-golden-datasets.ts && npx -y tsx scripts/test-gemini.ts"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.4.1",
     "bullmq": "^6.3.12",
     "canvas-confetti": "^1.9.4",

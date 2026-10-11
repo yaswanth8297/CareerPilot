@@ -10,6 +10,7 @@ export interface LLMResponse {
 export interface LLMProvider {
   name: string;
   generateText(prompt: string, systemPrompt?: string): Promise<LLMResponse>;
+  generateStream?(prompt: string, systemPrompt?: string): AsyncGenerator<string, void, unknown>;
 }
 
 // Deterministic Mock Provider (Zero paid keys required per PRD)
@@ -27,54 +28,37 @@ export class MockLLMProvider implements LLMProvider {
       }
     };
   }
-}
 
-// Gemini Provider (Uses Google Gemini when process.env.GEMINI_API_KEY is present)
-export class GeminiProvider implements LLMProvider {
-  name = "GeminiProvider";
-  private apiKey: string;
-
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
-  }
-
-  async generateText(prompt: string, systemPrompt?: string): Promise<LLMResponse> {
-    try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [
-              ...(systemPrompt ? [{ role: "user", parts: [{ text: `[System Instruction]: ${systemPrompt}` }] }] : []),
-              { role: "user", parts: [{ text: prompt }] }
-            ]
-          })
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      return {
-        text,
-        usage: { promptTokens: 100, completionTokens: 50, costUsd: 0.0001 }
-      };
-    } catch (err) {
-      console.warn("Fallback to Mock Provider due to API error:", err);
-      return new MockLLMProvider().generateText(prompt, systemPrompt);
+  async *generateStream(prompt: string, systemPrompt?: string): AsyncGenerator<string, void, unknown> {
+    const fullText = "Absolutely! I'm here to help. Let's review your next milestone and accelerate your career journey! 🚀";
+    const words = fullText.split(" ");
+    for (let i = 0; i < words.length; i++) {
+      yield (i === 0 ? "" : " ") + words[i];
     }
   }
 }
 
-export function getActiveLLMProvider(): LLMProvider {
+// Re-export Gemini Provider from dedicated adapter
+export {
+  GeminiProvider,
+  type GeminiProviderOptions,
+  CAREERPILOT_SYSTEM_INSTRUCTION
+} from "./providers/geminiProvider";
+
+import { GeminiProvider } from "./providers/geminiProvider";
+
+export interface ActiveProviderOptions {
+  modelName?: string;
+  task?: "chat" | "heavy";
+}
+
+export function getActiveLLMProvider(options?: ActiveProviderOptions): LLMProvider {
   const geminiKey = process.env.GEMINI_API_KEY;
   if (geminiKey) {
-    return new GeminiProvider(geminiKey);
+    const modelName =
+      options?.modelName || (options?.task === "heavy" ? "gemini-1.5-pro-latest" : "gemini-1.5-flash-latest");
+    return new GeminiProvider({ apiKey: geminiKey, modelName });
   }
   return new MockLLMProvider();
 }
+

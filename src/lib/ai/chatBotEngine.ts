@@ -1,14 +1,17 @@
 import { ActionChip, StudentProfile } from "../types";
+import { getActiveLLMProvider, LLMProvider } from "./provider";
 
 export const OPENING_MESSAGE =
-  "Hey! I'm CareerPilot 👋 Your personal career guide. I'll build your profile in 30 seconds, then unlock your ATS resume check, roadmap, and mock interviews. Ready?";
+  "Hey! I'm CareerPilot 👋 Your personal career guide. Tell me about yourself — what college branch or year are you in, and what career goals are you targeting? Or ask me anything to get started!";
 
 export const OPENING_MESSAGE_ENGLISH = OPENING_MESSAGE;
 export const OPENING_MESSAGE_HINGLISH = OPENING_MESSAGE;
 
 export const INITIAL_CHIPS: ActionChip[] = [
-  { id: "c-ready", label: "Yes, let's do it! 🚀", value: "ready" },
-  { id: "c-info", label: "Tell me what's inside?", value: "tell_more" }
+  { id: "f-resume", label: "📄 ATS Resume Review", value: "feature_resume" },
+  { id: "f-roadmap", label: "🗺️ 90-Day Roadmap", value: "feature_roadmap" },
+  { id: "f-jobs", label: "💼 Matched Jobs", value: "feature_jobs" },
+  { id: "f-interview", label: "🎙️ 5-Min Mock Interview", value: "feature_interview" }
 ];
 
 export const INITIAL_CHIPS_ENGLISH = INITIAL_CHIPS;
@@ -175,7 +178,7 @@ export function getRecommendedRolesForStudent(branch: string, skills: string[]):
   ];
 }
 
-// Intelligent Personal Career Guide Prompt Responder (English-Only)
+// Intelligent Personal Career Guide Prompt Responder Fallback (English-Only)
 export function generateCareerGuideReply(
   userQuery: string,
   profile: StudentProfile | null
@@ -183,135 +186,66 @@ export function generateCareerGuideReply(
   text: string;
   chips: ActionChip[];
 } {
-  const query = userQuery.toLowerCase().trim();
-  const roleName = profile?.targetRole ? profile.targetRole.replace("-", " ") : "Tech & Core Engineering";
-
-  // 1. CGPA & College Tier Doubts
-  if (
-    query.includes("cgpa") ||
-    query.includes("gpa") ||
-    query.includes("marks") ||
-    query.includes("percentage") ||
-    query.includes("tier 3") ||
-    query.includes("tier 2") ||
-    query.includes("backlog")
-  ) {
-    return {
-      text: "Never let your CGPA or college tier hold you back! 85% of off-campus hiring evaluates practical skills, GitHub projects, and problem-solving. Let's optimize your resume and projects to stand out.",
-      chips: [
-        { id: "c-ats", label: "📄 Check Resume ATS Score", value: "feature_resume" },
-        { id: "c-rm", label: "🗺️ 90-Day Roadmap", value: "feature_roadmap" }
-      ]
-    };
-  }
-
-  // 2. Resume / ATS Audit Queries
-  if (
-    query.includes("resume") ||
-    query.includes("cv") ||
-    query.includes("ats") ||
-    query.includes("score") ||
-    query.includes("formatting")
-  ) {
-    return {
-      text: `A solid ATS-friendly resume needs clean 1-page formatting, target keywords for ${roleName}, and quantified impact metrics. Let's run a full deterministic 100-point audit!`,
-      chips: [
-        { id: "c-ats", label: "📄 Upload Resume for ATS Audit", value: "feature_resume" },
-        { id: "c-jobs", label: "💼 View Matched Jobs", value: "feature_jobs" }
-      ]
-    };
-  }
-
-  // 3. Roadmap / Learning / Where to Start Queries
-  if (
-    query.includes("roadmap") ||
-    query.includes("learn") ||
-    query.includes("study") ||
-    query.includes("start") ||
-    query.includes("syllabus") ||
-    query.includes("course") ||
-    query.includes("guide")
-  ) {
-    return {
-      text: `The most effective way to crack ${roleName} is a 3-phase journey: Foundation (Weeks 1-4), Building Production Apps (Weeks 5-8), and Placement Prep (Weeks 9-12). Check out your 90-day roadmap!`,
-      chips: [
-        { id: "c-rm", label: "🗺️ View 90-Day Roadmap", value: "feature_roadmap" },
-        { id: "c-int", label: "🎙️ Practice Mock Interview", value: "feature_interview" }
-      ]
-    };
-  }
-
-  // 4. Job Search / Internships / Scams Queries
-  if (
-    query.includes("job") ||
-    query.includes("internship") ||
-    query.includes("placement") ||
-    query.includes("hiring") ||
-    query.includes("apply") ||
-    query.includes("salary") ||
-    query.includes("scam")
-  ) {
-    return {
-      text: `I have curated verified fresher job openings and internships filtered strictly by skill match. We also auto-flag suspicious upfront payment scams to keep you safe!`,
-      chips: [
-        { id: "c-jobs", label: "💼 Explore Matched Jobs", value: "feature_jobs" },
-        { id: "c-ats", label: "📄 Check Resume Match Score", value: "feature_resume" }
-      ]
-    };
-  }
-
-  // 5. Interview Preparation / Mock Queries
-  if (
-    query.includes("interview") ||
-    query.includes("mock") ||
-    query.includes("question") ||
-    query.includes("hr round") ||
-    query.includes("technical round")
-  ) {
-    return {
-      text: `Fresher interviews look for clarity, strong fundamental logic, and the STAR framework (Situation → Task → Action → Result). Try our 5-minute timer mock interview to practice!`,
-      chips: [
-        { id: "c-int", label: "🎙️ Launch 5-Min Mock Interview", value: "feature_interview" },
-        { id: "c-rm", label: "🗺️ View Roadmap Topics", value: "feature_roadmap" }
-      ]
-    };
-  }
-
-  // 6. Project Ideas / Portfolio Queries
-  if (
-    query.includes("project") ||
-    query.includes("portfolio") ||
-    query.includes("github") ||
-    query.includes("build")
-  ) {
-    return {
-      text: `Recruiters are impressed by deployed projects with real utility: e.g., a full-stack portal with auth & search, or an analytics dashboard with charts. Avoid generic to-do apps!`,
-      chips: [
-        { id: "c-rm", label: "🗺️ See Recommended Projects", value: "feature_roadmap" },
-        { id: "c-ats", label: "📄 Check Resume Impact", value: "feature_resume" }
-      ]
-    };
-  }
-
-  // 7. Greetings & Casual Hello
-  if (
-    query.includes("hi") ||
-    query.includes("hello") ||
-    query.includes("hey") ||
-    query.includes("help")
-  ) {
-    return {
-      text: `Hey there! I am your personal career guide. Whether you want to audit your resume ATS score, view your 90-day learning roadmap, or practice a mock interview, I'm here to help!`,
-      chips: getMainFeatureChips()
-    };
-  }
-
-  // 8. General Fallback
   return {
-    text: `I've noted that! For ${roleName}, your strongest next step is to audit your resume for ATS score or follow the 90-day weekly milestones. Which one would you like to tackle?`,
+    text: "I'm CareerPilot 👋 Tell me about your branch, year, and target goals so I can guide you! You can also explore our ATS resume review, 90-day roadmap, or 5-min mock interview.",
     chips: getMainFeatureChips()
   };
 }
 
 // Alias for backward compatibility
 export const generateSeniorBhaiyaReply = generateCareerGuideReply;
+
+/**
+ * ChatBot LLM Factory: returns GeminiProvider (gemini-1.5-flash) if GEMINI_API_KEY
+ * is set, falling back to MockLLMProvider when unconfigured.
+ */
+export function getChatBotLLMProvider(): LLMProvider {
+  return getActiveLLMProvider({ task: "chat" });
+}
+
+/**
+ * Asynchronously generates an intelligent reply using the active LLM provider,
+ * passing student profile context and returning response text + action chips.
+ */
+export async function generateChatBotLLMReply(
+  userQuery: string,
+  profile: StudentProfile | null,
+  provider: LLMProvider = getChatBotLLMProvider()
+): Promise<{ text: string; chips: ActionChip[] }> {
+  const profileContext = profile
+    ? `Target Role: ${profile.targetRole || "Unknown"}, Branch: ${profile.branch || "Unknown"}, Year: ${profile.year || "Unknown"}, Skills: ${profile.skills?.join(", ") || "None listed"}.`
+    : "No student profile available yet.";
+
+  const systemContext = `Student Profile Context:\n${profileContext}`;
+  const response = await provider.generateText(userQuery, systemContext);
+
+  return {
+    text: response.text,
+    chips: getMainFeatureChips()
+  };
+}
+
+/**
+ * Asynchronously streams reply chunks from the active LLM provider.
+ */
+export async function* generateChatBotLLMStream(
+  userQuery: string,
+  profile: StudentProfile | null,
+  provider: LLMProvider = getChatBotLLMProvider()
+): AsyncGenerator<string, void, unknown> {
+  const profileContext = profile
+    ? `Target Role: ${profile.targetRole || "Unknown"}, Branch: ${profile.branch || "Unknown"}, Year: ${profile.year || "Unknown"}, Skills: ${profile.skills?.join(", ") || "None listed"}.`
+    : "No student profile available yet.";
+
+  const systemContext = `Student Profile Context:\n${profileContext}`;
+
+  if (typeof provider.generateStream === "function") {
+    for await (const chunk of provider.generateStream(userQuery, systemContext)) {
+      yield chunk;
+    }
+  } else {
+    const res = await provider.generateText(userQuery, systemContext);
+    yield res.text;
+  }
+}
+
