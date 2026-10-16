@@ -15,25 +15,23 @@ export function Card({
     return (
       <div
         className={cn(
-          "rounded-2xl bg-gradient-to-br from-[#0052FF] via-[#4D7CFF] to-[#0052FF] p-[2px] shadow-accent transition-all duration-300 hover:shadow-accent-lg hover:-translate-y-0.5",
+          "rounded-2xl border-2 border-blue-500/80 bg-white p-6 shadow-md transition-all duration-300 hover:shadow-lg hover:border-blue-600 hover:-translate-y-0.5",
           className
         )}
         {...props}
       >
-        <div className="h-full w-full rounded-[calc(1rem-2px)] bg-white dark:bg-[#0F172A] p-6">
-          {children}
-        </div>
+        {children}
       </div>
     );
   }
 
   const variantStyles = {
     default:
-      "bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all duration-200",
+      "bg-white border border-slate-200 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all duration-200",
     elevated:
-      "bg-white dark:bg-[#0F172A] border border-slate-200/80 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5",
+      "bg-white border border-slate-200/90 shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5",
     inverted:
-      "bg-[#0F172A] text-white border border-slate-800 shadow-xl"
+      "bg-slate-50 text-slate-900 border border-slate-200 shadow-sm"
   };
 
   return (
@@ -65,7 +63,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-lg font-semibold tracking-tight text-[#0F172A] dark:text-white", className)}
+      className={cn("text-lg font-semibold tracking-tight text-slate-900", className)}
       {...props}
     >
       {children}
@@ -80,7 +78,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-xs text-slate-500 dark:text-slate-400 leading-relaxed", className)}
+      className={cn("text-xs text-slate-500 leading-relaxed font-sans", className)}
       {...props}
     >
       {children}

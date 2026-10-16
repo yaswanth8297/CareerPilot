@@ -41,15 +41,15 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in">
       {/* Top Header */}
-      <div className="rounded-3xl bg-zinc-950 text-white p-6 sm:p-8 shadow-xl border border-zinc-800">
+      <div className="rounded-3xl bg-white text-slate-900 p-6 sm:p-8 shadow-saas border border-slate-200">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 mb-2 border border-emerald-500/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 mb-2 border border-emerald-200">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Admin & Growth Control</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Platform Telemetry & Governance</h1>
-            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Platform Telemetry & Governance</h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
               Funnel conversion • Feature flags • Grounded knowledge verification • DPDP compliance audit
             </p>
           </div>
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-zinc-200 dark:border-zinc-800 gap-2 sm:gap-4 overflow-x-auto text-xs sm:text-sm font-semibold">
+      <div className="flex border-b border-slate-200 gap-2 sm:gap-4 overflow-x-auto text-xs sm:text-sm font-semibold">
         {[
           { id: "funnel", label: "Conversion Funnel", icon: BarChart3 },
           { id: "flags", label: "Feature Flags", icon: ToggleRight },
@@ -69,10 +69,10 @@ export default function AdminDashboard() {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id as any)}
-              className={`py-3 px-3 border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
+              className={`py-3 px-3 border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
                 activeTab === t.id
-                  ? "border-emerald-500 text-emerald-600 dark:text-emerald-400 font-bold"
-                  : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-900"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -95,17 +95,17 @@ export default function AdminDashboard() {
             ].map(col => (
               <div
                 key={col.step}
-                className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-center space-y-1 shadow-sm"
+                className="p-4 rounded-2xl border border-slate-200 bg-white text-center space-y-1 shadow-xs"
               >
-                <div className="text-[11px] font-bold text-zinc-500 uppercase">{col.step}</div>
-                <div className="text-2xl font-black text-zinc-900 dark:text-white">{col.count}</div>
-                <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{col.pct} conv.</div>
+                <div className="text-[11px] font-bold text-slate-500 uppercase">{col.step}</div>
+                <div className="text-2xl font-bold text-slate-900">{col.count}</div>
+                <div className="text-xs font-bold text-emerald-600">{col.pct} conv.</div>
               </div>
             ))}
           </div>
 
-          <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 space-y-3">
-            <h3 className="font-bold text-sm text-zinc-900 dark:text-white">PRD Target Health Checks</h3>
+          <div className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3 shadow-xs">
+            <h3 className="font-bold text-sm text-slate-900">PRD Target Health Checks</h3>
             <div className="space-y-2 text-xs">
               <div className="flex justify-between py-1 border-b border-zinc-100 dark:border-zinc-800">
                 <span className="text-zinc-600 dark:text-zinc-400">Target Time to Registration:</span>

@@ -29,49 +29,49 @@ export default function RoadmapCard({
   const currentWeeks = roadmap.weeks.filter(w => w.phase === selectedPhase);
 
   return (
-    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-xl overflow-hidden transition-all my-3">
-      {/* Inverted Slate Header */}
-      <div className="relative bg-[#0F172A] text-white p-5 sm:p-6 overflow-hidden">
-        <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-48 h-48 bg-[#0052FF]/20 blur-[80px] rounded-full pointer-events-none" />
+    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 bg-white shadow-saas overflow-hidden transition-all my-3">
+      {/* Light Theme Header */}
+      <div className="relative bg-gradient-to-br from-blue-50/80 via-white to-slate-50 text-slate-900 p-5 sm:p-6 overflow-hidden border-b border-slate-200">
+        <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 flex items-start justify-between gap-4">
           <div>
-            <SectionLabel pulse={true} className="border-white/20 bg-white/10 text-white mb-2.5">
+            <SectionLabel pulse={true} className="mb-2.5">
               90-DAY ROADMAP
             </SectionLabel>
-            <h3 className="text-xl font-display font-normal tracking-tight text-white">
-              <span className="gradient-text">{roadmap.role}</span> Track
+            <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              <span className="text-blue-600">{roadmap.role}</span> Track
             </h3>
-            <p className="text-xs text-slate-400 mt-1">1-2 hrs/day • Grounded with vetted free resources</p>
+            <p className="text-xs text-slate-500 mt-1">1-2 hrs/day • Grounded with vetted free resources</p>
           </div>
 
           {/* Progress pill */}
-          <div className="flex flex-col items-center justify-center bg-white/5 border border-white/10 p-2.5 rounded-2xl min-w-[76px] shrink-0">
-            <span className="text-2xl font-mono font-bold text-[#4D7CFF]">{progressPercent}%</span>
+          <div className="flex flex-col items-center justify-center bg-white border border-slate-200 p-2.5 rounded-2xl min-w-[76px] shrink-0 shadow-xs">
+            <span className="text-2xl font-mono font-bold text-blue-600">{progressPercent}%</span>
             <p className="text-[10px] text-slate-400 font-mono">Progress</p>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="relative z-10 w-full bg-white/10 h-1.5 rounded-full overflow-hidden mt-4">
+        <div className="relative z-10 w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mt-4">
           <div
-            className="bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] h-full rounded-full transition-all duration-500"
+            className="bg-blue-600 h-full rounded-full transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
 
       {/* Phase Selection Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090D16]">
+      <div className="flex border-b border-slate-200 bg-slate-50">
         {(["Foundation", "Build", "Job Ready"] as const).map(phase => (
           <button
             key={phase}
             onClick={() => setSelectedPhase(phase)}
             className={`flex-1 py-3 text-xs sm:text-sm font-medium text-center border-b-2 transition-all cursor-pointer ${
               selectedPhase === phase
-                ? "border-[#0052FF] text-[#0052FF] dark:text-[#4D7CFF] font-semibold bg-white dark:bg-[#0F172A]"
-                : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                ? "border-blue-600 text-blue-600 font-semibold bg-white"
+                : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
             {phase === "Foundation" ? "1. Foundation" : phase === "Build" ? "2. Build" : "3. Job Ready"}

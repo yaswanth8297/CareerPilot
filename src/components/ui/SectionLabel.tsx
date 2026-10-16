@@ -15,18 +15,18 @@ export function SectionLabel({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2.5 rounded-full border border-[#0052FF]/25 bg-[#0052FF]/5 dark:bg-[#0052FF]/10 px-3.5 py-1.5 shadow-sm transition-all",
+        "inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/90 px-3 py-1 shadow-xs transition-all",
         className
       )}
       {...props}
     >
       <span className="relative flex h-2 w-2">
         {pulse && (
-          <span className="absolute inline-flex h-full w-full rounded-full bg-[#0052FF] opacity-75 animate-ping" />
+          <span className="absolute inline-flex h-full w-full rounded-full bg-blue-600 opacity-75 animate-ping" />
         )}
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-[#0052FF]" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
       </span>
-      <span className="font-mono text-[11px] sm:text-xs font-semibold uppercase tracking-[0.15em] text-[#0052FF] dark:text-[#4D7CFF]">
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 font-sans">
         {children}
       </span>
     </div>

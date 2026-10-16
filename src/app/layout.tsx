@@ -44,9 +44,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${calistoga.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#FAFAFA] dark:bg-[#090D16] text-[#0F172A] dark:text-[#F8FAFC] font-sans selection:bg-[#0052FF] selection:text-white">
+      <body className="min-h-full flex flex-col bg-white text-slate-900 font-sans selection:bg-[#2563EB] selection:text-white antialiased">
         {children}
       </body>
     </html>

@@ -9,7 +9,7 @@ export default function ChatPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col font-sans transition-colors">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
 
       <main className="flex-1 flex flex-col">

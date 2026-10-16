@@ -29,10 +29,10 @@ export default function ContactTrainingCard({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-6 sm:p-8 shadow-md transition-all duration-300 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-saas transition-all duration-300 ${className}`}
     >
       {/* Background subtle radial glow */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-[#0052FF]/5 dark:bg-[#0052FF]/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/5 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Left Column */}
@@ -42,24 +42,24 @@ export default function ContactTrainingCard({
           </SectionLabel>
 
           <div className="space-y-2">
-            <h3 className="text-xl sm:text-2xl font-display font-normal text-[#0F172A] dark:text-white tracking-tight flex items-center gap-2">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <span>Need personalized 1-on-1 guidance?</span>
-              <Sparkles className="w-5 h-5 text-[#0052FF] animate-pulse-subtle hidden sm:inline" />
+              <Sparkles className="w-5 h-5 text-blue-600 animate-pulse-subtle hidden sm:inline" />
             </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-sans">
+            <p className="text-sm text-slate-600 leading-relaxed font-sans">
               Accelerate your placement readiness. Book a private 1-on-1 mentoring session for rigorous live mock interviews, ATS resume overhaul, and custom roadmap calibration.
             </p>
           </div>
 
           {!compact && (
             <div className="flex flex-wrap gap-2 pt-1 text-xs">
-              <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 font-medium text-slate-700 dark:text-slate-300">
+              <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 font-medium text-slate-700">
                 🎯 Live Mock Interviews
               </span>
-              <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 font-medium text-slate-700 dark:text-slate-300">
+              <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 font-medium text-slate-700">
                 📄 ATS Bullet Rewriting
               </span>
-              <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 font-medium text-slate-700 dark:text-slate-300">
+              <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 font-medium text-slate-700">
                 🗺️ Off-Campus Referral Strategy
               </span>
             </div>
@@ -68,23 +68,23 @@ export default function ContactTrainingCard({
 
         {/* Right Column: Contact Details & CTAs */}
         <div className="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[280px]">
-          <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 p-3.5 space-y-2 text-xs">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 space-y-2 text-xs">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-mono text-[11px]">
-                <Mail className="w-3.5 h-3.5 text-[#0052FF]" />
+              <div className="flex items-center gap-2 text-slate-700 font-mono text-[11px]">
+                <Mail className="w-3.5 h-3.5 text-blue-600" />
                 <span>{email}</span>
               </div>
               <button
                 onClick={handleCopyEmail}
-                className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition-colors text-slate-500"
+                className="p-1 hover:bg-slate-200 rounded transition-colors text-slate-500 cursor-pointer"
                 title="Copy email"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
             </div>
 
-            <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-mono text-[11px]">
-              <Phone className="w-3.5 h-3.5 text-[#0052FF]" />
+            <div className="flex items-center gap-2 text-slate-700 font-mono text-[11px]">
+              <Phone className="w-3.5 h-3.5 text-blue-600" />
               <span>{phone}</span>
             </div>
           </div>

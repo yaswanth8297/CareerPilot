@@ -80,43 +80,39 @@ export default function StudentDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
-      {/* Inverted Contrast Command Center Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#0F172A] text-white p-7 sm:p-10 shadow-2xl border border-slate-800">
-        {/* Subtle dot pattern texture */}
-        <div className="absolute inset-0 dot-pattern opacity-40 pointer-events-none" />
-
-        {/* Ambient radial accent glows */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0052FF]/20 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute -bottom-10 left-1/4 w-72 h-72 bg-[#4D7CFF]/15 blur-[120px] rounded-full pointer-events-none" />
+      {/* Light SaaS Command Center Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-50/70 via-white to-slate-50 text-slate-900 p-7 sm:p-10 shadow-saas border border-slate-200">
+        <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 blur-[130px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3">
-            <SectionLabel pulse={true} className="border-white/20 bg-white/10 text-white">
+            <SectionLabel pulse={true}>
               STUDENT COMMAND CENTER • MY SPACE
             </SectionLabel>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-normal tracking-tight text-white leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
               {profile ? `${profile.branch} Student Pilot` : "Welcome to Your "}{" "}
-              <span className="gradient-text">Career Space</span>
+              <span className="saas-highlight">Career Space</span>
             </h1>
 
-            <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-slate-300 font-sans">
-              <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1 rounded-full border border-white/10">
-                <Target className="w-3.5 h-3.5 text-[#4D7CFF]" />
-                Target: <strong className="text-white font-medium">{profile?.targetRole || "Software Developer"}</strong>
+            <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-slate-600 font-sans">
+              <span className="flex items-center gap-1.5 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-xs">
+                <Target className="w-3.5 h-3.5 text-blue-600" />
+                Target: <strong className="text-slate-900 font-medium">{profile?.targetRole || "Software Developer"}</strong>
               </span>
-              <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10">
-                Year: <strong className="text-white font-medium">{profile?.year || "3rd"}</strong>
+              <span className="bg-white px-3 py-1 rounded-full border border-slate-200 shadow-xs">
+                Year: <strong className="text-slate-900 font-medium">{profile?.year || "3rd"}</strong>
               </span>
-              <span className="bg-white/10 px-3 py-1 rounded-full border border-white/10">
-                Status: <strong className="text-[#4D7CFF] font-medium">{isRegistered ? "Verified Student" : "Guest Mode (Local)"}</strong>
+              <span className="bg-white px-3 py-1 rounded-full border border-slate-200 shadow-xs">
+                Status: <strong className="text-blue-600 font-medium">{isRegistered ? "Verified Student" : "Guest Mode (Local)"}</strong>
               </span>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row lg:flex-col gap-3">
             <Link href="/chat">
-              <Button variant="primary" size="md" className="w-full justify-center group shadow-accent">
+              <Button variant="primary" size="md" className="w-full justify-center group">
                 <span>Open Co-Pilot Chat</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -126,7 +122,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Tabs navigation */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-1 sm:gap-2 overflow-x-auto text-xs sm:text-sm font-medium pb-px">
+      <div className="flex border-b border-slate-200 gap-1 sm:gap-2 overflow-x-auto text-xs sm:text-sm font-medium pb-px">
         {[
           { id: "overview", label: "Overview", icon: User },
           { id: "resume", label: "Resume Trend", icon: FileText, count: resumeHistory.length },
@@ -143,8 +139,8 @@ export default function StudentDashboard() {
               onClick={() => setTab(t.id as any)}
               className={`py-3 px-3.5 border-b-2 flex items-center gap-2 whitespace-nowrap transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? "border-[#0052FF] text-[#0052FF] dark:text-[#4D7CFF] font-semibold"
-                  : "border-transparent text-slate-500 hover:text-[#0F172A] dark:hover:text-slate-200 hover:border-slate-300"
+                  ? "border-blue-600 text-blue-600 font-semibold"
+                  : "border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -152,8 +148,8 @@ export default function StudentDashboard() {
               {typeof t.count === "number" && t.count > 0 && (
                 <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
                   isActive
-                    ? "bg-[#0052FF]/10 text-[#0052FF]"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-slate-100 text-slate-500"
                 }`}>
                   {t.count}
                 </span>

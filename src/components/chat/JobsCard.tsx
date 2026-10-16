@@ -42,39 +42,39 @@ export default function JobsCard({
     filterType === "all" ? visibleJobs : visibleJobs.filter(j => j.jobType.toLowerCase() === filterType.toLowerCase());
 
   return (
-    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-xl overflow-hidden transition-all my-3">
-      {/* Inverted Slate Header */}
-      <div className="relative bg-[#0F172A] text-white p-5 sm:p-6 overflow-hidden">
-        <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-48 h-48 bg-[#0052FF]/20 blur-[80px] rounded-full pointer-events-none" />
+    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 bg-white shadow-saas overflow-hidden transition-all my-3">
+      {/* Light Theme Header */}
+      <div className="relative bg-gradient-to-br from-blue-50/80 via-white to-slate-50 text-slate-900 p-5 sm:p-6 overflow-hidden border-b border-slate-200">
+        <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 flex items-start justify-between gap-4">
           <div>
-            <SectionLabel pulse={true} className="border-white/20 bg-white/10 text-white mb-2.5">
+            <SectionLabel pulse={true} className="mb-2.5">
               SKILL-MATCHED ROLES
             </SectionLabel>
-            <h3 className="text-xl font-display font-normal tracking-tight text-white">
-              Curated <span className="gradient-text">Fresher Openings</span>
+            <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              Curated <span className="text-blue-600">Fresher Openings</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               Unbiased matching • Scams auto-flagged • Zero college-tier prejudice
             </p>
           </div>
-          <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-white/10 text-[#4D7CFF] font-semibold border border-white/10 shrink-0">
+          <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-white text-blue-600 font-semibold border border-slate-200 shadow-xs shrink-0">
             {jobs.length} Matches
           </span>
         </div>
       </div>
 
       {/* Filter Chips Bar */}
-      <div className="flex items-center gap-1.5 p-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090D16] overflow-x-auto text-xs">
+      <div className="flex items-center gap-1.5 p-3 border-b border-slate-200 bg-slate-50 overflow-x-auto text-xs">
         <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1" />
         <button
           onClick={() => setFilterType("all")}
           className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
             filterType === "all"
-              ? "bg-[#0052FF] text-white font-semibold"
-              : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
+              ? "bg-blue-600 text-white font-semibold"
+              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
           }`}
         >
           All
@@ -83,8 +83,8 @@ export default function JobsCard({
           onClick={() => setFilterType("Fresher")}
           className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
             filterType === "Fresher"
-              ? "bg-[#0052FF] text-white font-semibold"
-              : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
+              ? "bg-blue-600 text-white font-semibold"
+              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
           }`}
         >
           Fresher Roles
@@ -93,8 +93,8 @@ export default function JobsCard({
           onClick={() => setFilterType("Internship")}
           className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
             filterType === "Internship"
-              ? "bg-[#0052FF] text-white font-semibold"
-              : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
+              ? "bg-blue-600 text-white font-semibold"
+              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
           }`}
         >
           Internships

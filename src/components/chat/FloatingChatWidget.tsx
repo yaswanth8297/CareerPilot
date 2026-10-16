@@ -48,7 +48,7 @@ export default function FloatingChatWidget({
       {!isOpen && (
         <button
           onClick={() => handleSetOpen(true)}
-          className="group relative flex items-center gap-3 pl-4 pr-5 py-3.5 rounded-full bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] text-white shadow-xl hover:shadow-accent hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
+          className="group relative flex items-center gap-3 pl-4 pr-5 py-3.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl hover:shadow-blue-500/25 hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
         >
           <div className="relative">
             <span className="w-2.5 h-2.5 rounded-full bg-white absolute -top-0.5 -right-0.5 animate-ping opacity-75" />
@@ -65,31 +65,30 @@ export default function FloatingChatWidget({
 
       {/* Expanded Floating Window */}
       {isOpen && (
-        <div className="w-[calc(100vw-2.5rem)] sm:w-[420px] h-[590px] max-h-[85vh] bg-white dark:bg-[#0F172A] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-200">
-          {/* Top Bar - Inverted Slate */}
-          <div className="relative p-3.5 bg-[#0F172A] text-white flex items-center justify-between shrink-0 border-b border-slate-800 overflow-hidden">
-            <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-            <div className="relative z-10 flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#0052FF] to-[#4D7CFF] flex items-center justify-center font-mono font-bold text-xs text-white shadow-sm">
+        <div className="w-[calc(100vw-2.5rem)] sm:w-[420px] h-[590px] max-h-[85vh] bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-200">
+          {/* Top Bar - Clean Light Theme */}
+          <div className="p-3.5 bg-white text-slate-900 flex items-center justify-between shrink-0 border-b border-slate-200">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-xs text-white shadow-xs">
                 CP
               </div>
               <div>
-                <h4 className="font-semibold text-xs text-white">CareerPilot AI</h4>
-                <p className="text-[10px] text-slate-400">Personal Career Guide</p>
+                <h4 className="font-bold text-xs text-slate-900">CareerPilot AI</h4>
+                <p className="text-[10px] text-slate-500">Personal Career Guide</p>
               </div>
             </div>
 
-            <div className="relative z-10 flex items-center gap-1">
+            <div className="flex items-center gap-1">
               <Link
                 href={activeIntent ? `/chat?intent=${encodeURIComponent(activeIntent)}` : "/chat"}
-                className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                className="p-1.5 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                 title="Expand to Full Page"
               >
                 <ExternalLink className="w-4 h-4" />
               </Link>
               <button
                 onClick={() => handleSetOpen(false)}
-                className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="p-1.5 rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
                 title="Close Chat"
               >
                 <X className="w-4 h-4" />

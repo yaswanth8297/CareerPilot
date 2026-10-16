@@ -87,38 +87,38 @@ export default function ResumeUploadModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-white dark:bg-[#0F172A] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header - Inverted Slate */}
-        <div className="relative bg-[#0F172A] text-white p-5 flex items-center justify-between border-b border-slate-800 overflow-hidden">
-          <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-lg bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        {/* Header - Clean Light Theme */}
+        <div className="relative bg-slate-50 text-slate-900 p-5 flex items-center justify-between border-b border-slate-200 overflow-hidden">
+          <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
           <div className="relative z-10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0052FF] to-[#4D7CFF] flex items-center justify-center text-white shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-display font-normal text-lg leading-tight text-white">
+              <h3 className="font-bold text-lg leading-tight text-slate-900">
                 Check Resume ATS Score
               </h3>
-              <p className="text-[11px] text-slate-400">Deterministic 100-pt rubric • 3 Fixable Mistakes</p>
+              <p className="text-[11px] text-slate-500">Deterministic 100-pt rubric • 3 Fixable Mistakes</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="relative z-10 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="relative z-10 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab selection */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090D16] text-xs font-medium">
+        <div className="flex border-b border-slate-200 bg-slate-50 text-xs font-medium">
           <button
             type="button"
             onClick={() => setTab("paste")}
             className={`flex-1 py-3 border-b-2 transition-all cursor-pointer ${
               tab === "paste"
-                ? "border-[#0052FF] text-[#0052FF] dark:text-[#4D7CFF] font-semibold bg-white dark:bg-[#0F172A]"
+                ? "border-blue-600 text-blue-600 font-semibold bg-white"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
@@ -129,7 +129,7 @@ export default function ResumeUploadModal({
             onClick={() => setTab("upload")}
             className={`flex-1 py-3 border-b-2 transition-all cursor-pointer ${
               tab === "upload"
-                ? "border-[#0052FF] text-[#0052FF] dark:text-[#4D7CFF] font-semibold bg-white dark:bg-[#0F172A]"
+                ? "border-blue-600 text-blue-600 font-semibold bg-white"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >

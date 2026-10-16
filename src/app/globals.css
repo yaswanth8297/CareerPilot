@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
+  --background: #ffffff;
   --foreground: #0f172a;
-  --muted: #f1f5f9;
+  --muted: #f8fafc;
   --muted-foreground: #64748b;
-  --accent: #0052ff;
-  --accent-secondary: #4d7cff;
+  --accent: #2563eb;
+  --accent-secondary: #3b82f6;
   --accent-foreground: #ffffff;
   --border: #e2e8f0;
   --card: #ffffff;
-  --ring: #0052ff;
+  --ring: #2563eb;
 }
 
 @theme inline {
@@ -25,21 +25,11 @@
   --color-card: var(--card);
   --color-ring: var(--ring);
 
-  --font-display: var(--font-calistoga), Georgia, serif;
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #090d16;
-    --foreground: #f8fafc;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --border: #1e293b;
-    --card: #0f172a;
-  }
-}
+/* Strictly Light Theme - No dark mode override */
 
 body {
   background: var(--background);
@@ -49,14 +39,34 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Minimalist Modern Signature Utilities */
+/* Professional SaaS Signature Utilities */
 
 /* Signature Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, #0052ff 0%, #4d7cff 100%);
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Blue Highlight Underline Bar */
+.saas-highlight {
+  position: relative;
+  display: inline-block;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.saas-highlight::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  border-radius: 2px;
+  background: rgba(37, 99, 235, 0.15);
+  z-index: -1;
 }
 
 /* Gradient Underline Highlight */
@@ -67,14 +77,14 @@ body {
   height: 0.5rem;
   width: 100%;
   border-radius: 0.125rem;
-  background: linear-gradient(to right, rgba(0, 82, 255, 0.2), rgba(77, 124, 255, 0.1));
+  background: linear-gradient(to right, rgba(37, 99, 235, 0.2), rgba(59, 130, 246, 0.1));
 }
 
 /* 2px Gradient Stroke Card Wrapper */
 .gradient-border-card {
   position: relative;
   border-radius: 1rem;
-  background: linear-gradient(135deg, #0052ff, #4d7cff);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   padding: 2px;
 }
 
@@ -85,24 +95,41 @@ body {
   background: var(--card);
 }
 
-/* Texture: Subtle Dot Grid for Inverted / Dark Surfaces */
-.dot-pattern {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+/* Texture: Subtle Dot Grid for Light Surfaces */
+.dot-pattern-light {
+  background-image: radial-gradient(circle, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-.dot-pattern-light {
-  background-image: radial-gradient(circle, rgba(0, 82, 255, 0.07) 1px, transparent 1px);
-  background-size: 28px 28px;
+/* SaaS Metric Badge */
+.saas-stat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
 }
 
 /* Custom Accent Shadows */
 .shadow-accent {
-  box-shadow: 0 4px 14px rgba(0, 82, 255, 0.22);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.22);
 }
 
 .shadow-accent-lg {
-  box-shadow: 0 8px 24px rgba(0, 82, 255, 0.32);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.32);
+}
+
+.shadow-saas {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+}
+
+.shadow-saas-xl {
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
 }
 
 /* Custom Keyframe Animations */
@@ -123,13 +150,14 @@ body {
 
 @keyframes float-slow {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-8px) rotate(1deg);
   }
 }
 
 .animate-float-slow {
   animation: float-slow 4.5s ease-in-out infinite;
 }
+

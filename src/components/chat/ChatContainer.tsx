@@ -519,21 +519,21 @@ export default function ChatContainer({
 
   return (
     <div
-      className={`flex flex-col bg-[#FAFAFA] dark:bg-[#090D16] transition-colors ${
-        isEmbedded ? "h-full w-full" : "h-[calc(100vh-4rem)] max-w-4xl mx-auto border-x border-slate-200 dark:border-slate-800 shadow-xl"
+      className={`flex flex-col bg-slate-50 transition-colors ${
+        isEmbedded ? "h-full w-full" : "h-[calc(100vh-4rem)] max-w-4xl mx-auto border-x border-slate-200 shadow-md"
       }`}
     >
       {/* Active Student Status Header */}
-      <div className="bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-5 py-3 flex items-center justify-between text-xs">
+      <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center justify-between text-xs">
         <div className="flex items-center gap-2.5">
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-[#0052FF] opacity-75 animate-ping" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#0052FF]" />
+            <span className="absolute inline-flex h-full w-full rounded-full bg-blue-600 opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
           </span>
-          <span className="text-slate-600 dark:text-slate-400 font-sans">
+          <span className="text-slate-600 font-sans">
             {profile ? (
               <>
-                <strong className="text-[#0F172A] dark:text-white font-medium">{profile.branch}</strong> ({profile.year} Year) • Target: <strong className="text-[#0052FF] dark:text-[#4D7CFF] font-medium">{profile.targetRole}</strong>
+                <strong className="text-slate-900 font-medium">{profile.branch}</strong> ({profile.year} Year) • Target: <strong className="text-blue-600 font-medium">{profile.targetRole}</strong>
               </>
             ) : (
               <span>CareerPilot AI Personal Career Guide Online 👋</span>
@@ -543,7 +543,7 @@ export default function ChatContainer({
 
         <div className="flex items-center gap-2.5">
           {profile && (
-            <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full font-medium">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-medium">
               Profile Active
             </span>
           )}
@@ -561,10 +561,10 @@ export default function ChatContainer({
             <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-400 font-medium">
               {msg.sender === "bot" ? (
                 <>
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#0052FF] to-[#4D7CFF] flex items-center justify-center text-white text-[9px] font-mono font-bold shadow-sm">
+                  <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white text-[9px] font-mono font-bold shadow-xs">
                     CP
                   </div>
-                  <span className="font-sans font-medium text-slate-600 dark:text-slate-400">CareerPilot Guide</span>
+                  <span className="font-sans font-medium text-slate-600">CareerPilot Guide</span>
                 </>
               ) : (
                 <>
@@ -580,16 +580,16 @@ export default function ChatContainer({
             <div
               className={`max-w-[88%] sm:max-w-[80%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed ${
                 msg.sender === "user"
-                  ? "bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] text-white rounded-tr-none shadow-sm shadow-[#0052FF]/20"
-                  : "bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-slate-100 rounded-tl-none border border-slate-200/90 dark:border-slate-800 shadow-sm"
+                  ? "bg-blue-600 text-white rounded-tr-none shadow-xs"
+                  : "bg-white text-slate-900 rounded-tl-none border border-slate-200 shadow-xs"
               }`}
             >
               {msg.text ? (
                 <p className="whitespace-pre-line font-sans">{msg.text}</p>
               ) : (
                 <div className="flex items-center gap-2 py-0.5">
-                  <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-pulse" />
-                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
+                  <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                  <span className="font-mono text-xs text-slate-500">
                     Generating guidance...
                   </span>
                 </div>
@@ -600,29 +600,29 @@ export default function ChatContainer({
             {msg.cardPayload && (
               <div className="w-full mt-3">
                 {msg.cardPayload.type === "onboarding_summary" && (
-                  <div className="p-5 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-[#0052FF]" />
-                        <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-[#0052FF] dark:text-[#4D7CFF]">
+                        <Sparkles className="w-4 h-4 text-blue-600" />
+                        <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-blue-600">
                           Profile Verified
                         </h4>
                       </div>
-                      <span className="font-mono text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-0.5 rounded-full font-semibold">
+                      <span className="font-mono text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-semibold">
                         Ready
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                         <span className="text-slate-400 text-[10px] font-mono block">Branch & Year</span>
-                        <span className="font-semibold text-[#0F172A] dark:text-white">
+                        <span className="font-semibold text-slate-900">
                           {msg.cardPayload.data?.branch} ({msg.cardPayload.data?.year} Year)
                         </span>
                       </div>
-                      <div className="bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                         <span className="text-slate-400 text-[10px] font-mono block">Target Role</span>
-                        <span className="font-semibold text-[#0F172A] dark:text-white">
+                        <span className="font-semibold text-slate-900">
                           {msg.cardPayload.data?.targetRole}
                         </span>
                       </div>
@@ -687,13 +687,13 @@ export default function ChatContainer({
       </div>
 
       {/* Bottom Input Area */}
-      <div className="p-4 bg-white dark:bg-[#0F172A] border-t border-slate-200 dark:border-slate-800">
+      <div className="p-4 bg-white border-t border-slate-200">
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
           {/* Quick Upload Icon Shortcut */}
           <button
             type="button"
             onClick={() => setIsResumeModalOpen(true)}
-            className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-[#0052FF] hover:border-[#0052FF]/40 transition-colors cursor-pointer"
+            className="p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:text-blue-600 hover:border-blue-300 transition-colors cursor-pointer"
             title="Upload or Paste Resume"
           >
             <FileText className="w-4 h-4" />
@@ -704,14 +704,14 @@ export default function ChatContainer({
             value={inputText}
             onChange={e => setInputText(e.target.value)}
             placeholder="Ask any question about placement preparation, resume fixes, or interview prep..."
-            className="flex-1 h-12 px-4 rounded-xl bg-slate-50 dark:bg-[#090D16] border border-slate-200 dark:border-slate-800 text-sm text-[#0F172A] dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0052FF] transition-all font-sans"
+            className="flex-1 h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all font-sans"
             autoFocus
           />
 
           <button
             type="submit"
             disabled={!inputText.trim() || isBotTyping}
-            className="h-12 w-12 rounded-xl bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] hover:brightness-105 active:scale-[0.98] disabled:opacity-40 text-white shadow-sm shadow-[#0052FF]/20 flex items-center justify-center transition-all cursor-pointer"
+            className="h-12 w-12 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-40 text-white shadow-xs flex items-center justify-center transition-all cursor-pointer"
           >
             <Send className="w-4 h-4" />
           </button>

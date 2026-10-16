@@ -21,48 +21,48 @@ export default function ResumeCheckCard({
     result.score >= 80 ? "text-emerald-500" : result.score >= 60 ? "text-[#0052FF]" : "text-rose-500";
 
   return (
-    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-xl overflow-hidden transition-all my-3">
-      {/* Header with Inverted Slate & ATS Score Meter */}
-      <div className="relative bg-[#0F172A] text-white p-5 sm:p-6 overflow-hidden">
+    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 bg-white shadow-saas overflow-hidden transition-all my-3">
+      {/* Header with Light Theme & ATS Score Meter */}
+      <div className="relative bg-gradient-to-br from-blue-50/80 via-white to-slate-50 text-slate-900 p-5 sm:p-6 overflow-hidden border-b border-slate-200">
         {/* Subtle dot pattern texture */}
-        <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-48 h-48 bg-[#0052FF]/20 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 flex items-start justify-between gap-4">
           <div>
-            <SectionLabel pulse={true} className="border-white/20 bg-white/10 text-white mb-2.5">
+            <SectionLabel pulse={true} className="mb-2.5">
               ATS AUDIT RESULT
             </SectionLabel>
-            <h3 className="text-xl font-display font-normal tracking-tight text-white">
-              ATS Audit for <span className="gradient-text">{result.targetRole}</span>
+            <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              ATS Audit for <span className="text-blue-600">{result.targetRole}</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               Deterministic 100-point rubric breakdown for Tier 2/3 placements
             </p>
           </div>
 
           {/* Circular / Monospace Score Badge */}
-          <div className="flex flex-col items-center justify-center bg-white/5 border border-white/10 p-3 rounded-2xl min-w-[80px] shrink-0">
+          <div className="flex flex-col items-center justify-center bg-white border border-slate-200 p-3 rounded-2xl min-w-[80px] shrink-0 shadow-xs">
             <span className={`text-3xl font-mono font-bold ${scoreColor}`}>{result.score}</span>
             <span className="text-[10px] text-slate-400 font-mono">/ 100 ATS</span>
           </div>
         </div>
 
         {/* Friendly Senior Verdict */}
-        <div className="relative z-10 mt-4 p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-start gap-2.5 text-xs sm:text-sm leading-relaxed">
+        <div className="relative z-10 mt-4 p-3.5 rounded-xl bg-white border border-slate-200 flex items-start gap-2.5 text-xs sm:text-sm leading-relaxed shadow-xs">
           <span className="text-base">💡</span>
-          <p className="text-slate-200 font-sans font-medium">{result.verdict}</p>
+          <p className="text-slate-700 font-sans font-medium">{result.verdict}</p>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090D16]">
+      <div className="flex border-b border-slate-200 bg-slate-50">
         <button
           onClick={() => setActiveTab("mistakes")}
           className={`flex-1 py-3 text-xs sm:text-sm font-medium text-center border-b-2 transition-all cursor-pointer ${
             activeTab === "mistakes"
-              ? "border-[#0052FF] text-[#0052FF] dark:text-[#4D7CFF] font-semibold bg-white dark:bg-[#0F172A]"
-              : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              ? "border-blue-600 text-blue-600 font-semibold bg-white"
+              : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
           3 Fixable Mistakes
@@ -71,8 +71,8 @@ export default function ResumeCheckCard({
           onClick={() => setActiveTab("breakdown")}
           className={`flex-1 py-3 text-xs sm:text-sm font-medium text-center border-b-2 transition-all cursor-pointer ${
             activeTab === "breakdown"
-              ? "border-[#0052FF] text-[#0052FF] dark:text-[#4D7CFF] font-semibold bg-white dark:bg-[#0F172A]"
-              : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              ? "border-blue-600 text-blue-600 font-semibold bg-white"
+              : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
           Score Rubric (5 Pillars)
