@@ -332,7 +332,7 @@ export default function ChatContainer({
 
     // Detect contextual student attributes to keep profile updated
     const lower = userText.toLowerCase();
-    let updatedProf: StudentProfile = currProfile
+    const updatedProf: StudentProfile = currProfile
       ? { ...currProfile }
       : {
           sessionId: sessionId || "sess_auto",

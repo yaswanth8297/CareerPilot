@@ -52,8 +52,7 @@ CareerPilot AI turns an anonymous visitor into a registered user in under 2 minu
 - **Framework**: Next.js 16 (App Router) with TypeScript
 - **Styling**: Tailwind CSS, Lucide React icons, Canvas Confetti
 - **Validation**: Zod on all API endpoints and schemas
-- **Database Model**: Prisma ORM schema covering all 24 models
-- **Local Fallback**: Zero-configuration client/server mock store (runs with zero paid keys!)
+- **Storage & State**: Zero-configuration client/server store (runs with zero paid keys!)
 
 ---
 
@@ -70,34 +69,9 @@ npm run dev
 ```
 Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
-## 🚀 Quick Start (Local Run with Zero Paid Keys)
-
-### 1. Install dependencies
-```bash
-npm install
-```
-
-### 2. Run the Development Server
-```bash
-npm run dev
-```
-Open **[http://localhost:3000](http://localhost:3000)** in your browser.
-
-### 3. Run Automated Tests & Golden Evaluation Benchmarks
-```bash
-# Run PRD Acceptance & Contract Tests (10/10 assertions)
-npm test
-
-# Run Golden Evaluation Benchmark (30 profiles, 50 resumes, 21/21 assertions)
-npm run test:golden
-
-# Run Both Test Suites Together
-npm run test:all
-```
-
 ---
 
-## 🏗️ Architecture & Backend Services Implemented
+## 🏗️ Architecture & Core Services
 
 1. **Storage & Upload Security Pipeline** (`src/lib/services/storageService.ts`):
    - **Magic Bytes Verification**: Inspects file headers (`%PDF-` for PDF, `PK\x03\x04` for DOCX, UTF-8/ASCII for plain text; rejects unauthorized binaries).
@@ -105,37 +79,21 @@ npm run test:all
    - **S3 & Local Storage Adapters**: S3/R2 object storage with zero-key local storage fallback and short-lived signed URLs.
    - **Upload Endpoint**: `/api/upload` handles validated uploads.
 
-2. **Resume OCR Fallback** (`src/lib/services/ocrService.ts`):
-   - Handles scanned and sparse PDF resumes.
-   - Local mock adapter recovers structured sections: Contact, Education, Skills, Projects, Experience, and Certifications.
-
-3. **Authentication Expansion** (`src/lib/services/authService.ts`):
+2. **Authentication Expansion** (`src/lib/services/authService.ts`):
    - **Phone OTP**: Mock code `7890` printed to local dev console.
    - **Google OAuth**: 1-click mock OAuth popup/redirect flow.
    - **Email Magic Link**: Secure token generation with 1-click verification simulation.
    - Unified transaction migrates all guest session records to the authenticated student account.
 
-4. **Background Queues & Job Ingestion** (`src/lib/services/queueService.ts` & `src/lib/services/jobIngestionService.ts`):
-   - **BullMQ + Redis Queue**: Manages async resume processing, session migration, and job ingestion; gracefully falls back to `InMemoryAsyncQueue` when Redis is not running.
-   - **Job Ingestion Adapter**: Normalizes live raw postings, eliminates duplicates via hashing, flags upfront fee scams and free email domains, and flags high-CGPA postings.
-
-5. **PostHog Analytics with PII Redaction** (`src/lib/services/analyticsService.ts`):
-   - Tracks all PRD lifecycle events.
-   - Automatically redacts emails, phone numbers, resume text, and auth credentials before telemetry dispatch.
-
-6. **Mock Interview Voice / STT Interface** (`src/components/chat/MockInterviewModal.tsx`):
+3. **Mock Interview Voice / STT Interface** (`src/components/chat/MockInterviewModal.tsx`):
    - Integrated Web Speech API (`webkitSpeechRecognition`) for hands-free speech input into the 5-minute mock interview.
    - Features animated audio waveforms and realistic local STT simulation fallback.
 
-7. **Hybrid Retrieval System** (`src/lib/ai/hybridRetrieval.ts`):
-   - Combines BM25 token keyword search with pgvector cosine similarity.
+4. **Hybrid Retrieval System** (`src/lib/ai/hybridRetrieval.ts`):
+   - Combines BM25 token keyword search with cosine similarity ranking.
    - Fuses rankings using **Reciprocal Rank Fusion (RRF)**:
      $$RRF(d) = \frac{1}{60 + rank_{keyword}} + \frac{1}{60 + rank_{vector}}$$
    - Generates cleanly delineated grounded context strictly citing internal resource IDs (`[res-xxx]`).
-
-8. **Golden Evaluation Datasets** (`src/lib/data/goldenEvaluationSet.ts`):
-   - **30 Golden Student Profiles**: Evaluates recommendations across tiers, branches, and years.
-   - **50 Golden Sample Resumes**: Evaluates edge cases, scanned files, prompt-injection attacks, and experience-fabrication requests.
 
 ---
 
@@ -149,12 +107,6 @@ GEMINI_API_KEY=your_gemini_api_key
 # Object Storage (S3 / R2):
 STORAGE_ACCESS_KEY=your_key
 STORAGE_SECRET_KEY=your_secret
-
-# Redis (for BullMQ in production):
-REDIS_URL=redis://localhost:6379
-
-# PostHog Analytics:
-NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 ```
 
 ### Environment Variable Manifest
@@ -162,19 +114,6 @@ NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 | Variable | Required? | Default / Fallback | Description |
 | :--- | :--- | :--- | :--- |
 | `GEMINI_API_KEY` | Optional | `MockLLMProvider` | Google Gen AI API Key. When provided, initializes `GeminiProvider` using `@google/generative-ai` SDK (`gemini-1.5-flash` for low-latency chat, `gemini-1.5-pro` for deep tasks). If absent, gracefully falls back to deterministic zero-cost Mock Provider. |
-| `DATABASE_URL` | Optional | In-memory / Mock DB | PostgreSQL connection string for Prisma. Zero-config local storage fallback active if omitted. |
-| `REDIS_URL` | Optional | `InMemoryAsyncQueue` | Redis connection URL for BullMQ background queues. Falls back to in-memory async processing. |
 | `STORAGE_ACCESS_KEY` | Optional | Local storage | S3 / Cloudflare R2 access key for resume uploads. Falls back to local secure storage. |
 | `STORAGE_SECRET_KEY` | Optional | Local storage | S3 / Cloudflare R2 secret key for resume uploads. |
-| `NEXT_PUBLIC_POSTHOG_KEY` | Optional | Console fallback | PostHog telemetry key with automated PII redaction. |
-| `LOCK_ATS_MISTAKES_2_AND_3`| Optional | `true` | Feature flag gating ATS mistakes #2 & #3 behind registration. |
 
-
----
-
-## 🐳 Docker Services (PostgreSQL + pgvector + Redis)
-
-To run local PostgreSQL with pgvector and Redis:
-```bash
-docker-compose up -d
-```
