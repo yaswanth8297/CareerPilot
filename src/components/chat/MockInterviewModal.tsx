@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Mic, MicOff, Send, Clock, X, Award, AlertCircle, Sparkles, Volume2, Radio } from "lucide-react";
+import { Mic, MicOff, Send, Clock, X, Award, AlertCircle, Sparkles, Volume2, Radio, CheckCircle2 } from "lucide-react";
 import { InterviewQuestion, InterviewUserAnswer, InterviewReport } from "@/lib/types";
 import { evaluateInterviewSession } from "@/lib/ai/mockInterviewEngine";
 import { getInterviewQuestionsForRole } from "@/lib/data/interviewQuestions";
+import { Button } from "@/components/ui/Button";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 export default function MockInterviewModal({
   roleId,
@@ -69,7 +71,7 @@ export default function MockInterviewModal({
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = true;
-        recognition.lang = "en-IN"; // English (India) / Hinglish friendly
+        recognition.lang = "en-IN";
 
         recognition.onresult = (event: any) => {
           let transcript = "";
@@ -108,7 +110,6 @@ export default function MockInterviewModal({
         try {
           recognitionRef.current.start();
         } catch (e) {
-          // If already started or permission issue, fallback to mock simulation
           simulateVoiceInput();
         }
       } else {
@@ -117,7 +118,6 @@ export default function MockInterviewModal({
     }
   };
 
-  // Mock STT simulation when Web Speech API is unavailable in local runner
   const simulateVoiceInput = () => {
     setTimeout(() => {
       const phrases = [
@@ -203,31 +203,33 @@ export default function MockInterviewModal({
   const seconds = secondsRemaining % 60;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-xl bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Top Header */}
-        <div className="bg-gradient-to-r from-zinc-900 via-indigo-950 to-zinc-900 text-white p-4 sm:p-5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-400">
-              <Sparkles className="w-4 h-4" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-xl bg-white dark:bg-[#0F172A] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        {/* Top Header - Inverted Slate */}
+        <div className="relative bg-[#0F172A] text-white p-5 flex items-center justify-between border-b border-slate-800 overflow-hidden">
+          <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0052FF] to-[#4D7CFF] flex items-center justify-center text-white shadow-sm">
+              <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base leading-tight">5-Minute AI Senior Mock Interview</h3>
-              <p className="text-[11px] text-zinc-300">Supportive & constructive • College fresher rubric</p>
+              <h3 className="font-display font-normal text-lg leading-tight text-white">
+                5-Min Mock Interview Practice
+              </h3>
+              <p className="text-[11px] text-slate-400">Supportive & constructive • College fresher rubric</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Timer Badge */}
+          <div className="relative z-10 flex items-center gap-3">
             {!isFinished && (
               <div
-                className={`px-3 py-1 rounded-full text-xs font-mono font-bold flex items-center gap-1.5 ${
+                className={`px-3 py-1 rounded-full text-xs font-mono font-semibold flex items-center gap-1.5 ${
                   secondsRemaining < 60
                     ? "bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse"
-                    : "bg-white/10 text-zinc-200 border border-white/15"
+                    : "bg-white/10 text-slate-200 border border-white/15"
                 }`}
               >
-                <Clock className="w-3.5 h-3.5" />
+                <Clock className="w-3.5 h-3.5 text-[#4D7CFF]" />
                 <span>
                   {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                 </span>
@@ -236,7 +238,7 @@ export default function MockInterviewModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -245,62 +247,64 @@ export default function MockInterviewModal({
 
         {/* Modal Body */}
         {!isFinished ? (
-          <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1">
+          <div className="p-6 space-y-5 overflow-y-auto flex-1">
             {/* Progress indicator */}
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs text-zinc-500 font-semibold">
-                <span>
+              <div className="flex justify-between text-xs text-slate-500 font-medium">
+                <span className="font-mono">
                   Question {currentIndex + 1} of {questions.length}
                 </span>
-                <span className="text-indigo-600 dark:text-indigo-400">{currentQ?.category}</span>
+                <span className="font-mono text-[#0052FF] dark:text-[#4D7CFF] uppercase tracking-wider text-[11px]">
+                  {currentQ?.category}
+                </span>
               </div>
-              <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-indigo-600 h-full rounded-full transition-all duration-300"
+                  className="bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] h-full rounded-full transition-all duration-300"
                   style={{ width: `${((currentIndex + 1) / (questions.length || 1)) * 100}%` }}
                 />
               </div>
             </div>
 
             {/* Question Prompt */}
-            <div className="rounded-2xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/50 dark:bg-indigo-950/20 p-4 space-y-2">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-bold">
-                  CP
+                <span className="w-6 h-6 rounded-full bg-[#0052FF] text-white text-[10px] font-mono font-bold flex items-center justify-center">
+                  AI
                 </span>
-                <span className="text-xs font-bold text-indigo-900 dark:text-indigo-300">
-                  Career Interviewer:
+                <span className="font-mono text-xs font-semibold text-[#0052FF] dark:text-[#4D7CFF] uppercase tracking-wider">
+                  Senior Interviewer
                 </span>
               </div>
-              <p className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-white leading-relaxed">
+              <p className="font-display font-normal text-base text-[#0F172A] dark:text-white leading-relaxed">
                 {currentQ?.question}
               </p>
             </div>
 
             {/* Answer Input Box */}
             <div className="space-y-2">
-              <div className="flex justify-between text-xs text-zinc-500">
-                <label className="font-semibold text-zinc-700 dark:text-zinc-300">Tera Answer (Text ya Voice):</label>
-                <span>{currentInput.trim().split(/\s+/).filter(Boolean).length} words</span>
+              <div className="flex justify-between text-xs text-slate-500">
+                <label className="font-medium text-[#0F172A] dark:text-slate-300">Your Answer (Text or Voice):</label>
+                <span className="font-mono text-[11px]">{currentInput.trim().split(/\s+/).filter(Boolean).length} words</span>
               </div>
               <textarea
                 value={currentInput}
                 onChange={e => setCurrentInput(e.target.value)}
-                placeholder="Apna answer type karo ya Voice Mic se bolo... Dil khol ke bolo, koi judge nahi kar raha!"
+                placeholder="Type your answer or speak using the voice mic... Speak freely, zero CGPA judgment!"
                 rows={5}
-                className="w-full p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
+                className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#090D16] text-[#0F172A] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0052FF] transition-all resize-none font-sans"
               />
 
-              {/* Voice / STT Interface Controls with Audio Waveform */}
+              {/* Voice / STT Interface Controls */}
               <div className="flex items-center justify-between text-xs pt-1">
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={toggleVoiceRecording}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
                       isListening
                         ? "bg-rose-500 text-white border-rose-600 shadow-md animate-pulse"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200"
                     }`}
                   >
                     {isListening ? (
@@ -310,13 +314,12 @@ export default function MockInterviewModal({
                       </>
                     ) : (
                       <>
-                        <Mic className="w-3.5 h-3.5 text-indigo-500" />
+                        <Mic className="w-3.5 h-3.5 text-[#0052FF]" />
                         <span>Speak Answer (Voice / STT)</span>
                       </>
                     )}
                   </button>
 
-                  {/* Pulsing Audio Waves */}
                   {isListening && (
                     <div className="flex items-center gap-0.5 h-4">
                       <span className="w-1 h-3 bg-rose-500 rounded-full animate-bounce" />
@@ -329,7 +332,7 @@ export default function MockInterviewModal({
                 <button
                   type="button"
                   onClick={handleSkip}
-                  className="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 font-semibold"
+                  className="text-slate-500 hover:text-[#0F172A] dark:hover:text-white font-medium cursor-pointer"
                 >
                   Skip Question →
                 </button>
@@ -338,35 +341,39 @@ export default function MockInterviewModal({
 
             {/* Next / Submit Button */}
             <div className="pt-2">
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="md"
                 onClick={handleNextQuestion}
                 disabled={currentInput.trim().length === 0}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full justify-center group"
               >
                 <span>
                   {currentIndex + 1 === questions.length ? "Finish & Generate Feedback Report" : "Submit & Next Question"}
                 </span>
-                <Send className="w-4 h-4" />
-              </button>
+                <Send className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
+              </Button>
             </div>
           </div>
         ) : (
           /* Final Feedback Report */
-          <div className="p-5 sm:p-6 space-y-5 overflow-y-auto flex-1">
+          <div className="p-6 space-y-5 overflow-y-auto flex-1">
             {finalReport && (
               <div className="space-y-5">
-                {/* Score Hero */}
-                <div className="rounded-2xl bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-200 dark:border-indigo-800/60 p-4 text-center space-y-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                    Overall Interview Score
-                  </span>
-                  <div className="text-4xl font-black text-indigo-600 dark:text-indigo-400">
-                    {finalReport.overallScore} <span className="text-base text-zinc-400 font-normal">/ 10</span>
+                {/* Score Hero - Inverted Slate with Accent Glow */}
+                <div className="relative rounded-2xl bg-[#0F172A] border border-slate-800 p-5 text-center space-y-2 text-white overflow-hidden">
+                  <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
+                  <div className="relative z-10">
+                    <span className="font-mono text-xs uppercase tracking-wider text-[#4D7CFF] font-semibold">
+                      Overall Interview Score
+                    </span>
+                    <div className="text-4xl font-mono font-bold text-white mt-1">
+                      {finalReport.overallScore} <span className="text-base text-slate-400 font-sans font-normal">/ 10</span>
+                    </div>
+                    <p className="text-xs text-slate-300 font-sans mt-1">
+                      Strong attempt! This is a solid fresher baseline for technical placement rounds.
+                    </p>
                   </div>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-300 font-medium">
-                    Bohat badhiya try! Freshers ke liye ye solid baseline score hai.
-                  </p>
                 </div>
 
                 {/* 4 Pillars Breakdown */}
@@ -379,21 +386,21 @@ export default function MockInterviewModal({
                   ].map(p => (
                     <div
                       key={p.label}
-                      className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950"
+                      className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900"
                     >
-                      <div className="text-base font-extrabold text-zinc-900 dark:text-white">{p.score}/10</div>
-                      <div className="text-[10px] text-zinc-500 mt-0.5">{p.label}</div>
+                      <div className="text-lg font-mono font-bold text-[#0052FF] dark:text-[#4D7CFF]">{p.score}/10</div>
+                      <div className="font-mono text-[10px] text-slate-500 uppercase mt-0.5">{p.label}</div>
                     </div>
                   ))}
                 </div>
 
                 {/* 3 Strengths */}
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                <div className="space-y-2">
+                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5" />
                     <span>Top 3 Strengths</span>
                   </h4>
-                  <ul className="space-y-1 text-xs text-zinc-700 dark:text-zinc-300">
+                  <ul className="space-y-1 text-xs text-slate-700 dark:text-slate-300 font-sans">
                     {finalReport.strengths.map((s, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-emerald-500 font-bold">✓</span>
@@ -404,12 +411,12 @@ export default function MockInterviewModal({
                 </div>
 
                 {/* 3 Improvements */}
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                <div className="space-y-2">
+                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5" />
                     <span>Areas to Polish</span>
                   </h4>
-                  <ul className="space-y-1 text-xs text-zinc-700 dark:text-zinc-300">
+                  <ul className="space-y-1 text-xs text-slate-700 dark:text-slate-300 font-sans">
                     {finalReport.improvements.map((imp, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="text-amber-500 font-bold">→</span>
@@ -420,17 +427,17 @@ export default function MockInterviewModal({
                 </div>
 
                 {/* Ideal Sample Answer */}
-                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-3.5 space-y-1.5">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 space-y-1.5">
+                  <span className="font-mono text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
                     Model Answer Example:
                   </span>
-                  <p className="text-xs text-zinc-800 dark:text-zinc-200 leading-relaxed font-serif italic">
+                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-sans italic">
                     &quot;{finalReport.idealAnswerForWeakest}&quot;
                   </p>
                 </div>
 
                 {/* Next Roadmap Action */}
-                <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-300 flex items-center justify-between">
+                <div className="p-3.5 rounded-xl bg-[#0052FF]/10 border border-[#0052FF]/20 text-xs text-[#0052FF] dark:text-[#4D7CFF] flex items-center justify-between">
                   <span>
                     <strong>Next Step:</strong> {finalReport.nextRoadmapAction}
                   </span>
@@ -442,13 +449,15 @@ export default function MockInterviewModal({
 
         {/* Close Button when finished */}
         {isFinished && (
-          <div className="p-4 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800">
-            <button
+          <div className="p-4 bg-slate-50 dark:bg-[#090D16] border-t border-slate-200 dark:border-slate-800">
+            <Button
+              variant="primary"
+              size="md"
               onClick={onClose}
-              className="w-full py-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs"
+              className="w-full justify-center"
             >
               Done & Save to My Space
-            </button>
+            </Button>
           </div>
         )}
       </div>

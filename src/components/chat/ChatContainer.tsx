@@ -43,19 +43,6 @@ export function normalizeIntent(raw?: string | null): FeatureIntent | null {
   return null;
 }
 
-function getIntentGreeting(intent: FeatureIntent): string {
-  switch (intent) {
-    case "resume_check":
-      return "Ready to check your resume? 📄 Upload your PDF or paste your text to get your ATS score breakdown & 3 key fixes!";
-    case "roadmap":
-      return "Ready for your 90-Day Roadmap? 🗺️ Tell me what role you're targeting or what skills you know, and we'll craft your weekly plan!";
-    case "jobs":
-      return "Looking for curated, scam-free job matches? 💼 Tell me your stream and skills to see verified fresher openings!";
-    case "mock_interview":
-      return "Ready for your 5-Min Mock Interview? 🎯 Let's practice with fresher-tuned technical and behavioral questions!";
-  }
-}
-
 export default function ChatContainer({
   isEmbedded = false,
   initialIntent
@@ -248,162 +235,68 @@ export default function ChatContainer({
     }
   };
 
-  // Initialize or load state with intent awareness
+  // Initialize Chat Session
   useEffect(() => {
     const st = getInitialState();
-    setSessionId(st.sessionId);
     setIsRegistered(st.isRegistered);
     if (st.profile) setProfile(st.profile);
     if (st.currentResumeResult) setResumeResult(st.currentResumeResult);
     if (st.roadmap) setRoadmapData(st.roadmap);
 
-    const normIntent = normalizeIntent(activeIntent);
+    if (st.sessionId) {
+      setSessionId(st.sessionId);
+    } else {
+      const newId = "sess_" + Math.random().toString(36).substring(2, 9);
+      st.sessionId = newId;
+      setSessionId(newId);
+      saveState(st);
+    }
 
     if (st.messages && st.messages.length > 0) {
       setMessages(st.messages);
-      if (normIntent && lastHandledIntentRef.current !== normIntent) {
-        lastHandledIntentRef.current = normIntent;
-        handleExecuteIntent(normIntent);
-      }
     } else {
-      // First visit: send welcoming open-ended English greeting
-      if (normIntent && lastHandledIntentRef.current !== normIntent) {
-        lastHandledIntentRef.current = normIntent;
-        const intentGreeting = getIntentGreeting(normIntent);
-        const welcomeMsg: ChatMessage = {
-          id: "msg_welcome_intent",
-          sender: "bot",
-          text: intentGreeting,
-          timestamp: new Date().toISOString(),
-          chips: getMainFeatureChips()
-        };
-        setMessages([welcomeMsg]);
-        handleExecuteIntent(normIntent);
-      } else {
-        const welcomeMsg: ChatMessage = {
-          id: "msg_welcome",
-          sender: "bot",
-          text: OPENING_MESSAGE,
-          timestamp: new Date().toISOString(),
-          chips: INITIAL_CHIPS
-        };
-        setMessages([welcomeMsg]);
-      }
-      logAnalytics("chat_widget_opened", { language: "en" });
+      const opening: ChatMessage = {
+        id: "msg_init",
+        sender: "bot",
+        text: OPENING_MESSAGE,
+        timestamp: new Date().toISOString(),
+        chips: INITIAL_CHIPS
+      };
+      setMessages([opening]);
+      st.messages = [opening];
+      saveState(st);
+    }
+  }, []);
+
+  // Handle intent routing
+  useEffect(() => {
+    if (!activeIntent) return;
+    const normalized = normalizeIntent(activeIntent);
+    if (!normalized) return;
+
+    if (lastHandledIntentRef.current !== normalized) {
+      lastHandledIntentRef.current = normalized;
+      handleExecuteIntent(normalized);
     }
   }, [activeIntent]);
 
-  // Send user message directly to LLM with real-time token streaming
-  const sendUserQueryToAI = async (text: string) => {
-    addUserMessage(text);
-    setIsBotTyping(true);
-
-    const botMsgId = "bot_" + Math.random().toString(36).substring(2, 9);
-    let accumulatedText = "";
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, profile })
-      });
-
-      if (!res.ok) {
-        throw new Error(`Chat API error: ${res.status}`);
-      }
-
-      if (!res.body) {
-        throw new Error("No readable stream response in body");
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let hasFirstChunk = false;
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        if (chunk) {
-          accumulatedText += chunk;
-          if (!hasFirstChunk) {
-            hasFirstChunk = true;
-            setIsBotTyping(false);
-            setMessages(prev => [
-              ...prev,
-              {
-                id: botMsgId,
-                sender: "bot",
-                text: accumulatedText,
-                timestamp: new Date().toISOString(),
-                chips: []
-              }
-            ]);
-          } else {
-            setMessages(prev =>
-              prev.map(m => (m.id === botMsgId ? { ...m, text: accumulatedText } : m))
-            );
-          }
-        }
-      }
-
-      // Finalize message with feature chips and persist
-      setIsBotTyping(false);
-      setMessages(prev => {
-        const finalMsgExists = prev.some(m => m.id === botMsgId);
-        let updated: ChatMessage[];
-        if (finalMsgExists) {
-          updated = prev.map(m =>
-            m.id === botMsgId
-              ? { ...m, text: accumulatedText, chips: getMainFeatureChips() }
-              : m
-          );
-        } else {
-          updated = [
-            ...prev,
-            {
-              id: botMsgId,
-              sender: "bot",
-              text: accumulatedText || "I'm here to help! What questions do you have about your career?",
-              timestamp: new Date().toISOString(),
-              chips: getMainFeatureChips()
-            }
-          ];
-        }
-        const st = getInitialState();
-        st.messages = updated;
-        saveState(st);
-        return updated;
-      });
-    } catch (err) {
-      console.warn("Client fallback due to fetch error:", err);
-      setIsBotTyping(false);
-      const fallback = generateCareerGuideReply(text, profile);
-      addBotMessage(fallback.text, fallback.chips);
-    }
-  };
-
-  // Handle Quick Reply Chip Click
+  // Handle Quick Action Chip Click
   const handleChipClick = (chip: ActionChip) => {
-    // Feature selection triggers
+    logAnalytics("chip_clicked", { chipId: chip.id, value: chip.value });
+
     if (chip.value === "feature_resume") {
-      logAnalytics("feature_selected", { feature: "resume_check" });
       setIsResumeModalOpen(true);
       return;
     }
     if (chip.value === "feature_roadmap") {
-      logAnalytics("feature_selected", { feature: "roadmap" });
       handleTriggerRoadmap();
       return;
     }
     if (chip.value === "feature_jobs") {
-      logAnalytics("feature_selected", { feature: "jobs" });
       handleTriggerJobs();
       return;
     }
     if (chip.value === "feature_interview") {
-      logAnalytics("feature_selected", { feature: "mock_interview" });
       if (!isRegistered) {
         setIsRegModalOpen(true);
       } else {
@@ -416,37 +309,139 @@ export default function ChatContainer({
       return;
     }
     if (chip.value === "go_dashboard") {
-      window.location.href = "/dashboard";
+      if (typeof window !== "undefined") window.location.href = "/dashboard";
       return;
     }
 
-    // Conversational text chip -> route directly to LLM
-    sendUserQueryToAI(chip.label);
+    handleUserTurn(chip.label);
   };
 
-  // Handle Free Text Input
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || isBotTyping) return;
-
+    if (!inputText.trim()) return;
     const text = inputText.trim();
     setInputText("");
-    sendUserQueryToAI(text);
+    handleUserTurn(text);
   };
 
-  // Resume Upload Callback
-  const handleSubmitResume = (text: string) => {
+  const handleUserTurn = async (userText: string) => {
+    addUserMessage(userText);
+
+    const st = getInitialState();
+    const currProfile = st.profile || profile;
+
+    // Detect contextual student attributes to keep profile updated
+    const lower = userText.toLowerCase();
+    let updatedProf: StudentProfile = currProfile
+      ? { ...currProfile }
+      : {
+          sessionId: sessionId || "sess_auto",
+          branch: "CSE",
+          year: "3",
+          skills: ["JavaScript", "Python"],
+          careerGoal: "Software Developer",
+          targetRole: "Software Developer",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+
+    if (lower.includes("cse") || lower.includes("computer science")) updatedProf.branch = "CSE";
+    else if (lower.includes("it") || lower.includes("information tech")) updatedProf.branch = "IT";
+    else if (lower.includes("mech") || lower.includes("mechanical")) updatedProf.branch = "Mechanical";
+    else if (lower.includes("civil")) updatedProf.branch = "Civil";
+    else if (lower.includes("ece") || lower.includes("electronics")) updatedProf.branch = "ECE";
+    else if (lower.includes("eee") || lower.includes("electrical")) updatedProf.branch = "EEE";
+
+    if (lower.includes("1st year") || lower.includes("first year") || lower.includes("1st yr")) updatedProf.year = "1";
+    else if (lower.includes("2nd year") || lower.includes("second year") || lower.includes("2nd yr")) updatedProf.year = "2";
+    else if (lower.includes("3rd year") || lower.includes("third year") || lower.includes("3rd yr")) updatedProf.year = "3";
+    else if (lower.includes("4th year") || lower.includes("final year") || lower.includes("4th yr")) updatedProf.year = "4";
+
+    if (lower.includes("data analyst") || lower.includes("data analytics")) updatedProf.targetRole = "Data Analyst";
+    else if (lower.includes("full stack") || lower.includes("web dev") || lower.includes("frontend") || lower.includes("software dev") || lower.includes("sde")) updatedProf.targetRole = "Software Developer";
+    else if (lower.includes("python dev")) updatedProf.targetRole = "Python Developer";
+    else if (lower.includes("qa") || lower.includes("test")) updatedProf.targetRole = "QA / Test Engineer";
+
+    setProfile(updatedProf);
+    st.profile = updatedProf;
+    saveState(st);
+
+    // Instantly insert assistant bubble with loading state so perceived response is 0ms
+    const botMsgId = "bot_" + Math.random().toString(36).substring(2, 9);
+    const botMsg: ChatMessage = {
+      id: botMsgId,
+      sender: "bot",
+      text: "",
+      timestamp: new Date().toISOString(),
+      chips: getMainFeatureChips()
+    };
+    setMessages(prev => [...prev, botMsg]);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText, profile: updatedProf })
+      });
+
+      if (!res.ok) {
+        throw new Error(`API returned status ${res.status}`);
+      }
+
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          fullText += chunk;
+
+          setMessages(prev =>
+            prev.map(m => (m.id === botMsgId ? { ...m, text: fullText } : m))
+          );
+        }
+      } else {
+        fullText = await res.text();
+        setMessages(prev =>
+          prev.map(m => (m.id === botMsgId ? { ...m, text: fullText } : m))
+        );
+      }
+
+      // Finalize saved state in localStorage/mockDb
+      const finalSt = getInitialState();
+      finalSt.messages = finalSt.messages || [];
+      const idx = finalSt.messages.findIndex(m => m.id === botMsgId);
+      const finalized = { ...botMsg, text: fullText };
+      if (idx >= 0) {
+        finalSt.messages[idx] = finalized;
+      } else {
+        finalSt.messages.push(finalized);
+      }
+      saveState(finalSt);
+    } catch (err) {
+      console.warn("Falling back to offline career guide response:", err);
+      const fallback = generateCareerGuideReply(userText, updatedProf);
+      setMessages(prev =>
+        prev.map(m => (m.id === botMsgId ? { ...m, text: fallback.text, chips: fallback.chips } : m))
+      );
+    }
+  };
+
+  const handleSubmitResume = (resumeText: string, fileName?: string) => {
     setIsResumeModalOpen(false);
-    const audited = analyzeResumeContent({
-      resumeText: text,
-      targetRole: profile?.targetRole || "software-developer",
+    setIsBotTyping(true);
+
+    const activeRole = profile?.targetRole || "Software Developer";
+    const result = analyzeResumeContent({
+      resumeText,
+      targetRole: activeRole,
       isRegistered
     });
-    handleResumeAudited(audited);
-  };
 
-  const handleResumeAudited = (result: ResumeAnalysisResult) => {
-    setIsResumeModalOpen(false);
+    setIsBotTyping(false);
     setResumeResult(result);
 
     const strings = CHAT_STRINGS;
@@ -472,7 +467,6 @@ export default function ChatContainer({
     );
   };
 
-  // Mock Interview Completion Callback
   const handleInterviewCompleted = (report: InterviewReport) => {
     setIsInterviewModalOpen(false);
     const strings = CHAT_STRINGS;
@@ -498,7 +492,6 @@ export default function ChatContainer({
     );
   };
 
-  // Registration Callback
   const handleRegistrationCompleted = () => {
     setIsRegModalOpen(false);
     setIsRegistered(true);
@@ -507,7 +500,6 @@ export default function ChatContainer({
     fireValueConfetti();
     logAnalytics("registration_completed");
 
-    // Unlock current roadmap if any
     if (roadmapData) {
       const unlocked = {
         ...roadmapData,
@@ -527,18 +519,21 @@ export default function ChatContainer({
 
   return (
     <div
-      className={`flex flex-col bg-zinc-50 dark:bg-zinc-950 transition-colors ${
-        isEmbedded ? "h-full w-full" : "h-[calc(100vh-4rem)] max-w-4xl mx-auto border-x border-zinc-200 dark:border-zinc-800 shadow-xl"
+      className={`flex flex-col bg-[#FAFAFA] dark:bg-[#090D16] transition-colors ${
+        isEmbedded ? "h-full w-full" : "h-[calc(100vh-4rem)] max-w-4xl mx-auto border-x border-slate-200 dark:border-slate-800 shadow-xl"
       }`}
     >
-      {/* Active Student Mini Banner */}
-      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-200 dark:border-zinc-800 px-4 py-2.5 flex items-center justify-between text-xs">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-          <span className="text-zinc-600 dark:text-zinc-400">
+      {/* Active Student Status Header */}
+      <div className="bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-5 py-3 flex items-center justify-between text-xs">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-[#0052FF] opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#0052FF]" />
+          </span>
+          <span className="text-slate-600 dark:text-slate-400 font-sans">
             {profile ? (
               <>
-                <strong>{profile.branch}</strong> ({profile.year} Year) • Target: <strong>{profile.targetRole}</strong>
+                <strong className="text-[#0F172A] dark:text-white font-medium">{profile.branch}</strong> ({profile.year} Year) • Target: <strong className="text-[#0052FF] dark:text-[#4D7CFF] font-medium">{profile.targetRole}</strong>
               </>
             ) : (
               <span>CareerPilot AI Personal Career Guide Online 👋</span>
@@ -548,7 +543,7 @@ export default function ChatContainer({
 
         <div className="flex items-center gap-2.5">
           {profile && (
-            <span className="text-[11px] text-zinc-500 font-medium">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full font-medium">
               Profile Active
             </span>
           )}
@@ -556,25 +551,25 @@ export default function ChatContainer({
       </div>
 
       {/* Messages Feed */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
         {messages.map(msg => (
           <div
             key={msg.id}
-            className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"} animate-in fade-in`}
+            className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"} animate-in fade-in duration-200`}
           >
             {/* Sender Badge */}
-            <div className="flex items-center gap-1.5 mb-1 text-[11px] text-zinc-400 font-medium">
+            <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-400 font-medium">
               {msg.sender === "bot" ? (
                 <>
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white text-[10px] font-bold">
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#0052FF] to-[#4D7CFF] flex items-center justify-center text-white text-[9px] font-mono font-bold shadow-sm">
                     CP
                   </div>
-                  <span>CareerPilot Guide</span>
+                  <span className="font-sans font-medium text-slate-600 dark:text-slate-400">CareerPilot Guide</span>
                 </>
               ) : (
                 <>
-                  <span>You</span>
-                  <div className="w-5 h-5 rounded-full bg-zinc-700 text-white flex items-center justify-center text-[10px]">
+                  <span className="font-sans">You</span>
+                  <div className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[9px] font-mono">
                     U
                   </div>
                 </>
@@ -583,42 +578,51 @@ export default function ChatContainer({
 
             {/* Message Bubble */}
             <div
-              className={`max-w-[88%] sm:max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[88%] sm:max-w-[80%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed ${
                 msg.sender === "user"
-                  ? "bg-gradient-to-tr from-orange-600 to-amber-600 text-white rounded-tr-none shadow-md"
-                  : "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-tl-none border border-zinc-200 dark:border-zinc-800 shadow-sm"
+                  ? "bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] text-white rounded-tr-none shadow-sm shadow-[#0052FF]/20"
+                  : "bg-white dark:bg-[#0F172A] text-[#0F172A] dark:text-slate-100 rounded-tl-none border border-slate-200/90 dark:border-slate-800 shadow-sm"
               }`}
             >
-              <p className="whitespace-pre-line">{msg.text}</p>
+              {msg.text ? (
+                <p className="whitespace-pre-line font-sans">{msg.text}</p>
+              ) : (
+                <div className="flex items-center gap-2 py-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-pulse" />
+                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
+                    Generating guidance...
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* In-Feed Cards */}
             {msg.cardPayload && (
-              <div className="w-full mt-2">
+              <div className="w-full mt-3">
                 {msg.cardPayload.type === "onboarding_summary" && (
-                  <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-50 to-indigo-50 dark:from-zinc-900 dark:to-zinc-900 border border-orange-200 dark:border-zinc-800">
+                  <div className="p-5 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-orange-500" />
-                        <h4 className="font-bold text-xs uppercase tracking-wider text-orange-900 dark:text-orange-300">
-                          Profile Ready
+                        <Sparkles className="w-4 h-4 text-[#0052FF]" />
+                        <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-[#0052FF] dark:text-[#4D7CFF]">
+                          Profile Verified
                         </h4>
                       </div>
-                      <span className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-bold">
-                        Fast Onboard
+                      <span className="font-mono text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-0.5 rounded-full font-semibold">
+                        Ready
                       </span>
                     </div>
 
-                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-white/60 dark:bg-zinc-800/60 p-2 rounded-xl">
-                        <span className="text-zinc-400 text-[10px] block">Branch & Year</span>
-                        <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                        <span className="text-slate-400 text-[10px] font-mono block">Branch & Year</span>
+                        <span className="font-semibold text-[#0F172A] dark:text-white">
                           {msg.cardPayload.data?.branch} ({msg.cardPayload.data?.year} Year)
                         </span>
                       </div>
-                      <div className="bg-white/60 dark:bg-zinc-800/60 p-2 rounded-xl">
-                        <span className="text-zinc-400 text-[10px] block">Target Role</span>
-                        <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                      <div className="bg-slate-50 dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                        <span className="text-slate-400 text-[10px] font-mono block">Target Role</span>
+                        <span className="font-semibold text-[#0F172A] dark:text-white">
                           {msg.cardPayload.data?.targetRole}
                         </span>
                       </div>
@@ -652,12 +656,12 @@ export default function ChatContainer({
 
             {/* Quick Action Chips */}
             {msg.chips && msg.chips.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-2.5 max-w-[95%]">
+              <div className="flex flex-wrap gap-2 mt-3 max-w-[95%]">
                 {msg.chips.map(chip => (
                   <button
                     key={chip.id}
                     onClick={() => handleChipClick(chip)}
-                    className="px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-zinc-900 hover:bg-orange-50 dark:hover:bg-orange-950/40 text-zinc-800 dark:text-zinc-200 hover:text-orange-600 dark:hover:text-orange-400 border border-zinc-200 dark:border-zinc-800 hover:border-orange-300 dark:hover:border-orange-700 shadow-sm transition-all flex items-center gap-1 active:scale-95 cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-800 text-[#0F172A] dark:text-slate-200 hover:text-[#0052FF] dark:hover:text-[#4D7CFF] border border-slate-200 dark:border-slate-800 hover:border-[#0052FF]/30 shadow-sm transition-all duration-200 flex items-center gap-1 active:scale-95 cursor-pointer"
                   >
                     <span>{chip.label}</span>
                   </button>
@@ -669,12 +673,12 @@ export default function ChatContainer({
 
         {/* Bot Typing Indicator */}
         {isBotTyping && (
-          <div className="flex items-center gap-2 p-3 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 w-fit">
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-bounce" />
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-bounce delay-150" />
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-bounce delay-300" />
-            <span className="text-xs text-zinc-400 font-medium ml-1">
-              Career guide thinking...
+          <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 w-fit shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-bounce" />
+            <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-bounce delay-150" />
+            <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-bounce delay-300" />
+            <span className="text-xs text-slate-400 font-sans ml-1">
+              Career guide formulating response...
             </span>
           </div>
         )}
@@ -682,14 +686,14 @@ export default function ChatContainer({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Bottom Input Area — Active immediately */}
-      <div className="p-3 sm:p-4 bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800">
+      {/* Bottom Input Area */}
+      <div className="p-4 bg-white dark:bg-[#0F172A] border-t border-slate-200 dark:border-slate-800">
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
           {/* Quick Upload Icon Shortcut */}
           <button
             type="button"
             onClick={() => setIsResumeModalOpen(true)}
-            className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-600 dark:text-zinc-300 hover:text-orange-600 hover:border-orange-400 transition-colors"
+            className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-[#0052FF] hover:border-[#0052FF]/40 transition-colors cursor-pointer"
             title="Upload or Paste Resume"
           >
             <FileText className="w-4 h-4" />
@@ -699,15 +703,15 @@ export default function ChatContainer({
             type="text"
             value={inputText}
             onChange={e => setInputText(e.target.value)}
-            placeholder="Type any question about your branch, career goal, or interview prep..."
-            className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+            placeholder="Ask any question about placement preparation, resume fixes, or interview prep..."
+            className="flex-1 h-12 px-4 rounded-xl bg-slate-50 dark:bg-[#090D16] border border-slate-200 dark:border-slate-800 text-sm text-[#0F172A] dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0052FF] transition-all font-sans"
             autoFocus
           />
 
           <button
             type="submit"
             disabled={!inputText.trim() || isBotTyping}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-40 text-white shadow-md shadow-orange-500/20 transition-all cursor-pointer"
+            className="h-12 w-12 rounded-xl bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] hover:brightness-105 active:scale-[0.98] disabled:opacity-40 text-white shadow-sm shadow-[#0052FF]/20 flex items-center justify-center transition-all cursor-pointer"
           >
             <Send className="w-4 h-4" />
           </button>

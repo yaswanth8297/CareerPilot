@@ -52,25 +52,13 @@ export class GeminiProvider implements LLMProvider {
   }
 
   /**
-   * Resolves the model name to ensure compatibility with Google Generative AI v1beta endpoints.
+   * Resolves candidate models to ensure maximum speed and compatibility.
    */
-  private getResolvedModelName(): string {
-    if (
-      this.modelName === "gemini-1.5-flash" ||
-      this.modelName === "gemini-1.5-flash-latest" ||
-      this.modelName === "gemini-1.5-flash-001" ||
-      this.modelName === "gemini-flash-latest" ||
-      this.modelName === "gemini-flash-lite-latest"
-    ) {
-      return "gemini-flash-lite-latest";
+  private getCandidateModels(): string[] {
+    if (this.modelName.includes("pro")) {
+      return ["gemini-pro-latest", "gemini-3.5-flash"];
     }
-    if (
-      this.modelName === "gemini-1.5-pro" ||
-      this.modelName === "gemini-1.5-pro-latest"
-    ) {
-      return "gemini-pro-latest";
-    }
-    return this.modelName;
+    return ["gemini-flash-lite-latest", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
   }
 
   /**
@@ -85,49 +73,55 @@ export class GeminiProvider implements LLMProvider {
       throw new Error("Gemini API key is required but not configured.");
     }
 
-    try {
-      // Compose system instruction: combine core persona with any custom task-specific instruction
-      const effectiveSystemInstruction = systemPrompt
-        ? `${this.defaultSystemInstruction}\n\n[Task Context]:\n${systemPrompt}`
-        : this.defaultSystemInstruction;
+    const effectiveSystemInstruction = systemPrompt
+      ? `${this.defaultSystemInstruction}\n\n[Task Context]:\n${systemPrompt}`
+      : this.defaultSystemInstruction;
 
-      const resolvedModel = this.getResolvedModelName();
-      const model = this.genAI.getGenerativeModel({
-        model: resolvedModel,
-        systemInstruction: effectiveSystemInstruction,
-        generationConfig: {
-          temperature: this.temperature,
-        },
-      });
+    const modelsToTry = this.getCandidateModels();
+    let lastError: unknown = null;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text()?.trim() || "";
+    for (const candidateModel of modelsToTry) {
+      try {
+        const model = this.genAI.getGenerativeModel({
+          model: candidateModel,
+          systemInstruction: effectiveSystemInstruction,
+          generationConfig: {
+            temperature: 0.6,
+            maxOutputTokens: 160,
+          },
+        });
 
-      const promptTokens = response.usageMetadata?.promptTokenCount ?? 0;
-      const completionTokens = response.usageMetadata?.candidatesTokenCount ?? 0;
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text()?.trim() || "";
 
-      // Approximate cost calculation (flash vs pro)
-      const costPerMillionPrompt = this.modelName.includes("pro") ? 3.5 : 0.075;
-      const costPerMillionCompletion = this.modelName.includes("pro") ? 10.5 : 0.30;
-      const costUsd =
-        (promptTokens * costPerMillionPrompt + completionTokens * costPerMillionCompletion) / 1_000_000;
+        const promptTokens = response.usageMetadata?.promptTokenCount ?? 0;
+        const completionTokens = response.usageMetadata?.candidatesTokenCount ?? 0;
 
-      return {
-        text,
-        usage: {
-          promptTokens,
-          completionTokens,
-          costUsd,
-        },
-      };
-    } catch (err: unknown) {
-      if (this.fallbackToMock) {
-        console.warn("[GeminiProvider] Google Gen AI API call failed. Falling back to MockLLMProvider. Error:", err);
-        return new MockLLMProvider().generateText(prompt, systemPrompt);
+        const costPerMillionPrompt = this.modelName.includes("pro") ? 3.5 : 0.075;
+        const costPerMillionCompletion = this.modelName.includes("pro") ? 10.5 : 0.30;
+        const costUsd =
+          (promptTokens * costPerMillionPrompt + completionTokens * costPerMillionCompletion) / 1_000_000;
+
+        return {
+          text,
+          usage: {
+            promptTokens,
+            completionTokens,
+            costUsd,
+          },
+        };
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[GeminiProvider] Model '${candidateModel}' encountered error (${err?.status || err?.message}). Trying fallback...`);
       }
-      throw err;
     }
+
+    if (this.fallbackToMock) {
+      console.warn("[GeminiProvider] All Gemini models failed. Falling back to MockLLMProvider. Error:", lastError);
+      return new MockLLMProvider().generateText(prompt, systemPrompt);
+    }
+    throw lastError;
   }
 
   /**
@@ -146,38 +140,53 @@ export class GeminiProvider implements LLMProvider {
       throw new Error("Gemini API key is required but not configured.");
     }
 
-    try {
-      const effectiveSystemInstruction = systemPrompt
-        ? `${this.defaultSystemInstruction}\n\n[Task Context]:\n${systemPrompt}`
-        : this.defaultSystemInstruction;
+    const effectiveSystemInstruction = systemPrompt
+      ? `${this.defaultSystemInstruction}\n\n[Task Context]:\n${systemPrompt}`
+      : this.defaultSystemInstruction;
 
-      const resolvedModel = this.getResolvedModelName();
-      const model = this.genAI.getGenerativeModel({
-        model: resolvedModel,
-        systemInstruction: effectiveSystemInstruction,
-        generationConfig: {
-          temperature: this.temperature,
-        },
-      });
+    const modelsToTry = this.getCandidateModels();
+    let lastError: unknown = null;
 
-      const responseStream = await model.generateContentStream(prompt);
-      for await (const chunk of responseStream.stream) {
-        const text = chunk.text();
-        if (text) {
-          yield text;
+    for (const candidateModel of modelsToTry) {
+      try {
+        const model = this.genAI.getGenerativeModel({
+          model: candidateModel,
+          systemInstruction: effectiveSystemInstruction,
+          generationConfig: {
+            temperature: 0.6,
+            maxOutputTokens: 160,
+          },
+        });
+
+        const responseStream = await model.generateContentStream(prompt);
+        let yielded = false;
+
+        for await (const chunk of responseStream.stream) {
+          const text = chunk.text();
+          if (text) {
+            yielded = true;
+            yield text;
+          }
         }
-      }
-    } catch (err: unknown) {
-      if (this.fallbackToMock) {
-        console.warn("[GeminiProvider] Streaming API error. Falling back to Mock streaming. Error:", err);
-        const mock = new MockLLMProvider();
-        for await (const chunk of mock.generateStream(prompt, systemPrompt)) {
-          yield chunk;
+
+        if (yielded) {
+          return;
         }
-        return;
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[GeminiProvider] Stream model '${candidateModel}' failed (${err?.status || err?.message}). Trying fallback...`);
       }
-      throw err;
     }
+
+    if (this.fallbackToMock) {
+      console.warn("[GeminiProvider] Streaming API error across all models. Falling back to Mock streaming. Error:", lastError);
+      const mock = new MockLLMProvider();
+      for await (const chunk of mock.generateStream(prompt, systemPrompt)) {
+        yield chunk;
+      }
+      return;
+    }
+    throw lastError;
   }
 
 

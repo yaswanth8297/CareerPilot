@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Mail, Phone, Globe, Sparkles, Calendar, Check, Copy, ArrowUpRight, GraduationCap } from "lucide-react";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { Button } from "@/components/ui/Button";
 
 export default function ContactTrainingCard({
   className = "",
@@ -27,110 +29,77 @@ export default function ContactTrainingCard({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-orange-200/80 dark:border-orange-500/20 bg-gradient-to-br from-orange-50/90 via-amber-50/50 to-indigo-50/40 dark:from-zinc-900/90 dark:via-zinc-900/60 dark:to-orange-950/20 backdrop-blur-xl p-6 sm:p-8 shadow-xl shadow-orange-500/5 transition-all ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-6 sm:p-8 shadow-md transition-all duration-300 ${className}`}
     >
-      {/* Background decorative glow */}
-      <div className="absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-br from-orange-500/20 to-amber-500/10 blur-3xl rounded-full pointer-events-none" />
-      <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-gradient-to-tr from-indigo-500/15 to-orange-500/10 blur-3xl rounded-full pointer-events-none" />
+      {/* Background subtle radial glow */}
+      <div className="absolute top-0 right-0 w-80 h-80 bg-[#0052FF]/5 dark:bg-[#0052FF]/10 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        {/* Left Column: Heading, Badge, Description */}
+        {/* Left Column */}
         <div className="space-y-4 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold bg-orange-100 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800/80 shadow-sm">
-            <GraduationCap className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
-            <span>1-on-1 Mentorship & Acceleration</span>
-          </div>
+          <SectionLabel pulse={true}>
+            1-on-1 Mentorship & Acceleration
+          </SectionLabel>
 
           <div className="space-y-2">
-            <h3 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
-              <span>Need personalized guidance?</span>
-              <Sparkles className="w-5 h-5 text-amber-500 animate-pulse hidden sm:inline" />
+            <h3 className="text-xl sm:text-2xl font-display font-normal text-[#0F172A] dark:text-white tracking-tight flex items-center gap-2">
+              <span>Need personalized 1-on-1 guidance?</span>
+              <Sparkles className="w-5 h-5 text-[#0052FF] animate-pulse-subtle hidden sm:inline" />
             </h3>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-300 leading-relaxed">
-              Take your career prep to the next level. Book a 1-on-1 personalized training session with our expert mentors for deep-dive mock interviews, resume rewriting, and custom career roadmapping.
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-sans">
+              Accelerate your placement readiness. Book a private 1-on-1 mentoring session for rigorous live mock interviews, ATS resume overhaul, and custom roadmap calibration.
             </p>
           </div>
 
-          {/* Value Badges */}
           {!compact && (
             <div className="flex flex-wrap gap-2 pt-1 text-xs">
-              <span className="px-2.5 py-1 rounded-lg bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold text-zinc-700 dark:text-zinc-300">
+              <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 font-medium text-slate-700 dark:text-slate-300">
                 🎯 Live Mock Interviews
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold text-zinc-700 dark:text-zinc-300">
-                📄 Line-by-Line Resume Overhaul
+              <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 font-medium text-slate-700 dark:text-slate-300">
+                📄 ATS Bullet Rewriting
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-white/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/60 font-semibold text-zinc-700 dark:text-zinc-300">
-                🗺️ Tailored 90-Day Placement Plan
+              <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 font-medium text-slate-700 dark:text-slate-300">
+                🗺️ Off-Campus Referral Strategy
               </span>
             </div>
           )}
         </div>
 
-        {/* Right Column: Contact Details Card */}
-        <div className="w-full lg:w-auto shrink-0 flex flex-col sm:flex-row lg:flex-col gap-3">
-          <div className="rounded-2xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 p-4 sm:p-5 shadow-sm space-y-3 min-w-[280px]">
-            <div className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-              Direct Contact Channels
-            </div>
-
-            {/* Email */}
-            <div className="flex items-center justify-between group">
-              <a
-                href={`mailto:${email}?subject=1-on-1%20Career%20Training%20Inquiry`}
-                className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
-                  <Mail className="w-4 h-4" />
-                </div>
+        {/* Right Column: Contact Details & CTAs */}
+        <div className="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[280px]">
+          <div className="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 p-3.5 space-y-2 text-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-mono text-[11px]">
+                <Mail className="w-3.5 h-3.5 text-[#0052FF]" />
                 <span>{email}</span>
-              </a>
+              </div>
               <button
                 onClick={handleCopyEmail}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-                title="Copy Email"
+                className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition-colors text-slate-500"
+                title="Copy email"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
             </div>
 
-            {/* Phone */}
-            <div className="flex items-center gap-2.5">
-              <a
-                href={`tel:${phone.replace(/\s+/g, "")}`}
-                className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <Phone className="w-4 h-4" />
-                </div>
-                <span>{phone}</span>
-              </a>
-            </div>
-
-            {/* Website */}
-            <div className="flex items-center gap-2.5">
-              <a
-                href={`https://${website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-                  <Globe className="w-4 h-4" />
-                </div>
-                <span>{website}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-orange-500 transition-colors" />
-              </a>
+            <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-mono text-[11px]">
+              <Phone className="w-3.5 h-3.5 text-[#0052FF]" />
+              <span>{phone}</span>
             </div>
           </div>
 
-          {/* Action CTA Button */}
           <a
-            href={`mailto:${email}?subject=Booking%20Request:%201-on-1%20Personalized%20Training&body=Hi%20CareerPilot%20Team,%0A%0AI%20would%20like%20to%20book%20a%201-on-1%20training%20session%20for%20personalized%20career%20guidance.`}
-            className="w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-orange-500/25 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-98 transition-all"
+            href={`mailto:${email}?subject=Interested%20in%20Personalized%20CareerPilot%20Training`}
+            className="w-full"
           >
-            <Calendar className="w-4 h-4" />
-            <span>Book 1-on-1 Session</span>
+            <Button variant="primary" size="md" className="w-full justify-between group">
+              <span className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span>Book Mentoring Call</span>
+              </span>
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Button>
           </a>
         </div>
       </div>

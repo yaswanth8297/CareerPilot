@@ -30,7 +30,6 @@ export default function FloatingChatWidget({
     onOpenChange?.(openState);
   };
 
-  // Support custom window event for triggering from anywhere in the app
   useEffect(() => {
     const handleCustomOpen = (event: Event) => {
       const customEvent = event as CustomEvent<{ intent?: string }>;
@@ -49,47 +48,48 @@ export default function FloatingChatWidget({
       {!isOpen && (
         <button
           onClick={() => handleSetOpen(true)}
-          className="group relative flex items-center gap-3 pl-4 pr-5 py-3.5 rounded-full bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 text-white shadow-2xl hover:shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all"
+          className="group relative flex items-center gap-3 pl-4 pr-5 py-3.5 rounded-full bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] text-white shadow-xl hover:shadow-accent hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
         >
           <div className="relative">
-            <span className="w-3 h-3 rounded-full bg-emerald-400 absolute -top-1 -right-1 animate-ping" />
-            <span className="w-3 h-3 rounded-full bg-emerald-400 absolute -top-1 -right-1" />
-            <Sparkles className="w-6 h-6 animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-white absolute -top-0.5 -right-0.5 animate-ping opacity-75" />
+            <span className="w-2.5 h-2.5 rounded-full bg-white absolute -top-0.5 -right-0.5" />
+            <Sparkles className="w-5 h-5" />
           </div>
 
-          <div className="text-left">
-            <div className="text-xs font-bold leading-none">Personal Career Guide</div>
-            <div className="text-[10px] text-orange-100 font-medium mt-0.5">CareerPilot AI • 30s Check</div>
+          <div className="text-left font-sans">
+            <div className="text-xs font-semibold leading-none">Personal Career Guide</div>
+            <div className="text-[10px] text-white/80 font-mono mt-0.5">CareerPilot AI • 30s Check</div>
           </div>
         </button>
       )}
 
-      {/* Expanded Floating Drawer / Window */}
+      {/* Expanded Floating Window */}
       {isOpen && (
-        <div className="w-[calc(100vw-2.5rem)] sm:w-[410px] h-[580px] max-h-[85vh] bg-white dark:bg-zinc-950 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-200">
-          {/* Top Bar */}
-          <div className="p-3.5 bg-gradient-to-r from-orange-500 via-amber-500 to-indigo-600 text-white flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-xs">
+        <div className="w-[calc(100vw-2.5rem)] sm:w-[420px] h-[590px] max-h-[85vh] bg-white dark:bg-[#0F172A] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-200">
+          {/* Top Bar - Inverted Slate */}
+          <div className="relative p-3.5 bg-[#0F172A] text-white flex items-center justify-between shrink-0 border-b border-slate-800 overflow-hidden">
+            <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
+            <div className="relative z-10 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#0052FF] to-[#4D7CFF] flex items-center justify-center font-mono font-bold text-xs text-white shadow-sm">
                 CP
               </div>
               <div>
-                <h4 className="font-bold text-xs">CareerPilot AI</h4>
-                <p className="text-[10px] text-orange-100">Personal Career Guide</p>
+                <h4 className="font-semibold text-xs text-white">CareerPilot AI</h4>
+                <p className="text-[10px] text-slate-400">Personal Career Guide</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="relative z-10 flex items-center gap-1">
               <Link
                 href={activeIntent ? `/chat?intent=${encodeURIComponent(activeIntent)}` : "/chat"}
-                className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+                className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
                 title="Expand to Full Page"
               >
                 <ExternalLink className="w-4 h-4" />
               </Link>
               <button
                 onClick={() => handleSetOpen(false)}
-                className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+                className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                 title="Close Chat"
               >
                 <X className="w-4 h-4" />

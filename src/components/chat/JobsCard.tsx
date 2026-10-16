@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Briefcase, AlertOctagon, ExternalLink, Bookmark, BookmarkCheck, ShieldAlert, Sparkles, Filter, CheckCircle2 } from "lucide-react";
 import { JobListing } from "@/lib/types";
+import { Button } from "@/components/ui/Button";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 export default function JobsCard({
   jobs,
@@ -35,61 +37,64 @@ export default function JobsCard({
     if (onReportJob) onReportJob(jobId);
   };
 
-  // Preview shows 2-3 jobs for guests; all for registered
   const visibleJobs = isGuest ? jobs.slice(0, 3) : jobs;
   const filteredJobs =
     filterType === "all" ? visibleJobs : visibleJobs.filter(j => j.jobType.toLowerCase() === filterType.toLowerCase());
 
   return (
-    <div className="w-full max-w-xl mx-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden transition-all my-3">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-zinc-900 text-white p-5 sm:p-6">
-        <div className="flex items-start justify-between">
+    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-xl overflow-hidden transition-all my-3">
+      {/* Inverted Slate Header */}
+      <div className="relative bg-[#0F172A] text-white p-5 sm:p-6 overflow-hidden">
+        <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-[#0052FF]/20 blur-[80px] rounded-full pointer-events-none" />
+
+        <div className="relative z-10 flex items-start justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-emerald-300 mb-2">
-              <Briefcase className="w-3.5 h-3.5" />
-              <span>Skill-Matched Jobs</span>
-            </div>
-            <h3 className="text-xl font-bold tracking-tight">Curated Jobs for You</h3>
-            <p className="text-xs text-emerald-200 mt-1">
-              Unbiased matching • Scams auto-flagged • No college-tier prejudice
+            <SectionLabel pulse={true} className="border-white/20 bg-white/10 text-white mb-2.5">
+              SKILL-MATCHED ROLES
+            </SectionLabel>
+            <h3 className="text-xl font-display font-normal tracking-tight text-white">
+              Curated <span className="gradient-text">Fresher Openings</span>
+            </h3>
+            <p className="text-xs text-slate-400 mt-1">
+              Unbiased matching • Scams auto-flagged • Zero college-tier prejudice
             </p>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
-            {jobs.length} Opportunities
+          <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-white/10 text-[#4D7CFF] font-semibold border border-white/10 shrink-0">
+            {jobs.length} Matches
           </span>
         </div>
       </div>
 
       {/* Filter Chips Bar */}
-      <div className="flex items-center gap-1.5 p-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/60 overflow-x-auto text-xs">
-        <Filter className="w-3.5 h-3.5 text-zinc-400 shrink-0 ml-1" />
+      <div className="flex items-center gap-1.5 p-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090D16] overflow-x-auto text-xs">
+        <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1" />
         <button
           onClick={() => setFilterType("all")}
-          className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+          className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
             filterType === "all"
-              ? "bg-emerald-600 text-white"
-              : "bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+              ? "bg-[#0052FF] text-white font-semibold"
+              : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
           }`}
         >
           All
         </button>
         <button
           onClick={() => setFilterType("Fresher")}
-          className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+          className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
             filterType === "Fresher"
-              ? "bg-emerald-600 text-white"
-              : "bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+              ? "bg-[#0052FF] text-white font-semibold"
+              : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
           }`}
         >
           Fresher Roles
         </button>
         <button
           onClick={() => setFilterType("Internship")}
-          className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+          className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
             filterType === "Internship"
-              ? "bg-emerald-600 text-white"
-              : "bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+              ? "bg-[#0052FF] text-white font-semibold"
+              : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
           }`}
         >
           Internships
@@ -97,35 +102,34 @@ export default function JobsCard({
       </div>
 
       {/* Jobs Feed */}
-      <div className="p-4 sm:p-5 space-y-4 max-h-[500px] overflow-y-auto">
+      <div className="p-5 space-y-4 max-h-[500px] overflow-y-auto">
         {filteredJobs.map(job => {
           const isSaved = savedJobIds.includes(job.id);
           const isReported = reportedJobIds.includes(job.id);
 
-          // Scam card formatting per PRD heuristics
           if (job.isScamSuspicious) {
             return (
               <div
                 key={job.id}
-                className="rounded-xl border border-rose-300 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 p-4 space-y-2.5 relative"
+                className="rounded-xl border border-rose-300 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 p-4 space-y-2.5 relative"
               >
-                <div className="flex items-center justify-between text-rose-700 dark:text-rose-400 font-bold text-xs">
-                  <span className="flex items-center gap-1.5">
+                <div className="flex items-center justify-between text-rose-700 dark:text-rose-400 font-semibold text-xs">
+                  <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider">
                     <ShieldAlert className="w-4 h-4 text-rose-600" />
                     ⚠️ WARNING: Suspicious Posting Flagged
                   </span>
-                  <span className="text-[10px] text-zinc-500 font-normal">{job.postedDate}</span>
+                  <span className="text-[10px] text-slate-500 font-mono">{job.postedDate}</span>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-sm text-zinc-900 dark:text-white line-through opacity-80">
+                  <h4 className="font-semibold text-sm text-slate-900 dark:text-white line-through opacity-80">
                     {job.title}
                   </h4>
-                  <p className="text-xs text-zinc-500">{job.company}</p>
+                  <p className="text-xs text-slate-500">{job.company}</p>
                 </div>
 
-                <div className="bg-rose-100 dark:bg-rose-900/30 p-2.5 rounded-lg text-xs text-rose-800 dark:text-rose-300 space-y-1">
-                  <p className="font-bold">CareerPilot Advisory (Heuristics detected):</p>
+                <div className="bg-rose-100/70 dark:bg-rose-900/30 p-2.5 rounded-lg text-xs text-rose-800 dark:text-rose-300 space-y-1">
+                  <p className="font-semibold text-[11px]">CareerPilot Advisory (Heuristics detected):</p>
                   <ul className="list-disc list-inside text-[11px] space-y-0.5">
                     {job.scamReasons?.map((r, i) => (
                       <li key={i}>{r}</li>
@@ -137,11 +141,11 @@ export default function JobsCard({
                   <button
                     onClick={() => handleReport(job.id)}
                     disabled={isReported}
-                    className="text-rose-600 dark:text-rose-400 font-semibold hover:underline text-[11px]"
+                    className="text-rose-600 dark:text-rose-400 font-semibold hover:underline text-[11px] cursor-pointer"
                   >
                     {isReported ? "✓ Reported for moderation" : "Report this scam"}
                   </button>
-                  <span className="text-[10px] text-zinc-400 italic">Do not pay money for jobs!</span>
+                  <span className="text-[10px] text-slate-400 italic">Do not pay money for jobs!</span>
                 </div>
               </div>
             );
@@ -150,44 +154,41 @@ export default function JobsCard({
           return (
             <div
               key={job.id}
-              className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/40 dark:bg-zinc-950/30 p-4 space-y-3 hover:border-emerald-300 dark:hover:border-emerald-800 transition-all"
+              className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 p-4 space-y-3 hover:border-[#0052FF]/30 transition-all"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <h4 className="font-bold text-sm text-zinc-900 dark:text-white">{job.title}</h4>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                  <h4 className="font-semibold text-sm text-[#0F172A] dark:text-white">{job.title}</h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
                     {job.company} • {job.location} {job.isRemote && "• Remote"}
                   </p>
                 </div>
 
                 {/* Match percentage pill */}
-                <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-xs font-bold shrink-0">
+                <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0052FF]/10 text-[#0052FF] dark:text-[#4D7CFF] text-xs font-mono font-semibold shrink-0">
                   <Sparkles className="w-3 h-3" />
                   <span>{job.matchPercent}% Match</span>
                 </div>
               </div>
 
-              {/* High CGPA Warning badge if present (per PRD: flagged, not hidden) */}
               {job.hasCgpaFilter && (
-                <div className="px-2 py-1 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[11px] font-medium flex items-center gap-1.5 border border-amber-200 dark:border-amber-800">
+                <div className="px-2.5 py-1 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[11px] font-medium flex items-center gap-1.5 border border-amber-200 dark:border-amber-800">
                   <AlertOctagon className="w-3.5 h-3.5 shrink-0" />
                   <span>Note: Explicit criteria mentioned ({job.minCgpaRequired}+ CGPA requested).</span>
                 </div>
               )}
 
-              {/* Why it matches */}
-              <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                <strong className="text-emerald-700 dark:text-emerald-400">Why matched:</strong> {job.whyItMatches}
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
+                <strong className="text-[#0052FF] dark:text-[#4D7CFF] font-semibold">Match rationale:</strong> {job.whyItMatches}
               </p>
 
-              {/* Missing skills tags */}
               {job.missingSkills.length > 0 && (
                 <div className="flex items-center gap-1.5 flex-wrap text-[11px]">
-                  <span className="text-zinc-500">Skills to prep:</span>
+                  <span className="text-slate-500 font-mono text-[10px]">Skills to prep:</span>
                   {job.missingSkills.map(s => (
                     <span
                       key={s}
-                      className="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium"
+                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-300"
                     >
                       {s}
                     </span>
@@ -196,17 +197,17 @@ export default function JobsCard({
               )}
 
               {/* Footer row with salary & apply */}
-              <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between text-xs">
-                <span className="font-semibold text-zinc-900 dark:text-white text-xs">{job.salaryRange}</span>
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="font-mono font-semibold text-[#0F172A] dark:text-white text-xs">{job.salaryRange}</span>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleToggleSave(job)}
-                    className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-[#0052FF] transition-colors cursor-pointer"
                     title={isSaved ? "Saved" : "Save Job"}
                   >
                     {isSaved ? (
-                      <BookmarkCheck className="w-4 h-4 text-emerald-600" />
+                      <BookmarkCheck className="w-4 h-4 text-[#0052FF]" />
                     ) : (
                       <Bookmark className="w-4 h-4" />
                     )}
@@ -216,10 +217,11 @@ export default function JobsCard({
                     href={job.applyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1 transition-colors"
                   >
-                    <span>Apply Link</span>
-                    <ExternalLink className="w-3 h-3" />
+                    <Button variant="primary" size="sm" className="h-8 px-3 text-xs">
+                      <span>Apply</span>
+                      <ExternalLink className="w-3 h-3 ml-1" />
+                    </Button>
                   </a>
                 </div>
               </div>
@@ -230,16 +232,17 @@ export default function JobsCard({
 
       {/* Guest Gating Banner */}
       {isGuest && jobs.length > 3 && (
-        <div className="p-4 bg-emerald-50/50 dark:bg-emerald-950/20 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-          <span className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
+        <div className="p-4 bg-slate-50 dark:bg-[#090D16] border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
             Showing 3 preview jobs of {jobs.length} matches
           </span>
-          <button
+          <Button
+            size="sm"
+            variant="primary"
             onClick={onUnlockAllJobs}
-            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-sm"
           >
             Unlock All {jobs.length} Matches Free 🔓
-          </button>
+          </Button>
         </div>
       )}
     </div>
