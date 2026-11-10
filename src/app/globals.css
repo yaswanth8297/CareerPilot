@@ -1,44 +1,124 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --surface-base: #fafaf8;
-  --surface-card: #ffffff;
-  --surface-subtle: #f4f3ee;
-  --surface-hover: #ecebe4;
+  /* Light Theme: Soft Warm Ivory Core & Rich Botanical Dark Green */
+  --surface-base: #f4efea;         /* Soft Warm Ivory canvas (editorial paper) */
+  --surface-card: #fcfbf8;         /* Crisp Ivory-White paper card */
+  --surface-subtle: #eae3da;       /* Warm Ivory-Sand inset surface */
+  --surface-hover: #e1d8cd;        /* Tactile Ivory hover */
 
-  --border-subtle: #e7e5de;
-  --border-strong: #d3d0c7;
+  --border-subtle: #dfd7cc;        /* Warm Ivory hairline */
+  --border-strong: #c7bdb0;        /* Defined Ivory border */
 
-  --text-primary: #141518;
-  --text-secondary: #52555e;
-  --text-muted: #82858e;
+  --text-primary: #122b23;         /* Deep Botanical Pine ink */
+  --text-secondary: #435b53;       /* Muted Sage-Slate body ink */
+  --text-muted: #70847d;           /* Caption ink */
 
-  --accent-brand: #183059;
-  --accent-brand-hover: #102344;
-  --accent-brand-tint: #eef2f8;
-  --accent-signal: #1d4ed8;
+  --accent-brand: #145e4c;         /* Rich Dark Green (Screenshot primary) */
+  --accent-brand-hover: #0e4638;   /* Deeper Forest Green hover */
+  --accent-brand-tint: #e3efe9;    /* Soft Sage wash */
+  --accent-brand-ink: #145e4c;     /* Dark Green display & text on light */
 
-  --status-pass: #166534;
-  --status-pass-bg: #f0fdf4;
-  --status-warn: #92400e;
-  --status-warn-bg: #fef3c7;
-  --status-fix: #991b1b;
-  --status-fix-bg: #fef2f2;
+  --accent-cta: #e05236;           /* Warm Coral-Terracotta CTA (Screenshot accent) */
+  --accent-cta-hover: #c94328;
+
+  --manifesto-bg: #145e4c;         /* Rich Dark Green manifesto block */
+  --manifesto-border: #0e4638;
+
+  /* Semantic Rubric Tokens */
+  --status-pass: #145e4c;
+  --status-pass-bg: #e7f3ed;
+  --status-pass-border: #b6d9c9;
+
+  --status-warn: #9a4d12;
+  --status-warn-bg: #fdf2e6;
+  --status-warn-border: #f3d2b3;
+
+  --status-fix: #b93822;
+  --status-fix-bg: #fbeceb;
+  --status-fix-border: #f2c0ba;
+}
+
+.dark {
+  /* Dark Theme: Deep Forest Pine & Soft Ivory Ink */
+  --surface-base: #0b1613;         /* Deep Forest Night canvas */
+  --surface-card: #11211c;         /* Elevated Dark Green card */
+  --surface-subtle: #172c26;       /* Inset surface */
+  --surface-hover: #1f3931;        /* Subtle hover */
+
+  --border-subtle: #223e35;        /* Fine dark-green hairline */
+  --border-strong: #31574b;        /* Defined dark-green border */
+
+  --text-primary: #f4efea;         /* Soft Ivory primary ink */
+  --text-secondary: #b6c7c1;       /* Soft Sage-Mist secondary ink */
+  --text-muted: #7f978f;           /* Muted caption ink */
+
+  --accent-brand: #1b755e;         /* Rich Dark Forest Green button */
+  --accent-brand-hover: #228d72;   /* Brighter Forest Green hover */
+  --accent-brand-tint: #14352c;    /* Deep Forest wash */
+  --accent-brand-ink: #5cc4a6;     /* Crisp Sage-Emerald text on dark */
+
+  --accent-cta: #e66045;           /* Warm Coral CTA on dark */
+  --accent-cta-hover: #d14e34;
+
+  --manifesto-bg: #12483a;         /* Rich Dark Green manifesto block */
+  --manifesto-border: #1e6b57;
+
+  /* Semantic Rubric Tokens (Dark) */
+  --status-pass: #5cc4a6;
+  --status-pass-bg: #0f2b22;
+  --status-pass-border: #1e5242;
+
+  --status-warn: #fbbf24;
+  --status-warn-bg: #2b210b;
+  --status-warn-border: #594214;
+
+  --status-fix: #f87171;
+  --status-fix-bg: #2e1513;
+  --status-fix-border: #662722;
 }
 
 @theme inline {
-  --color-background: var(--surface-base);
-  --color-foreground: var(--text-primary);
-  --color-muted: var(--surface-subtle);
-  --color-muted-foreground: var(--text-secondary);
-  --color-accent: var(--accent-brand);
-  --color-accent-foreground: #ffffff;
-  --color-border: var(--border-subtle);
-  --color-card: var(--surface-card);
-  --color-ring: var(--accent-brand);
+  --color-canvas: var(--surface-base);
+  --color-paper: var(--surface-card);
+  --color-inset: var(--surface-subtle);
+  --color-inset-hover: var(--surface-hover);
+
+  --color-hairline: var(--border-subtle);
+  --color-hairline-strong: var(--border-strong);
+
+  --color-ink: var(--text-primary);
+  --color-ink-muted: var(--text-secondary);
+  --color-ink-subtle: var(--text-muted);
+
+  --color-brand: var(--accent-brand);
+  --color-brand-hover: var(--accent-brand-hover);
+  --color-brand-tint: var(--accent-brand-tint);
+  --color-brand-ink: var(--accent-brand-ink);
+
+  --color-cta: var(--accent-cta);
+  --color-cta-hover: var(--accent-cta-hover);
+
+  --color-manifesto: var(--manifesto-bg);
+  --color-manifesto-border: var(--manifesto-border);
+
+  --color-pass: var(--status-pass);
+  --color-pass-bg: var(--status-pass-bg);
+  --color-pass-border: var(--status-pass-border);
+
+  --color-warn: var(--status-warn);
+  --color-warn-bg: var(--status-warn-bg);
+  --color-warn-border: var(--status-warn-border);
+
+  --color-fix: var(--status-fix);
+  --color-fix-bg: var(--status-fix-bg);
+  --color-fix-border: var(--status-fix-border);
 
   --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: var(--font-newsreader), Georgia, Cambria, "Times New Roman", serif;
+  --font-poster: var(--font-anton), Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
@@ -48,19 +128,59 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Synchronized smooth theme crossfade across surfaces, borders, and text */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    fill 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    stroke 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* Subtle organic editorial paper grain */
+.paper-grain {
+  background-image: radial-gradient(rgba(18, 43, 35, 0.04) 0.5px, transparent 0.5px);
+  background-size: 16px 16px;
+}
+
+.dark .paper-grain {
+  background-image: radial-gradient(rgba(244, 239, 234, 0.03) 0.5px, transparent 0.5px);
+  background-size: 16px 16px;
 }
 
 /* Tactile Architectural Elevation */
 .shadow-atelier {
   box-shadow:
-    0 1px 2px rgba(20, 21, 24, 0.04),
-    0 4px 12px -2px rgba(20, 21, 24, 0.03);
+    0 1px 2px rgba(18, 43, 35, 0.05),
+    0 4px 12px -2px rgba(18, 43, 35, 0.04);
+}
+
+.dark .shadow-atelier {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 14px -2px rgba(0, 0, 0, 0.25);
 }
 
 .shadow-atelier-lg {
   box-shadow:
-    0 2px 4px rgba(20, 21, 24, 0.04),
-    0 12px 32px -4px rgba(20, 21, 24, 0.08);
+    0 2px 4px rgba(18, 43, 35, 0.05),
+    0 12px 32px -4px rgba(18, 43, 35, 0.09);
+}
+
+.dark .shadow-atelier-lg {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 16px 36px -4px rgba(0, 0, 0, 0.45);
 }
 
 /* Precision numeric alignment */

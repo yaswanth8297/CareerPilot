@@ -26,26 +26,26 @@ export default function ContactTrainingCard({
 
   return (
     <div
-      className={`rounded-xl border border-[#E7E5DE] bg-white p-7 sm:p-10 shadow-atelier ${className}`}
+      className={`rounded-xl border border-hairline bg-paper p-7 sm:p-10 shadow-atelier ${className}`}
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
         {/* Left Column - Editorial Memo */}
         <div className="space-y-4 max-w-xl">
-          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#82858E]">
+          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-subtle">
             Advisory &amp; Coaching
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-2xl sm:text-3xl font-display font-normal text-[#141518] tracking-tight leading-snug">
+            <h3 className="text-2xl sm:text-3xl font-display font-normal text-ink tracking-tight leading-snug">
               Need personalized 1-on-1 guidance?
             </h3>
-            <p className="text-sm text-[#52555E] leading-relaxed">
+            <p className="text-sm text-ink-muted leading-relaxed">
               Book a private session for live mock interview drills, line-by-line bullet rewriting, and off-campus referral strategy.
             </p>
           </div>
 
           {!compact && (
-            <div className="flex flex-wrap gap-x-5 gap-y-2 pt-2 text-xs text-[#52555E] font-mono">
+            <div className="flex flex-wrap gap-x-5 gap-y-2 pt-2 text-xs text-ink-muted font-mono">
               <span>• Live Mock Practice</span>
               <span>• ATS Bullet Overhaul</span>
               <span>• Off-Campus Strategy</span>
@@ -54,18 +54,18 @@ export default function ContactTrainingCard({
         </div>
 
         {/* Right Column: Clean Actions */}
-        <div className="flex flex-col gap-3 min-w-[260px] lg:border-l lg:border-[#E7E5DE] lg:pl-8">
-          <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-xs">
-            <div className="flex items-center gap-2 text-[#141518] font-mono text-[11px]">
-              <Mail className="w-3.5 h-3.5 text-[#52555E] shrink-0" />
+        <div className="flex flex-col gap-3 min-w-[260px] lg:border-l lg:border-hairline lg:pl-8">
+          <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-lg border border-hairline bg-canvas text-xs">
+            <div className="flex items-center gap-2 text-ink font-mono text-[11px]">
+              <Mail className="w-3.5 h-3.5 text-ink-muted shrink-0" />
               <span>{email}</span>
             </div>
             <button
               onClick={handleCopyEmail}
-              className="p-1 hover:bg-[#ECEBE4] rounded transition-colors text-[#52555E] cursor-pointer"
+              className="p-1 hover:bg-inset rounded transition-colors text-ink-muted cursor-pointer"
               title="Copy email"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-[#166534]" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-pass" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
           </div>
 

@@ -13,13 +13,13 @@ export function Card({
 }: CardProps) {
   const variantStyles = {
     default:
-      "bg-white border border-[#E7E5DE] shadow-xs",
+      "bg-paper border border-hairline shadow-xs",
     elevated:
-      "bg-white border border-[#E7E5DE] shadow-atelier hover:shadow-atelier-lg transition-all duration-200",
+      "bg-paper border border-hairline shadow-atelier hover:shadow-atelier-lg transition-all duration-200",
     featured:
-      "bg-white border-2 border-[#183059] shadow-atelier",
+      "bg-paper border-2 border-brand shadow-atelier",
     subtle:
-      "bg-[#F4F3EE] border border-[#E7E5DE]"
+      "bg-inset border border-hairline"
   };
 
   return (
@@ -51,7 +51,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-base sm:text-lg font-semibold tracking-tight text-[#141518]", className)}
+      className={cn("text-base sm:text-lg font-semibold tracking-tight text-ink", className)}
       {...props}
     >
       {children}
@@ -66,7 +66,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-xs text-[#52555E] leading-relaxed font-sans", className)}
+      className={cn("text-xs text-ink-muted leading-relaxed font-sans", className)}
       {...props}
     >
       {children}

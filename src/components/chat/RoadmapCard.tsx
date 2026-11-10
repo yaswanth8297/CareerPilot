@@ -29,45 +29,45 @@ export default function RoadmapCard({
   const currentWeeks = roadmap.weeks.filter(w => w.phase === selectedPhase);
 
   return (
-    <div className="w-full max-w-xl rounded-xl border border-[#E7E5DE] bg-white shadow-atelier overflow-hidden my-2">
+    <div className="w-full max-w-xl rounded-xl border border-hairline bg-paper shadow-atelier overflow-hidden my-2">
       {/* Header */}
-      <div className="bg-[#FAFAF8] p-5 sm:p-6 border-b border-[#E7E5DE]">
+      <div className="bg-canvas p-5 sm:p-6 border-b border-hairline">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
             <SectionLabel>90-Day Roadmap</SectionLabel>
-            <h3 className="text-lg sm:text-xl font-semibold tracking-tight text-[#141518] pt-1">
-              <span className="text-[#183059]">{roadmap.role}</span> Syllabus
+            <h3 className="text-lg sm:text-xl font-semibold tracking-tight text-ink pt-1">
+              <span className="text-brand-ink">{roadmap.role}</span> Syllabus
             </h3>
-            <p className="text-xs font-mono text-[#82858E]">
+            <p className="text-xs font-mono text-ink-subtle">
               1–2 hrs/day · Vetted free resources only
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center bg-white border border-[#E7E5DE] px-3 py-2 rounded-lg min-w-[76px] shrink-0">
-            <span className="text-xl font-mono font-bold text-[#183059] tabular-nums">{progressPercent}%</span>
-            <p className="text-[10px] text-[#82858E] font-mono uppercase">Done</p>
+          <div className="flex flex-col items-center justify-center bg-paper border border-hairline px-3 py-2 rounded-lg min-w-[76px] shrink-0">
+            <span className="text-xl font-mono font-bold text-brand-ink tabular-nums">{progressPercent}%</span>
+            <p className="text-[10px] text-ink-subtle font-mono uppercase">Done</p>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-[#E7E5DE] h-1.5 rounded-full overflow-hidden mt-4">
+        <div className="w-full bg-inset h-1.5 rounded-full overflow-hidden mt-4 border border-hairline">
           <div
-            className="bg-[#183059] h-full rounded-full transition-all duration-500"
+            className="bg-brand h-full rounded-full transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
 
       {/* Phase Selection Tabs */}
-      <div className="flex border-b border-[#E7E5DE] bg-[#F4F3EE]/60">
+      <div className="flex border-b border-hairline bg-inset/60">
         {(["Foundation", "Build", "Job Ready"] as const).map(phase => (
           <button
             key={phase}
             onClick={() => setSelectedPhase(phase)}
             className={`flex-1 py-2.5 text-xs font-medium text-center border-b-2 transition-colors cursor-pointer ${
               selectedPhase === phase
-                ? "border-[#183059] text-[#183059] font-semibold bg-white"
-                : "border-transparent text-[#52555E] hover:text-[#141518]"
+                ? "border-brand text-brand-ink font-semibold bg-paper"
+                : "border-transparent text-ink-muted hover:text-ink"
             }`}
           >
             {phase === "Foundation" ? "01. Foundation" : phase === "Build" ? "02. Build" : "03. Job Ready"}
@@ -82,23 +82,23 @@ export default function RoadmapCard({
             return (
               <div
                 key={week.weekNumber}
-                className="relative rounded-lg border border-[#E7E5DE] p-4 bg-[#FAFAF8] overflow-hidden"
+                className="relative rounded-lg border border-hairline p-4 bg-canvas overflow-hidden"
               >
                 <div className="filter blur-[3px] select-none pointer-events-none opacity-40">
-                  <div className="font-semibold text-sm text-[#141518]">
+                  <div className="font-semibold text-sm text-ink">
                     Week {week.weekNumber}: {week.title}
                   </div>
-                  <p className="text-xs text-[#52555E] mt-1">{week.description}</p>
+                  <p className="text-xs text-ink-muted mt-1">{week.description}</p>
                 </div>
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/85 backdrop-blur-[2px] p-4 text-center">
-                  <div className="w-8 h-8 rounded-lg bg-[#F4F3EE] border border-[#E7E5DE] text-[#183059] flex items-center justify-center mb-2">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-paper/90 backdrop-blur-[2px] p-4 text-center">
+                  <div className="w-8 h-8 rounded-lg bg-inset border border-hairline text-brand-ink flex items-center justify-center mb-2">
                     <Lock className="w-4 h-4" />
                   </div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#141518]">
+                  <h4 className="text-xs sm:text-sm font-semibold text-ink">
                     Week {week.weekNumber} Locked (Guest Preview)
                   </h4>
-                  <p className="text-[11px] text-[#52555E] max-w-xs mt-0.5">
+                  <p className="text-[11px] text-ink-muted max-w-xs mt-0.5">
                     Guest mode covers Weeks 1–2. Sign up free to unlock the full 12-week plan.
                   </p>
                   <Button
@@ -117,28 +117,28 @@ export default function RoadmapCard({
           return (
             <div
               key={week.weekNumber}
-              className="rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] p-4 space-y-3"
+              className="rounded-lg border border-hairline bg-canvas p-4 space-y-3"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#183059]">
+                  <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-brand-ink">
                     Week {week.weekNumber}
                   </span>
-                  <h4 className="font-semibold text-sm text-[#141518]">{week.title}</h4>
+                  <h4 className="font-semibold text-sm text-ink">{week.title}</h4>
                 </div>
-                <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-white border border-[#E7E5DE] text-[#52555E]">
+                <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-paper border border-hairline text-ink-muted">
                   {week.phase}
                 </span>
               </div>
 
-              <p className="text-xs text-[#52555E] leading-relaxed font-sans">{week.description}</p>
+              <p className="text-xs text-ink-muted leading-relaxed font-sans">{week.description}</p>
 
               {/* Topics tags */}
               <div className="flex flex-wrap gap-1.5">
                 {week.topics.map(t => (
                   <span
                     key={t}
-                    className="font-mono text-[10px] px-2 py-0.5 rounded bg-white border border-[#E7E5DE] text-[#52555E]"
+                    className="font-mono text-[10px] px-2 py-0.5 rounded bg-paper border border-hairline text-ink-muted"
                   >
                     {t}
                   </span>
@@ -146,42 +146,42 @@ export default function RoadmapCard({
               </div>
 
               {/* Tasks checklist */}
-              <div className="space-y-2 pt-2 border-t border-[#E7E5DE]">
-                <span className="font-mono text-[10px] font-semibold text-[#82858E] uppercase tracking-wider">
+              <div className="space-y-2 pt-2 border-t border-hairline">
+                <span className="font-mono text-[10px] font-semibold text-ink-subtle uppercase tracking-wider">
                   Weekly Tasks
                 </span>
                 {week.tasks.map(task => (
                   <div
                     key={task.id}
                     onClick={() => onToggleTask && onToggleTask(week.weekNumber, task.id)}
-                    className="flex items-center gap-2.5 p-2 rounded-md bg-white border border-[#E7E5DE] cursor-pointer hover:border-[#183059]/40 transition-colors text-xs"
+                    className="flex items-center gap-2.5 p-2 rounded-md bg-paper border border-hairline cursor-pointer hover:border-brand-ink/40 transition-colors text-xs"
                   >
                     {task.completed ? (
-                      <CheckSquare className="w-4 h-4 text-[#166534] shrink-0" />
+                      <CheckSquare className="w-4 h-4 text-pass shrink-0" />
                     ) : (
-                      <Square className="w-4 h-4 text-[#82858E] shrink-0" />
+                      <Square className="w-4 h-4 text-ink-subtle shrink-0" />
                     )}
                     <span
                       className={`flex-1 ${
-                        task.completed ? "line-through text-[#82858E]" : "text-[#141518]"
+                        task.completed ? "line-through text-ink-subtle" : "text-ink"
                       }`}
                     >
                       {task.title}
                     </span>
-                    <span className="text-[10px] text-[#82858E] font-mono tabular-nums">{task.estMinutes}m</span>
+                    <span className="text-[10px] text-ink-subtle font-mono tabular-nums">{task.estMinutes}m</span>
                   </div>
                 ))}
               </div>
 
               {/* Grounded Resource Link */}
               {week.resourceUrl && (
-                <div className="pt-2 flex items-center justify-between text-xs border-t border-[#E7E5DE]/60">
-                  <span className="text-[#82858E] font-mono text-[10px] uppercase">Vetted Guide</span>
+                <div className="pt-2 flex items-center justify-between text-xs border-t border-hairline/60">
+                  <span className="text-ink-subtle font-mono text-[10px] uppercase">Vetted Guide</span>
                   <a
                     href={week.resourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-medium text-[#183059] hover:underline"
+                    className="inline-flex items-center gap-1 font-medium text-brand-ink hover:underline"
                   >
                     <span className="max-w-[200px] truncate">{week.resourceTitle}</span>
                     <ExternalLink className="w-3.5 h-3.5 shrink-0" />
@@ -195,8 +195,8 @@ export default function RoadmapCard({
 
       {/* Footer CTA if locked */}
       {roadmap.weeks.some(w => w.isLocked) && (
-        <div className="px-5 py-3.5 bg-[#FAFAF8] border-t border-[#E7E5DE] flex items-center justify-between gap-2">
-          <span className="text-xs text-[#52555E]">
+        <div className="px-5 py-3.5 bg-canvas border-t border-hairline flex items-center justify-between gap-2">
+          <span className="text-xs text-ink-muted">
             Weeks 3–12 locked for guest preview
           </span>
           <Button

@@ -105,51 +105,47 @@ export default function RegistrationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150">
-      <div className="w-full max-w-md bg-white rounded-xl border border-[#E7E5DE] shadow-atelier-lg overflow-hidden relative">
-        {/* Close Button */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-[2px] animate-in fade-in duration-150">
+      <div className="w-full max-w-md bg-paper rounded-xl border border-hairline shadow-atelier-lg overflow-hidden relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-1.5 rounded-lg text-[#82858E] hover:text-[#141518] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-20 p-1.5 rounded-lg text-ink-subtle hover:text-ink hover:bg-inset transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
 
-        {/* Modal Header */}
-        <div className="bg-[#FAFAF8] text-[#141518] p-6 pb-5 space-y-3 border-b border-[#E7E5DE]">
-          <div className="w-9 h-9 rounded-lg bg-[#183059] flex items-center justify-center text-white">
+        <div className="bg-canvas text-ink p-6 pb-5 space-y-3 border-b border-hairline">
+          <div className="w-9 h-9 rounded-lg bg-brand flex items-center justify-center text-white">
             <ShieldCheck className="w-4 h-4" />
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold tracking-tight text-[#141518]">
+            <h3 className="text-lg font-semibold tracking-tight text-ink">
               Save Progress &amp; Unlock Features
             </h3>
-            <p className="text-xs text-[#52555E] mt-1 font-mono">
+            <p className="text-xs text-ink-muted mt-1 font-mono">
               Zero spam · Takes 15 seconds · 100% Free
             </p>
           </div>
 
-          {/* Value Perks List */}
-          <div className="bg-white rounded-lg p-3 border border-[#E7E5DE] space-y-1.5 text-xs text-[#52555E]">
+          <div className="bg-paper rounded-lg p-3 border border-hairline space-y-1.5 text-xs text-ink-muted">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#183059] shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-brand-ink shrink-0" />
               <span>Full 90-Day (12-Week) Personalised Roadmap</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#183059] shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-brand-ink shrink-0" />
               <span>Unlock ATS Mistakes #2 &amp; #3 with Before/After diffs</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#183059] shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-brand-ink shrink-0" />
               <span>5-Minute Mock Interview with full scoring report</span>
             </div>
           </div>
         </div>
 
-        {/* Tab Selection */}
         <div className="px-6 pt-5">
-          <div className="flex rounded-lg bg-[#F4F3EE] p-1 text-xs font-medium border border-[#E7E5DE]">
+          <div className="flex rounded-lg bg-inset p-1 text-xs font-medium border border-hairline">
             <button
               type="button"
               onClick={() => {
@@ -158,8 +154,8 @@ export default function RegistrationModal({
               }}
               className={`flex-1 py-1.5 rounded-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                 authMethod === "phone"
-                  ? "bg-white shadow-xs text-[#183059] font-semibold"
-                  : "text-[#52555E] hover:text-[#141518]"
+                  ? "bg-paper shadow-xs text-brand-ink font-semibold"
+                  : "text-ink-muted hover:text-ink"
               }`}
             >
               <Phone className="w-3 h-3" />
@@ -173,8 +169,8 @@ export default function RegistrationModal({
               }}
               className={`flex-1 py-1.5 rounded-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                 authMethod === "google"
-                  ? "bg-white shadow-xs text-[#183059] font-semibold"
-                  : "text-[#52555E] hover:text-[#141518]"
+                  ? "bg-paper shadow-xs text-brand-ink font-semibold"
+                  : "text-ink-muted hover:text-ink"
               }`}
             >
               <Globe className="w-3 h-3" />
@@ -188,8 +184,8 @@ export default function RegistrationModal({
               }}
               className={`flex-1 py-1.5 rounded-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                 authMethod === "magic_link"
-                  ? "bg-white shadow-xs text-[#183059] font-semibold"
-                  : "text-[#52555E] hover:text-[#141518]"
+                  ? "bg-paper shadow-xs text-brand-ink font-semibold"
+                  : "text-ink-muted hover:text-ink"
               }`}
             >
               <Mail className="w-3 h-3" />
@@ -198,14 +194,13 @@ export default function RegistrationModal({
           </div>
         </div>
 
-        {/* Tab Body */}
         <div className="p-6 space-y-4">
           {authMethod === "phone" && (
             <>
               {step === "input" ? (
                 <form onSubmit={handleSendPhoneOtp} className="space-y-3">
                   <div>
-                    <label className="text-xs font-medium text-[#141518] block mb-1.5">
+                    <label className="text-xs font-medium text-ink block mb-1.5">
                       Mobile Number (India +91)
                     </label>
                     <div className="relative">
@@ -215,9 +210,9 @@ export default function RegistrationModal({
                         onChange={e => setPhone(e.target.value)}
                         placeholder="+91 98765 43210"
                         required
-                        className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] text-sm focus:outline-none focus:ring-2 focus:ring-[#183059]"
+                        className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-hairline bg-canvas text-ink text-sm focus:outline-none focus:ring-2 focus:ring-brand"
                       />
-                      <div className="absolute left-3 top-3 text-[#82858E]">
+                      <div className="absolute left-3 top-3 text-ink-subtle">
                         <Phone className="w-4 h-4" />
                       </div>
                     </div>
@@ -236,12 +231,12 @@ export default function RegistrationModal({
                 </form>
               ) : (
                 <form onSubmit={handleVerifyPhoneOtp} className="space-y-3">
-                  <div className="p-3 bg-[#F4F3EE] rounded-lg border border-[#E7E5DE] text-xs text-[#141518]">
+                  <div className="p-3 bg-inset rounded-lg border border-hairline text-xs text-ink">
                     Demo OTP generated: <strong className="font-mono">7890</strong>
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-[#141518] block mb-1.5">
+                    <label className="text-xs font-medium text-ink block mb-1.5">
                       Enter 4-digit OTP
                     </label>
                     <input
@@ -251,7 +246,7 @@ export default function RegistrationModal({
                       onChange={e => setOtp(e.target.value)}
                       placeholder="7890"
                       required
-                      className="w-full text-center tracking-widest text-lg font-mono py-2 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] focus:outline-none focus:ring-2 focus:ring-[#183059]"
+                      className="w-full text-center tracking-widest text-lg font-mono py-2 rounded-lg border border-hairline bg-canvas text-ink focus:outline-none focus:ring-2 focus:ring-brand"
                     />
                   </div>
 
@@ -268,7 +263,7 @@ export default function RegistrationModal({
                   <button
                     type="button"
                     onClick={() => setStep("input")}
-                    className="w-full text-center text-xs text-[#52555E] hover:text-[#141518] font-medium cursor-pointer"
+                    className="w-full text-center text-xs text-ink-muted hover:text-ink font-medium cursor-pointer"
                   >
                     ← Change number
                   </button>
@@ -279,7 +274,7 @@ export default function RegistrationModal({
 
           {authMethod === "google" && (
             <div className="space-y-3 py-2 text-center">
-              <p className="text-xs text-[#52555E]">
+              <p className="text-xs text-ink-muted">
                 Sign in with your Google account. Your guest profile and messages will migrate automatically.
               </p>
               <Button
@@ -290,7 +285,7 @@ export default function RegistrationModal({
                 disabled={loading}
                 className="w-full justify-center gap-2"
               >
-                <Globe className="w-4 h-4 text-[#183059]" />
+                <Globe className="w-4 h-4 text-brand-ink" />
                 <span>{loading ? "Connecting Google..." : "Continue with Google"}</span>
               </Button>
             </div>
@@ -301,7 +296,7 @@ export default function RegistrationModal({
               {step !== "magic_sent" ? (
                 <form onSubmit={handleSendMagicLink} className="space-y-3">
                   <div>
-                    <label className="text-xs font-medium text-[#141518] block mb-1.5">
+                    <label className="text-xs font-medium text-ink block mb-1.5">
                       College / Personal Email
                     </label>
                     <div className="relative">
@@ -311,9 +306,9 @@ export default function RegistrationModal({
                         onChange={e => setEmail(e.target.value)}
                         placeholder="student@college.edu"
                         required
-                        className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] text-sm focus:outline-none focus:ring-2 focus:ring-[#183059]"
+                        className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-hairline bg-canvas text-ink text-sm focus:outline-none focus:ring-2 focus:ring-brand"
                       />
-                      <div className="absolute left-3 top-3 text-[#82858E]">
+                      <div className="absolute left-3 top-3 text-ink-subtle">
                         <Mail className="w-4 h-4" />
                       </div>
                     </div>
@@ -332,7 +327,7 @@ export default function RegistrationModal({
                 </form>
               ) : (
                 <div className="space-y-3">
-                  <div className="p-3 bg-[#F0FDF4] rounded-lg border border-[#BBF7D0] text-xs text-[#166534] space-y-1">
+                  <div className="p-3 bg-pass-bg rounded-lg border border-pass-border text-xs text-pass space-y-1">
                     <p className="font-semibold flex items-center gap-1">
                       <Check className="w-3.5 h-3.5" /> Magic Link Sent
                     </p>
@@ -354,12 +349,11 @@ export default function RegistrationModal({
             </>
           )}
 
-          {/* Quick 1-Tap Demo Button */}
-          <div className="pt-3 border-t border-[#E7E5DE]">
+          <div className="pt-3 border-t border-hairline">
             <button
               type="button"
               onClick={handleInstantDemoVerify}
-              className="w-full py-2.5 rounded-lg bg-[#F4F3EE] hover:bg-[#ECEBE4] text-[#141518] font-medium text-xs transition-colors flex items-center justify-center gap-1.5 border border-[#E7E5DE] cursor-pointer"
+              className="w-full py-2.5 rounded-full bg-inset hover:bg-inset-hover text-ink font-medium text-xs transition-colors flex items-center justify-center gap-1.5 border border-hairline cursor-pointer"
             >
               <span>1-Click Instant Demo Verification</span>
             </button>

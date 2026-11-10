@@ -86,40 +86,38 @@ export default function ResumeUploadModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150">
-      <div className="w-full max-w-lg bg-white rounded-xl border border-[#E7E5DE] shadow-atelier-lg overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="bg-[#FAFAF8] text-[#141518] p-5 flex items-center justify-between border-b border-[#E7E5DE]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-[2px] animate-in fade-in duration-150">
+      <div className="w-full max-w-lg bg-paper rounded-xl border border-hairline shadow-atelier-lg overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="bg-canvas text-ink p-5 flex items-center justify-between border-b border-hairline">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#183059] flex items-center justify-center text-white">
+            <div className="w-9 h-9 rounded-lg bg-brand flex items-center justify-center text-white">
               <FileText className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-semibold text-base leading-tight text-[#141518]">
+              <h3 className="font-semibold text-base leading-tight text-ink">
                 Check Resume ATS Score
               </h3>
-              <p className="text-[11px] font-mono text-[#82858E]">
+              <p className="text-[11px] font-mono text-ink-subtle">
                 Deterministic 100-pt rubric · 3 Fixable Mistakes
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#82858E] hover:text-[#141518] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-ink-subtle hover:text-ink hover:bg-inset transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Tab selection */}
-        <div className="flex border-b border-[#E7E5DE] bg-[#F4F3EE]/60 text-xs font-medium">
+        <div className="flex border-b border-hairline bg-inset/60 text-xs font-medium">
           <button
             type="button"
             onClick={() => setTab("paste")}
             className={`flex-1 py-2.5 border-b-2 transition-colors cursor-pointer ${
               tab === "paste"
-                ? "border-[#183059] text-[#183059] font-semibold bg-white"
-                : "border-transparent text-[#52555E] hover:text-[#141518]"
+                ? "border-brand text-brand-ink font-semibold bg-paper"
+                : "border-transparent text-ink-muted hover:text-ink"
             }`}
           >
             Paste Resume Text
@@ -129,18 +127,17 @@ export default function ResumeUploadModal({
             onClick={() => setTab("upload")}
             className={`flex-1 py-2.5 border-b-2 transition-colors cursor-pointer ${
               tab === "upload"
-                ? "border-[#183059] text-[#183059] font-semibold bg-white"
-                : "border-transparent text-[#52555E] hover:text-[#141518]"
+                ? "border-brand text-brand-ink font-semibold bg-paper"
+                : "border-transparent text-ink-muted hover:text-ink"
             }`}
           >
             Upload PDF / DOCX
           </button>
         </div>
 
-        {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4 overflow-y-auto flex-1">
           {errorMsg && (
-            <div className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-xs text-[#991B1B] flex items-center gap-2">
+            <div className="p-3 rounded-lg bg-fix-bg border border-fix-border text-xs text-fix flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
@@ -148,12 +145,12 @@ export default function ResumeUploadModal({
 
           {tab === "paste" ? (
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs text-[#52555E]">
+              <div className="flex justify-between items-center text-xs text-ink-muted">
                 <span>Paste your resume text or bullets:</span>
                 <button
                   type="button"
                   onClick={handleUseSample}
-                  className="text-[#183059] font-semibold hover:underline cursor-pointer"
+                  className="text-brand-ink font-semibold hover:underline cursor-pointer"
                 >
                   Insert Sample Resume
                 </button>
@@ -164,17 +161,17 @@ export default function ResumeUploadModal({
                 onChange={e => setResumeText(e.target.value)}
                 placeholder="Paste your education, skills, projects, and work experience here..."
                 rows={9}
-                className="w-full p-3.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-xs sm:text-sm font-mono text-[#141518] focus:outline-none focus:ring-2 focus:ring-[#183059] transition-all resize-none"
+                className="w-full p-3.5 rounded-lg border border-hairline bg-canvas text-xs sm:text-sm font-mono text-ink focus:outline-none focus:ring-2 focus:ring-brand transition-all resize-none"
               />
             </div>
           ) : (
             <div className="space-y-3">
-              <label className="border-2 border-dashed border-[#D3D0C7] hover:border-[#183059] rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-[#FAFAF8]">
-                <UploadCloud className="w-7 h-7 text-[#183059] mb-2" />
-                <span className="text-xs font-semibold text-[#141518]">
+              <label className="border-2 border-dashed border-hairline-strong hover:border-brand rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-canvas">
+                <UploadCloud className="w-7 h-7 text-brand-ink mb-2" />
+                <span className="text-xs font-semibold text-ink">
                   {fileName ? fileName : "Click to select PDF or DOCX file"}
                 </span>
-                <span className="text-[11px] font-mono text-[#82858E] mt-1">Up to 5 MB max</span>
+                <span className="text-[11px] font-mono text-ink-subtle mt-1">Up to 5 MB max</span>
                 <input
                   type="file"
                   accept=".pdf,.docx,.txt"
@@ -186,7 +183,7 @@ export default function ResumeUploadModal({
               <button
                 type="button"
                 onClick={handleUseSample}
-                className="w-full py-2.5 rounded-lg bg-[#F4F3EE] text-[#141518] font-medium text-xs border border-[#E7E5DE] hover:bg-[#ECEBE4] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-full bg-inset text-ink font-medium text-xs border border-hairline hover:bg-inset-hover flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <span>Load ready-made sample student resume</span>
               </button>
@@ -196,7 +193,7 @@ export default function ResumeUploadModal({
           <div className="pt-2">
             <Button
               type="submit"
-              variant="primary"
+              variant="cta"
               size="md"
               disabled={isUploading}
               className="w-full justify-center group"

@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { MessageSquare, Compass, ShieldCheck, UserCheck, ArrowUpRight } from "lucide-react";
+import { ArrowRight, UserCheck } from "lucide-react";
 import { getInitialState } from "@/lib/storage/mockDb";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar({
   onOpenAuth
@@ -22,69 +23,66 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#FAFAF8]/90 border-b border-[#E7E5DE] transition-colors">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo - Architectural Monogram */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-8 h-8 rounded-lg bg-[#183059] flex items-center justify-center text-white font-mono text-xs font-bold tracking-tighter group-hover:bg-[#102344] transition-colors">
-            CP/
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-semibold text-base tracking-[-0.02em] text-[#141518]">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-canvas/92 border-b border-hairline transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+        {/* Top-Left: Prominent Light / Dark Switch + Brand Mark */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <ThemeToggle />
+
+          <div className="h-4 w-px bg-hairline hidden sm:block" />
+
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="w-7 h-7 rounded-md bg-brand flex items-center justify-center text-white font-mono text-[11px] font-bold tracking-tighter group-hover:bg-brand-hover transition-colors">
+              CP
+            </span>
+            <span className="font-mono text-xs uppercase tracking-[0.14em] font-semibold text-ink hidden md:inline">
               CareerPilot
             </span>
-            <span className="hidden sm:inline-block font-mono text-[10px] text-[#82858E] tracking-widest uppercase">
-              Studio
-            </span>
-          </div>
-        </Link>
+          </Link>
+        </div>
 
-        {/* Navigation Links */}
-        <nav className="flex items-center gap-1 sm:gap-2">
+        {/* Center Editorial Navigation Links */}
+        <nav className="flex items-center gap-4 sm:gap-7 font-mono text-[11px] uppercase tracking-[0.14em]">
           <Link
             href="/chat"
-            className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 ${
+            className={`py-1 transition-colors ${
               pathname === "/chat"
-                ? "bg-[#F4F3EE] text-[#141518] font-semibold border border-[#E7E5DE]"
-                : "text-[#52555E] hover:text-[#141518] hover:bg-[#F4F3EE]/60"
+                ? "text-brand-ink font-semibold border-b-2 border-cta"
+                : "text-ink-muted hover:text-ink"
             }`}
           >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Co-Pilot</span>
+            Co-Pilot
           </Link>
 
           <Link
             href="/dashboard"
-            className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 ${
+            className={`py-1 transition-colors ${
               pathname === "/dashboard"
-                ? "bg-[#F4F3EE] text-[#141518] font-semibold border border-[#E7E5DE]"
-                : "text-[#52555E] hover:text-[#141518] hover:bg-[#F4F3EE]/60"
+                ? "text-brand-ink font-semibold border-b-2 border-cta"
+                : "text-ink-muted hover:text-ink"
             }`}
           >
-            <Compass className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">My Space</span>
+            My Space
           </Link>
 
           <Link
             href="/admin"
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+            className={`py-1 transition-colors hidden sm:inline-block ${
               pathname === "/admin"
-                ? "bg-[#F4F3EE] text-[#141518] font-semibold border border-[#E7E5DE]"
-                : "text-[#82858E] hover:text-[#141518]"
+                ? "text-brand-ink font-semibold border-b-2 border-cta"
+                : "text-ink-subtle hover:text-ink"
             }`}
-            title="Admin & Telemetry"
           >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Admin</span>
+            Admin
           </Link>
+        </nav>
 
-          <div className="h-4 w-px bg-[#E7E5DE] mx-1 hidden sm:block" />
-
-          {/* Auth Button */}
+        {/* Right Action Pill (Editorial Pill with Circular Coral Arrow) */}
+        <div className="flex items-center">
           {isRegistered ? (
             <Link
               href="/dashboard"
-              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F0FDF4] text-[#166534] border border-[#BBF7D0] flex items-center gap-1.5 hover:bg-[#DCFCE7] transition-colors"
+              className="px-3.5 py-1.5 rounded-full text-xs font-mono uppercase tracking-wider bg-pass-bg text-pass border border-pass-border flex items-center gap-1.5 transition-colors"
             >
               <UserCheck className="w-3.5 h-3.5" />
               <span className="max-w-[90px] truncate">{userName || "Profile"}</span>
@@ -92,13 +90,15 @@ export default function Navbar({
           ) : (
             <button
               onClick={onOpenAuth}
-              className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-[#183059] hover:bg-[#102344] text-white transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="group pl-3.5 pr-1.5 py-1 rounded-full border border-ink/40 hover:border-ink bg-paper text-ink font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.12em] font-medium transition-all flex items-center gap-2.5 cursor-pointer"
             >
               <span>Save Progress</span>
-              <ArrowUpRight className="w-3.5 h-3.5 opacity-80" />
+              <span className="w-6 h-6 rounded-full bg-cta group-hover:bg-cta-hover text-white flex items-center justify-center transition-colors">
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              </span>
             </button>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   );

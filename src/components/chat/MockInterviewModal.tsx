@@ -27,7 +27,7 @@ export default function MockInterviewModal({
   const [finalReport, setFinalReport] = useState<InterviewReport | null>(null);
 
   const [isListening, setIsListening] = useState(false);
-  const [sttSupported, setSttSupported] = useState(true);
+  const [, setSttSupported] = useState(true);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function MockInterviewModal({
       if (recognitionRef.current) {
         try {
           recognitionRef.current.start();
-        } catch (e) {
+        } catch {
           simulateVoiceInput();
         }
       } else {
@@ -199,19 +199,18 @@ export default function MockInterviewModal({
   const seconds = secondsRemaining % 60;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150">
-      <div className="w-full max-w-xl bg-white rounded-xl border border-[#E7E5DE] shadow-atelier-lg overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="bg-[#FAFAF8] text-[#141518] p-5 flex items-center justify-between border-b border-[#E7E5DE]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-[2px] animate-in fade-in duration-150">
+      <div className="w-full max-w-xl bg-paper rounded-xl border border-hairline shadow-atelier-lg overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="bg-canvas text-ink p-5 flex items-center justify-between border-b border-hairline">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#183059] flex items-center justify-center text-white">
+            <div className="w-9 h-9 rounded-lg bg-brand flex items-center justify-center text-white">
               <Award className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-semibold text-base leading-tight text-[#141518]">
+              <h3 className="font-semibold text-base leading-tight text-ink">
                 5-Min Mock Interview Practice
               </h3>
-              <p className="text-[11px] font-mono text-[#82858E]">
+              <p className="text-[11px] font-mono text-ink-subtle">
                 Supportive &amp; constructive · College fresher rubric
               </p>
             </div>
@@ -222,11 +221,11 @@ export default function MockInterviewModal({
               <div
                 className={`px-3 py-1 rounded-md text-xs font-mono font-semibold flex items-center gap-1.5 tabular-nums border ${
                   secondsRemaining < 60
-                    ? "bg-[#FEF2F2] text-[#991B1B] border-[#FECACA]"
-                    : "bg-white text-[#141518] border-[#E7E5DE]"
+                    ? "bg-fix-bg text-fix border-fix-border"
+                    : "bg-paper text-ink border-hairline"
                 }`}
               >
-                <Clock className="w-3.5 h-3.5 text-[#183059]" />
+                <Clock className="w-3.5 h-3.5 text-brand-ink" />
                 <span>
                   {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                 </span>
@@ -235,52 +234,49 @@ export default function MockInterviewModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-[#82858E] hover:text-[#141518] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-ink-subtle hover:text-ink hover:bg-inset transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Modal Body */}
         {!isFinished ? (
           <div className="p-6 space-y-5 overflow-y-auto flex-1">
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs text-[#52555E] font-mono">
+              <div className="flex justify-between text-xs text-ink-muted font-mono">
                 <span>
                   Question {currentIndex + 1} of {questions.length}
                 </span>
-                <span className="text-[#183059] uppercase tracking-wider text-[11px]">
+                <span className="text-brand-ink uppercase tracking-wider text-[11px]">
                   {currentQ?.category}
                 </span>
               </div>
-              <div className="w-full bg-[#F4F3EE] h-1.5 rounded-full overflow-hidden border border-[#E7E5DE]">
+              <div className="w-full bg-inset h-1.5 rounded-full overflow-hidden border border-hairline">
                 <div
-                  className="bg-[#183059] h-full rounded-full transition-all duration-300"
+                  className="bg-brand h-full rounded-full transition-all duration-300"
                   style={{ width: `${((currentIndex + 1) / (questions.length || 1)) * 100}%` }}
                 />
               </div>
             </div>
 
-            {/* Question Prompt */}
-            <div className="rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] p-4 space-y-2">
+            <div className="rounded-lg border border-hairline bg-canvas p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded bg-[#183059] text-white text-[9px] font-mono font-bold flex items-center justify-center">
+                <span className="w-5 h-5 rounded bg-brand text-white text-[9px] font-mono font-bold flex items-center justify-center">
                   CP/
                 </span>
-                <span className="font-mono text-[11px] font-semibold text-[#52555E] uppercase tracking-wider">
+                <span className="font-mono text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                   Senior Interviewer
                 </span>
               </div>
-              <p className="font-display text-lg text-[#141518] leading-snug">
+              <p className="font-display text-lg text-ink leading-snug">
                 {currentQ?.question}
               </p>
             </div>
 
-            {/* Answer Input Box */}
             <div className="space-y-2">
-              <div className="flex justify-between text-xs text-[#52555E]">
-                <label className="font-medium text-[#141518]">Your Answer (Text or Voice):</label>
+              <div className="flex justify-between text-xs text-ink-muted">
+                <label className="font-medium text-ink">Your Answer (Text or Voice):</label>
                 <span className="font-mono text-[11px] tabular-nums">
                   {currentInput.trim().split(/\s+/).filter(Boolean).length} words
                 </span>
@@ -290,7 +286,7 @@ export default function MockInterviewModal({
                 onChange={e => setCurrentInput(e.target.value)}
                 placeholder="Type your answer or speak using the voice mic... Zero CGPA judgment."
                 rows={5}
-                className="w-full p-3.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] text-sm focus:outline-none focus:ring-2 focus:ring-[#183059] transition-all resize-none font-sans"
+                className="w-full p-3.5 rounded-lg border border-hairline bg-canvas text-ink text-sm focus:outline-none focus:ring-2 focus:ring-brand transition-all resize-none font-sans"
               />
 
               <div className="flex items-center justify-between text-xs pt-1">
@@ -298,10 +294,10 @@ export default function MockInterviewModal({
                   <button
                     type="button"
                     onClick={toggleVoiceRecording}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-colors cursor-pointer ${
                       isListening
-                        ? "bg-[#991B1B] text-white border-[#991B1B]"
-                        : "bg-[#F4F3EE] text-[#141518] border-[#E7E5DE] hover:bg-[#ECEBE4]"
+                        ? "bg-fix-bg text-fix border-fix-border"
+                        : "bg-inset text-ink border-hairline hover:bg-inset-hover"
                     }`}
                   >
                     {isListening ? (
@@ -311,7 +307,7 @@ export default function MockInterviewModal({
                       </>
                     ) : (
                       <>
-                        <Mic className="w-3.5 h-3.5 text-[#183059]" />
+                        <Mic className="w-3.5 h-3.5 text-brand-ink" />
                         <span>Speak Answer (Voice)</span>
                       </>
                     )}
@@ -321,7 +317,7 @@ export default function MockInterviewModal({
                 <button
                   type="button"
                   onClick={handleSkip}
-                  className="text-[#52555E] hover:text-[#141518] font-medium cursor-pointer"
+                  className="text-ink-muted hover:text-ink font-medium cursor-pointer"
                 >
                   Skip Question →
                 </button>
@@ -330,7 +326,7 @@ export default function MockInterviewModal({
 
             <div className="pt-2">
               <Button
-                variant="primary"
+                variant="cta"
                 size="md"
                 onClick={handleNextQuestion}
                 disabled={currentInput.trim().length === 0}
@@ -344,19 +340,18 @@ export default function MockInterviewModal({
             </div>
           </div>
         ) : (
-          /* Final Feedback Report */
           <div className="p-6 space-y-5 overflow-y-auto flex-1">
             {finalReport && (
               <div className="space-y-5">
-                <div className="rounded-xl bg-[#183059] p-5 text-center space-y-1.5 text-white">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-white/70">
+                <div className="rounded-xl bg-manifesto border border-manifesto-border p-5 text-center space-y-1.5 text-[#F4EFEA]">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-[#F4EFEA]/70">
                     Overall Interview Score
                   </span>
-                  <div className="text-4xl font-mono font-bold text-white tabular-nums">
+                  <div className="text-4xl font-mono font-bold text-[#F4EFEA] tabular-nums">
                     {finalReport.overallScore}{" "}
-                    <span className="text-base text-white/60 font-sans font-normal">/ 10</span>
+                    <span className="text-base text-[#F4EFEA]/65 font-sans font-normal">/ 10</span>
                   </div>
-                  <p className="text-xs text-white/80 font-sans">
+                  <p className="text-xs text-[#F4EFEA]/80 font-sans">
                     Solid fresher baseline for technical placement rounds.
                   </p>
                 </div>
@@ -370,23 +365,23 @@ export default function MockInterviewModal({
                   ].map(p => (
                     <div
                       key={p.label}
-                      className="p-3 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8]"
+                      className="p-3 rounded-lg border border-hairline bg-canvas"
                     >
-                      <div className="text-lg font-mono font-bold text-[#183059] tabular-nums">{p.score}/10</div>
-                      <div className="font-mono text-[10px] text-[#82858E] uppercase mt-0.5">{p.label}</div>
+                      <div className="text-lg font-mono font-bold text-brand-ink tabular-nums">{p.score}/10</div>
+                      <div className="font-mono text-[10px] text-ink-subtle uppercase mt-0.5">{p.label}</div>
                     </div>
                   ))}
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-[#166534] flex items-center gap-1.5">
+                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-pass flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5" />
                     <span>Top 3 Strengths</span>
                   </h4>
-                  <ul className="space-y-1 text-xs text-[#52555E] font-sans">
+                  <ul className="space-y-1 text-xs text-ink-muted font-sans">
                     {finalReport.strengths.map((s, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="text-[#166534] font-bold">✓</span>
+                        <span className="text-pass font-bold">✓</span>
                         <span>{s}</span>
                       </li>
                     ))}
@@ -394,30 +389,30 @@ export default function MockInterviewModal({
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-[#92400E] flex items-center gap-1.5">
+                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-warn flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5" />
                     <span>Areas to Polish</span>
                   </h4>
-                  <ul className="space-y-1 text-xs text-[#52555E] font-sans">
+                  <ul className="space-y-1 text-xs text-ink-muted font-sans">
                     {finalReport.improvements.map((imp, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="text-[#92400E] font-bold">→</span>
+                        <span className="text-warn font-bold">→</span>
                         <span>{imp}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] p-4 space-y-1.5">
-                  <span className="font-mono text-[10px] font-semibold text-[#82858E] uppercase tracking-wider">
+                <div className="rounded-lg border border-hairline bg-canvas p-4 space-y-1.5">
+                  <span className="font-mono text-[10px] font-semibold text-ink-subtle uppercase tracking-wider">
                     Model Answer Example
                   </span>
-                  <p className="text-xs text-[#141518] leading-relaxed font-display italic">
+                  <p className="text-xs text-ink leading-relaxed font-display italic">
                     &quot;{finalReport.idealAnswerForWeakest}&quot;
                   </p>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F4F3EE] border border-[#E7E5DE] text-xs text-[#141518]">
+                <div className="p-3.5 rounded-lg bg-inset border border-hairline text-xs text-ink">
                   <strong>Next Step:</strong> {finalReport.nextRoadmapAction}
                 </div>
               </div>
@@ -426,7 +421,7 @@ export default function MockInterviewModal({
         )}
 
         {isFinished && (
-          <div className="p-4 bg-[#FAFAF8] border-t border-[#E7E5DE]">
+          <div className="p-4 bg-canvas border-t border-hairline">
             <Button variant="primary" size="md" onClick={onClose} className="w-full justify-center">
               Done &amp; Save to My Space
             </Button>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader, JetBrains_Mono } from "next/font/google";
+import { Inter, Newsreader, JetBrains_Mono, Anton } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -12,6 +12,13 @@ const newsreader = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+const anton = Anton({
+  variable: "--font-anton",
+  weight: "400",
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -36,6 +43,8 @@ export const metadata: Metadata = {
   authors: [{ name: "CareerPilot Team" }]
 };
 
+const themeInitScript = `(function(){try{var t=localStorage.getItem('careerpilot_theme');if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: {
@@ -44,9 +53,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${newsreader.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${inter.variable} ${newsreader.variable} ${anton.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#FAFAF8] text-[#141518] font-sans selection:bg-[#183059] selection:text-white antialiased">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-full flex flex-col bg-canvas text-ink font-sans selection:bg-brand selection:text-white antialiased">
         {children}
       </body>
     </html>
