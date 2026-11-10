@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Briefcase, AlertOctagon, ExternalLink, Bookmark, BookmarkCheck, ShieldAlert, Sparkles, Filter, CheckCircle2 } from "lucide-react";
+import { AlertOctagon, ExternalLink, Bookmark, BookmarkCheck, ShieldAlert, Filter } from "lucide-react";
 import { JobListing } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -42,63 +42,41 @@ export default function JobsCard({
     filterType === "all" ? visibleJobs : visibleJobs.filter(j => j.jobType.toLowerCase() === filterType.toLowerCase());
 
   return (
-    <div className="w-full max-w-xl mx-auto rounded-2xl border border-slate-200 bg-white shadow-saas overflow-hidden transition-all my-3">
-      {/* Light Theme Header */}
-      <div className="relative bg-gradient-to-br from-blue-50/80 via-white to-slate-50 text-slate-900 p-5 sm:p-6 overflow-hidden border-b border-slate-200">
-        <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 blur-[80px] rounded-full pointer-events-none" />
-
-        <div className="relative z-10 flex items-start justify-between gap-4">
-          <div>
-            <SectionLabel pulse={true} className="mb-2.5">
-              SKILL-MATCHED ROLES
-            </SectionLabel>
-            <h3 className="text-xl font-bold tracking-tight text-slate-900">
-              Curated <span className="text-blue-600">Fresher Openings</span>
+    <div className="w-full max-w-xl rounded-xl border border-[#E7E5DE] bg-white shadow-atelier overflow-hidden my-2">
+      {/* Header */}
+      <div className="bg-[#FAFAF8] p-5 sm:p-6 border-b border-[#E7E5DE]">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1.5">
+            <SectionLabel>Verified Roles</SectionLabel>
+            <h3 className="text-lg sm:text-xl font-semibold tracking-tight text-[#141518] pt-1">
+              Curated Fresher Openings
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
-              Unbiased matching • Scams auto-flagged • Zero college-tier prejudice
+            <p className="text-xs font-mono text-[#82858E]">
+              Skill-ranked · Scams flagged · Zero pedigree filter
             </p>
           </div>
-          <span className="font-mono text-xs px-2.5 py-1 rounded-full bg-white text-blue-600 font-semibold border border-slate-200 shadow-xs shrink-0">
+          <span className="font-mono text-xs px-2.5 py-1 rounded-md bg-white text-[#183059] font-semibold border border-[#E7E5DE] shrink-0 tabular-nums">
             {jobs.length} Matches
           </span>
         </div>
       </div>
 
-      {/* Filter Chips Bar */}
-      <div className="flex items-center gap-1.5 p-3 border-b border-slate-200 bg-slate-50 overflow-x-auto text-xs">
-        <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1" />
-        <button
-          onClick={() => setFilterType("all")}
-          className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
-            filterType === "all"
-              ? "bg-blue-600 text-white font-semibold"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
-          }`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setFilterType("Fresher")}
-          className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
-            filterType === "Fresher"
-              ? "bg-blue-600 text-white font-semibold"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
-          }`}
-        >
-          Fresher Roles
-        </button>
-        <button
-          onClick={() => setFilterType("Internship")}
-          className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
-            filterType === "Internship"
-              ? "bg-blue-600 text-white font-semibold"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
-          }`}
-        >
-          Internships
-        </button>
+      {/* Filter Bar */}
+      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-[#E7E5DE] bg-[#F4F3EE]/60 overflow-x-auto text-xs">
+        <Filter className="w-3.5 h-3.5 text-[#82858E] shrink-0 mr-1" />
+        {(["all", "Fresher", "Internship"] as const).map(type => (
+          <button
+            key={type}
+            onClick={() => setFilterType(type)}
+            className={`px-3 py-1 rounded-md font-medium transition-colors cursor-pointer ${
+              filterType === type
+                ? "bg-[#183059] text-white"
+                : "bg-white border border-[#E7E5DE] text-[#52555E] hover:text-[#141518]"
+            }`}
+          >
+            {type === "all" ? "All" : type === "Fresher" ? "Fresher Roles" : "Internships"}
+          </button>
+        ))}
       </div>
 
       {/* Jobs Feed */}
@@ -111,25 +89,25 @@ export default function JobsCard({
             return (
               <div
                 key={job.id}
-                className="rounded-xl border border-rose-300 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 p-4 space-y-2.5 relative"
+                className="rounded-lg border border-[#FECACA] bg-[#FEF2F2] p-4 space-y-2.5"
               >
-                <div className="flex items-center justify-between text-rose-700 dark:text-rose-400 font-semibold text-xs">
+                <div className="flex items-center justify-between text-[#991B1B] font-semibold text-xs">
                   <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider">
-                    <ShieldAlert className="w-4 h-4 text-rose-600" />
-                    ⚠️ WARNING: Suspicious Posting Flagged
+                    <ShieldAlert className="w-4 h-4" />
+                    Suspicious Posting Flagged
                   </span>
-                  <span className="text-[10px] text-slate-500 font-mono">{job.postedDate}</span>
+                  <span className="text-[10px] text-[#82858E] font-mono">{job.postedDate}</span>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-sm text-slate-900 dark:text-white line-through opacity-80">
+                  <h4 className="font-semibold text-sm text-[#141518] line-through opacity-75">
                     {job.title}
                   </h4>
-                  <p className="text-xs text-slate-500">{job.company}</p>
+                  <p className="text-xs text-[#52555E]">{job.company}</p>
                 </div>
 
-                <div className="bg-rose-100/70 dark:bg-rose-900/30 p-2.5 rounded-lg text-xs text-rose-800 dark:text-rose-300 space-y-1">
-                  <p className="font-semibold text-[11px]">CareerPilot Advisory (Heuristics detected):</p>
+                <div className="bg-white/80 border border-[#FECACA] p-2.5 rounded-md text-xs text-[#991B1B] space-y-1">
+                  <p className="font-semibold text-[11px]">Scam Shield Advisory:</p>
                   <ul className="list-disc list-inside text-[11px] space-y-0.5">
                     {job.scamReasons?.map((r, i) => (
                       <li key={i}>{r}</li>
@@ -141,11 +119,11 @@ export default function JobsCard({
                   <button
                     onClick={() => handleReport(job.id)}
                     disabled={isReported}
-                    className="text-rose-600 dark:text-rose-400 font-semibold hover:underline text-[11px] cursor-pointer"
+                    className="text-[#991B1B] font-semibold hover:underline text-[11px] cursor-pointer"
                   >
-                    {isReported ? "✓ Reported for moderation" : "Report this scam"}
+                    {isReported ? "Reported for moderation" : "Report listing"}
                   </button>
-                  <span className="text-[10px] text-slate-400 italic">Do not pay money for jobs!</span>
+                  <span className="text-[10px] text-[#82858E] font-mono">Never pay fees for jobs</span>
                 </div>
               </div>
             );
@@ -154,41 +132,39 @@ export default function JobsCard({
           return (
             <div
               key={job.id}
-              className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 p-4 space-y-3 hover:border-[#0052FF]/30 transition-all"
+              className="rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] p-4 space-y-3 hover:border-[#183059]/40 transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <h4 className="font-semibold text-sm text-[#0F172A] dark:text-white">{job.title}</h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
-                    {job.company} • {job.location} {job.isRemote && "• Remote"}
+                  <h4 className="font-semibold text-sm text-[#141518]">{job.title}</h4>
+                  <p className="text-xs text-[#52555E] mt-0.5">
+                    {job.company} · {job.location} {job.isRemote && "· Remote"}
                   </p>
                 </div>
 
-                {/* Match percentage pill */}
-                <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0052FF]/10 text-[#0052FF] dark:text-[#4D7CFF] text-xs font-mono font-semibold shrink-0">
-                  <Sparkles className="w-3 h-3" />
-                  <span>{job.matchPercent}% Match</span>
-                </div>
+                <span className="font-mono text-xs font-semibold px-2.5 py-0.5 rounded bg-[#F0FDF4] text-[#166534] border border-[#BBF7D0] shrink-0 tabular-nums">
+                  {job.matchPercent}% Match
+                </span>
               </div>
 
               {job.hasCgpaFilter && (
-                <div className="px-2.5 py-1 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[11px] font-medium flex items-center gap-1.5 border border-amber-200 dark:border-amber-800">
+                <div className="px-2.5 py-1.5 rounded-md bg-[#FEF3C7] text-[#92400E] text-[11px] font-medium flex items-center gap-1.5 border border-[#FDE68A]">
                   <AlertOctagon className="w-3.5 h-3.5 shrink-0" />
-                  <span>Note: Explicit criteria mentioned ({job.minCgpaRequired}+ CGPA requested).</span>
+                  <span>Note: Employer requests {job.minCgpaRequired}+ CGPA.</span>
                 </div>
               )}
 
-              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
-                <strong className="text-[#0052FF] dark:text-[#4D7CFF] font-semibold">Match rationale:</strong> {job.whyItMatches}
+              <p className="text-xs text-[#52555E] leading-relaxed font-sans">
+                <strong className="text-[#141518] font-medium">Rationale:</strong> {job.whyItMatches}
               </p>
 
               {job.missingSkills.length > 0 && (
                 <div className="flex items-center gap-1.5 flex-wrap text-[11px]">
-                  <span className="text-slate-500 font-mono text-[10px]">Skills to prep:</span>
+                  <span className="text-[#82858E] font-mono text-[10px]">Prep:</span>
                   {job.missingSkills.map(s => (
                     <span
                       key={s}
-                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-300"
+                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-white border border-[#E7E5DE] text-[#52555E]"
                     >
                       {s}
                     </span>
@@ -196,18 +172,17 @@ export default function JobsCard({
                 </div>
               )}
 
-              {/* Footer row with salary & apply */}
-              <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="font-mono font-semibold text-[#0F172A] dark:text-white text-xs">{job.salaryRange}</span>
+              <div className="pt-2.5 border-t border-[#E7E5DE] flex items-center justify-between text-xs">
+                <span className="font-mono font-semibold text-[#141518] text-xs">{job.salaryRange}</span>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleToggleSave(job)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-[#0052FF] transition-colors cursor-pointer"
+                    className="p-1.5 rounded-md text-[#82858E] hover:text-[#183059] transition-colors cursor-pointer"
                     title={isSaved ? "Saved" : "Save Job"}
                   >
                     {isSaved ? (
-                      <BookmarkCheck className="w-4 h-4 text-[#0052FF]" />
+                      <BookmarkCheck className="w-4 h-4 text-[#183059]" />
                     ) : (
                       <Bookmark className="w-4 h-4" />
                     )}
@@ -218,9 +193,9 @@ export default function JobsCard({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Button variant="primary" size="sm" className="h-8 px-3 text-xs">
+                    <Button variant="primary" size="sm">
                       <span>Apply</span>
-                      <ExternalLink className="w-3 h-3 ml-1" />
+                      <ExternalLink className="w-3 h-3" />
                     </Button>
                   </a>
                 </div>
@@ -232,16 +207,16 @@ export default function JobsCard({
 
       {/* Guest Gating Banner */}
       {isGuest && jobs.length > 3 && (
-        <div className="p-4 bg-slate-50 dark:bg-[#090D16] border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-          <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-            Showing 3 preview jobs of {jobs.length} matches
+        <div className="px-5 py-3.5 bg-[#FAFAF8] border-t border-[#E7E5DE] flex items-center justify-between gap-2">
+          <span className="text-xs text-[#52555E]">
+            Showing 3 preview roles of {jobs.length}
           </span>
           <Button
             size="sm"
             variant="primary"
             onClick={onUnlockAllJobs}
           >
-            Unlock All {jobs.length} Matches Free 🔓
+            Unlock All {jobs.length} Matches
           </Button>
         </div>
       )}

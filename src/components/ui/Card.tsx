@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "elevated" | "featured" | "inverted";
+  variant?: "default" | "elevated" | "featured" | "subtle";
 }
 
 export function Card({
@@ -11,32 +11,20 @@ export function Card({
   children,
   ...props
 }: CardProps) {
-  if (variant === "featured") {
-    return (
-      <div
-        className={cn(
-          "rounded-2xl border-2 border-blue-500/80 bg-white p-6 shadow-md transition-all duration-300 hover:shadow-lg hover:border-blue-600 hover:-translate-y-0.5",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    );
-  }
-
   const variantStyles = {
     default:
-      "bg-white border border-slate-200 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all duration-200",
+      "bg-white border border-[#E7E5DE] shadow-xs",
     elevated:
-      "bg-white border border-slate-200/90 shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5",
-    inverted:
-      "bg-slate-50 text-slate-900 border border-slate-200 shadow-sm"
+      "bg-white border border-[#E7E5DE] shadow-atelier hover:shadow-atelier-lg transition-all duration-200",
+    featured:
+      "bg-white border-2 border-[#183059] shadow-atelier",
+    subtle:
+      "bg-[#F4F3EE] border border-[#E7E5DE]"
   };
 
   return (
     <div
-      className={cn("rounded-2xl p-6 relative overflow-hidden", variantStyles[variant], className)}
+      className={cn("rounded-xl p-5 sm:p-6 relative overflow-hidden", variantStyles[variant], className)}
       {...props}
     >
       {children}
@@ -63,7 +51,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-lg font-semibold tracking-tight text-slate-900", className)}
+      className={cn("text-base sm:text-lg font-semibold tracking-tight text-[#141518]", className)}
       {...props}
     >
       {children}
@@ -78,7 +66,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-xs text-slate-500 leading-relaxed font-sans", className)}
+      className={cn("text-xs text-[#52555E] leading-relaxed font-sans", className)}
       {...props}
     >
       {children}

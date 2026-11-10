@@ -1,163 +1,69 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #2563eb;
-  --accent-secondary: #3b82f6;
-  --accent-foreground: #ffffff;
-  --border: #e2e8f0;
-  --card: #ffffff;
-  --ring: #2563eb;
+  --surface-base: #fafaf8;
+  --surface-card: #ffffff;
+  --surface-subtle: #f4f3ee;
+  --surface-hover: #ecebe4;
+
+  --border-subtle: #e7e5de;
+  --border-strong: #d3d0c7;
+
+  --text-primary: #141518;
+  --text-secondary: #52555e;
+  --text-muted: #82858e;
+
+  --accent-brand: #183059;
+  --accent-brand-hover: #102344;
+  --accent-brand-tint: #eef2f8;
+  --accent-signal: #1d4ed8;
+
+  --status-pass: #166534;
+  --status-pass-bg: #f0fdf4;
+  --status-warn: #92400e;
+  --status-warn-bg: #fef3c7;
+  --status-fix: #991b1b;
+  --status-fix-bg: #fef2f2;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-secondary: var(--accent-secondary);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
-  --color-card: var(--card);
-  --color-ring: var(--ring);
+  --color-background: var(--surface-base);
+  --color-foreground: var(--text-primary);
+  --color-muted: var(--surface-subtle);
+  --color-muted-foreground: var(--text-secondary);
+  --color-accent: var(--accent-brand);
+  --color-accent-foreground: #ffffff;
+  --color-border: var(--border-subtle);
+  --color-card: var(--surface-card);
+  --color-ring: var(--accent-brand);
 
   --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
+  --font-display: var(--font-newsreader), Georgia, Cambria, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-/* Strictly Light Theme - No dark mode override */
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-base);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Professional SaaS Signature Utilities */
-
-/* Signature Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Tactile Architectural Elevation */
+.shadow-atelier {
+  box-shadow:
+    0 1px 2px rgba(20, 21, 24, 0.04),
+    0 4px 12px -2px rgba(20, 21, 24, 0.03);
 }
 
-/* Blue Highlight Underline Bar */
-.saas-highlight {
-  position: relative;
-  display: inline-block;
-  color: #2563eb;
-  font-weight: 700;
+.shadow-atelier-lg {
+  box-shadow:
+    0 2px 4px rgba(20, 21, 24, 0.04),
+    0 12px 32px -4px rgba(20, 21, 24, 0.08);
 }
 
-.saas-highlight::after {
-  content: "";
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  border-radius: 2px;
-  background: rgba(37, 99, 235, 0.15);
-  z-index: -1;
+/* Precision numeric alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
-
-/* Gradient Underline Highlight */
-.gradient-underline {
-  position: absolute;
-  bottom: -0.25rem;
-  left: 0;
-  height: 0.5rem;
-  width: 100%;
-  border-radius: 0.125rem;
-  background: linear-gradient(to right, rgba(37, 99, 235, 0.2), rgba(59, 130, 246, 0.1));
-}
-
-/* 2px Gradient Stroke Card Wrapper */
-.gradient-border-card {
-  position: relative;
-  border-radius: 1rem;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  padding: 2px;
-}
-
-.gradient-border-card > .card-inner {
-  height: 100%;
-  width: 100%;
-  border-radius: calc(1rem - 2px);
-  background: var(--card);
-}
-
-/* Texture: Subtle Dot Grid for Light Surfaces */
-.dot-pattern-light {
-  background-image: radial-gradient(circle, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* SaaS Metric Badge */
-.saas-stat-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: #2563eb;
-  color: #ffffff;
-  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
-}
-
-/* Custom Accent Shadows */
-.shadow-accent {
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.22);
-}
-
-.shadow-accent-lg {
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.32);
-}
-
-.shadow-saas {
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
-}
-
-.shadow-saas-xl {
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
-}
-
-/* Custom Keyframe Animations */
-@keyframes pulse-subtle {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.15);
-  }
-}
-
-.animate-pulse-subtle {
-  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes float-slow {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-8px) rotate(1deg);
-  }
-}
-
-.animate-float-slow {
-  animation: float-slow 4.5s ease-in-out infinite;
-}
-

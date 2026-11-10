@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ShieldCheck, BarChart3, ToggleLeft, ToggleRight, Database, Users, Eye, EyeOff, Lock, Unlock } from "lucide-react";
+import { BarChart3, ToggleLeft, ToggleRight, Database, Users, Lock, Unlock } from "lucide-react";
 import { getInitialState, saveState } from "@/lib/storage/mockDb";
 import { FeatureFlags, AnalyticsEvent } from "@/lib/types";
-import { ROLE_TEMPLATES } from "@/lib/data/roleTemplates";
 import { CURATED_RESOURCES } from "@/lib/data/curatedResources";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 export default function AdminDashboard() {
   const [flags, setFlags] = useState<FeatureFlags>({
@@ -31,7 +31,6 @@ export default function AdminDashboard() {
     saveState(st);
   };
 
-  // Funnel calculations from analytics events
   const widgetOpens = Math.max(12, events.filter(e => e.eventName === "chat_widget_opened").length);
   const onboardingStarts = Math.max(9, events.filter(e => e.eventName === "onboarding_step_viewed").length);
   const profilesCreated = Math.max(8, events.filter(e => e.eventName === "profile_created").length);
@@ -39,25 +38,20 @@ export default function AdminDashboard() {
   const registrations = Math.max(3, events.filter(e => e.eventName === "registration_completed").length);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
       {/* Top Header */}
-      <div className="rounded-3xl bg-white text-slate-900 p-6 sm:p-8 shadow-saas border border-slate-200">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 mb-2 border border-emerald-200">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Admin & Growth Control</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Platform Telemetry & Governance</h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Funnel conversion • Feature flags • Grounded knowledge verification • DPDP compliance audit
-            </p>
-          </div>
-        </div>
+      <div className="rounded-xl bg-white text-[#141518] p-6 sm:p-8 shadow-atelier border border-[#E7E5DE] space-y-2">
+        <SectionLabel>Admin &amp; Growth Control</SectionLabel>
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#141518] pt-1">
+          Platform Telemetry &amp; Governance
+        </h1>
+        <p className="text-xs sm:text-sm text-[#52555E]">
+          Funnel conversion · Feature flags · Grounded knowledge verification · DPDP compliance audit
+        </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 gap-2 sm:gap-4 overflow-x-auto text-xs sm:text-sm font-semibold">
+      <div className="flex border-b border-[#E7E5DE] gap-2 sm:gap-4 overflow-x-auto text-xs sm:text-sm font-medium">
         {[
           { id: "funnel", label: "Conversion Funnel", icon: BarChart3 },
           { id: "flags", label: "Feature Flags", icon: ToggleRight },
@@ -65,14 +59,15 @@ export default function AdminDashboard() {
           { id: "audit", label: "PII Audit Logs", icon: Users }
         ].map(t => {
           const Icon = t.icon;
+          const isActive = activeTab === t.id;
           return (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id as any)}
-              className={`py-3 px-3 border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
-                activeTab === t.id
-                  ? "border-blue-600 text-blue-600 font-bold"
-                  : "border-transparent text-slate-500 hover:text-slate-900"
+              className={`py-3 px-2.5 border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-colors cursor-pointer ${
+                isActive
+                  ? "border-[#183059] text-[#183059] font-semibold"
+                  : "border-transparent text-[#52555E] hover:text-[#141518]"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -95,33 +90,33 @@ export default function AdminDashboard() {
             ].map(col => (
               <div
                 key={col.step}
-                className="p-4 rounded-2xl border border-slate-200 bg-white text-center space-y-1 shadow-xs"
+                className="p-4 rounded-xl border border-[#E7E5DE] bg-white text-center space-y-1 shadow-xs"
               >
-                <div className="text-[11px] font-bold text-slate-500 uppercase">{col.step}</div>
-                <div className="text-2xl font-bold text-slate-900">{col.count}</div>
-                <div className="text-xs font-bold text-emerald-600">{col.pct} conv.</div>
+                <div className="text-[11px] font-mono text-[#82858E] uppercase">{col.step}</div>
+                <div className="text-2xl font-mono font-bold text-[#141518] tabular-nums">{col.count}</div>
+                <div className="text-xs font-mono font-semibold text-[#166534] tabular-nums">{col.pct} conv.</div>
               </div>
             ))}
           </div>
 
-          <div className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3 shadow-xs">
-            <h3 className="font-bold text-sm text-slate-900">PRD Target Health Checks</h3>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between py-1 border-b border-zinc-100 dark:border-zinc-800">
-                <span className="text-zinc-600 dark:text-zinc-400">Target Time to Registration:</span>
-                <span className="font-bold text-emerald-600">✓ Under 120s median</span>
+          <div className="p-5 sm:p-6 rounded-xl border border-[#E7E5DE] bg-white space-y-3 shadow-xs">
+            <h3 className="font-semibold text-sm text-[#141518]">PRD Target Health Checks</h3>
+            <div className="space-y-2.5 text-xs">
+              <div className="flex justify-between py-1.5 border-b border-[#F4F3EE]">
+                <span className="text-[#52555E]">Target Time to Registration</span>
+                <span className="font-mono font-semibold text-[#166534]">Under 120s median</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-zinc-100 dark:border-zinc-800">
-                <span className="text-zinc-600 dark:text-zinc-400">Onboarding Completion Rate:</span>
-                <span className="font-bold text-emerald-600">✓ 88% (Target: &ge; 70%)</span>
+              <div className="flex justify-between py-1.5 border-b border-[#F4F3EE]">
+                <span className="text-[#52555E]">Onboarding Completion Rate</span>
+                <span className="font-mono font-semibold text-[#166534]">88% (Target: &ge; 70%)</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-zinc-100 dark:border-zinc-800">
-                <span className="text-zinc-600 dark:text-zinc-400">Grounding URL Safety:</span>
-                <span className="font-bold text-emerald-600">✓ 100% Vetted Collection IDs</span>
+              <div className="flex justify-between py-1.5 border-b border-[#F4F3EE]">
+                <span className="text-[#52555E]">Grounding URL Safety</span>
+                <span className="font-mono font-semibold text-[#166534]">100% Vetted Collection IDs</span>
               </div>
-              <div className="flex justify-between py-1">
-                <span className="text-zinc-600 dark:text-zinc-400">Fairness & Bias Check:</span>
-                <span className="font-bold text-emerald-600">✓ CGPA/College Tier Excluded from Rank Arithmetic</span>
+              <div className="flex justify-between py-1.5">
+                <span className="text-[#52555E]">Fairness &amp; Bias Check</span>
+                <span className="font-mono font-semibold text-[#166534]">CGPA/College Tier Excluded</span>
               </div>
             </div>
           </div>
@@ -131,35 +126,39 @@ export default function AdminDashboard() {
       {/* Feature Flags */}
       {activeTab === "flags" && (
         <div className="max-w-2xl space-y-4">
-          <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="rounded-xl border border-[#E7E5DE] bg-white p-6 space-y-4 shadow-xs">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <h4 className="text-sm font-bold text-zinc-900 dark:text-white">
-                  Lock ATS Mistakes #2 & #3 (Feature Flag)
+                <h4 className="text-sm font-semibold text-[#141518]">
+                  Lock ATS Mistakes #2 &amp; #3 (Feature Flag)
                 </h4>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-[#52555E] mt-0.5">
                   When enabled, guest visitors only see Mistake #1. Full 3 mistakes require registration.
                 </p>
               </div>
               <button
                 onClick={() => toggleFlag("lockAtsMistakes2and3")}
-                className={`p-2 rounded-xl transition-all ${
-                  flags.lockAtsMistakes2and3 ? "bg-emerald-500 text-white" : "bg-zinc-200 text-zinc-700"
+                className={`p-2 rounded-lg border transition-colors cursor-pointer ${
+                  flags.lockAtsMistakes2and3
+                    ? "bg-[#183059] border-[#183059] text-white"
+                    : "bg-[#F4F3EE] border-[#E7E5DE] text-[#52555E]"
                 }`}
               >
                 {flags.lockAtsMistakes2and3 ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
               </button>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-zinc-100 dark:border-zinc-800">
+            <div className="flex items-center justify-between gap-4 pt-4 border-t border-[#E7E5DE]">
               <div>
-                <h4 className="text-sm font-bold text-zinc-900 dark:text-white">Voice Interview Interface (STT Stub)</h4>
-                <p className="text-xs text-zinc-500">Enable voice transcription input buttons in 5-min mock interview.</p>
+                <h4 className="text-sm font-semibold text-[#141518]">Voice Interview Interface (STT Stub)</h4>
+                <p className="text-xs text-[#52555E] mt-0.5">Enable voice transcription input buttons in 5-min mock interview.</p>
               </div>
               <button
                 onClick={() => toggleFlag("enableVoiceInterviewMock")}
-                className={`p-2 rounded-xl transition-all ${
-                  flags.enableVoiceInterviewMock ? "bg-emerald-500 text-white" : "bg-zinc-200 text-zinc-700"
+                className={`p-2 rounded-lg border transition-colors cursor-pointer ${
+                  flags.enableVoiceInterviewMock
+                    ? "bg-[#183059] border-[#183059] text-white"
+                    : "bg-[#F4F3EE] border-[#E7E5DE] text-[#52555E]"
                 }`}
               >
                 {flags.enableVoiceInterviewMock ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
@@ -173,26 +172,28 @@ export default function AdminDashboard() {
       {activeTab === "resources" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-base text-zinc-900 dark:text-white">Vetted Curated Resources (Grounding KB)</h3>
-            <span className="text-xs text-emerald-600 font-bold">{CURATED_RESOURCES.length} Vetted Links</span>
+            <h3 className="font-semibold text-base text-[#141518]">Vetted Curated Resources (Grounding KB)</h3>
+            <span className="font-mono text-xs text-[#166534] font-semibold">
+              {CURATED_RESOURCES.length} Vetted Links
+            </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto">
             {CURATED_RESOURCES.map(r => (
               <div
                 key={r.id}
-                className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs space-y-1"
+                className="p-4 rounded-xl border border-[#E7E5DE] bg-white text-xs space-y-1.5"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] text-zinc-400">{r.id}</span>
-                  <span className="px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold">
+                  <span className="font-mono text-[10px] text-[#82858E]">{r.id}</span>
+                  <span className="px-2 py-0.5 rounded bg-[#F4F3EE] border border-[#E7E5DE] text-[10px] font-mono font-medium text-[#141518]">
                     {r.platform}
                   </span>
                 </div>
-                <h4 className="font-bold text-zinc-900 dark:text-white text-xs">{r.title}</h4>
-                <div className="flex items-center justify-between text-[11px] text-zinc-500 pt-1">
-                  <span>Language: {r.language}</span>
-                  <span className="text-emerald-600 font-medium">Verified: {r.verifiedAt}</span>
+                <h4 className="font-semibold text-[#141518] text-xs">{r.title}</h4>
+                <div className="flex items-center justify-between text-[11px] text-[#52555E] pt-1 font-mono">
+                  <span>Lang: {r.language}</span>
+                  <span className="text-[#166534]">Verified: {r.verifiedAt}</span>
                 </div>
               </div>
             ))}
@@ -203,16 +204,16 @@ export default function AdminDashboard() {
       {/* Audit Logs */}
       {activeTab === "audit" && (
         <div className="space-y-4">
-          <h3 className="font-bold text-base text-zinc-900 dark:text-white">Anonymized Event Stream (PII Redacted)</h3>
-          <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-950 p-4 font-mono text-xs text-zinc-300 max-h-[400px] overflow-y-auto space-y-2">
+          <h3 className="font-semibold text-base text-[#141518]">Anonymized Event Stream (PII Redacted)</h3>
+          <div className="rounded-xl border border-[#E7E5DE] bg-[#141518] p-4 font-mono text-xs text-[#E7E5DE] max-h-[400px] overflow-y-auto space-y-2">
             {events.length === 0 ? (
-              <p className="text-zinc-600">// No telemetry events recorded in current browser session yet.</p>
+              <p className="text-[#82858E]">{"// No telemetry events recorded in current browser session yet."}</p>
             ) : (
               events.map((ev, i) => (
-                <div key={i} className="border-b border-zinc-800/80 pb-1.5">
+                <div key={i} className="border-b border-white/10 pb-1.5">
                   <span className="text-emerald-400">[{ev.timestamp.split("T")[1]?.slice(0, 8)}]</span>{" "}
-                  <span className="text-orange-400">{ev.eventName}</span>{" "}
-                  <span className="text-zinc-500">session={ev.sessionId}</span>
+                  <span className="text-amber-300">{ev.eventName}</span>{" "}
+                  <span className="text-[#82858E]">session={ev.sessionId}</span>
                 </div>
               ))
             )}

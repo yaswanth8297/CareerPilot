@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
-import { Send, Sparkles, User, RefreshCw, FileText, Compass, Briefcase, Award, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Send, FileText } from "lucide-react";
 import {
   ChatMessage,
   StudentProfile,
@@ -191,7 +191,7 @@ export default function ChatContainer({
     addBotMessage(
       strings.jobsReady,
       [
-        { id: "c-apply", label: "📄 Improve Resume ATS For These Jobs", value: "feature_resume" },
+        { id: "c-apply", label: "Improve Resume ATS For These Jobs", value: "feature_resume" },
         { id: "c-rm", label: strings.seeRoadmapChip, value: "feature_roadmap" }
       ],
       {
@@ -206,24 +206,24 @@ export default function ChatContainer({
     if (intent === "resume_check") {
       logAnalytics("feature_selected", { feature: "resume_check" });
       addBotMessage(
-        "Welcome! Ready to check your ATS resume? 📄 Upload your PDF or paste your resume text to get your 100-point score breakdown & 3 key fixes.",
+        "Ready to audit your resume. Upload your PDF or paste your resume text to receive a 100-point ATS breakdown and 3 concrete bullet fixes.",
         [
-          { id: "c-open-resume", label: "Upload Resume 📄", value: "feature_resume" },
+          { id: "c-open-resume", label: "Upload Resume", value: "feature_resume" },
           ...getMainFeatureChips()
         ]
       );
       setTimeout(() => setIsResumeModalOpen(true), 300);
     } else if (intent === "roadmap") {
       logAnalytics("feature_selected", { feature: "roadmap" });
-      addBotMessage("Generating your personalized 90-Day Placement Roadmap... 🗺️");
+      addBotMessage("Generating your personalized 90-Day Placement Roadmap...");
       setTimeout(() => handleTriggerRoadmap(), 300);
     } else if (intent === "jobs") {
       logAnalytics("feature_selected", { feature: "jobs" });
-      addBotMessage("Finding verified fresher jobs and scam-free matches... 💼");
+      addBotMessage("Finding verified fresher openings and filtering suspicious listings...");
       setTimeout(() => handleTriggerJobs(), 300);
     } else if (intent === "mock_interview") {
       logAnalytics("feature_selected", { feature: "mock_interview" });
-      addBotMessage("Preparing your 5-Minute Mock Interview session with fresher-tuned questions... 🎯");
+      addBotMessage("Preparing your 5-Minute Mock Interview session with fresher-tuned questions...");
       setTimeout(() => {
         const currSt = getInitialState();
         if (!currSt.isRegistered) {
@@ -366,7 +366,6 @@ export default function ChatContainer({
     st.profile = updatedProf;
     saveState(st);
 
-    // Instantly insert assistant bubble with loading state so perceived response is 0ms
     const botMsgId = "bot_" + Math.random().toString(36).substring(2, 9);
     const botMsg: ChatMessage = {
       id: botMsgId,
@@ -410,7 +409,6 @@ export default function ChatContainer({
         );
       }
 
-      // Finalize saved state in localStorage/mockDb
       const finalSt = getInitialState();
       finalSt.messages = finalSt.messages || [];
       const idx = finalSt.messages.findIndex(m => m.id === botMsgId);
@@ -479,9 +477,9 @@ export default function ChatContainer({
     logAnalytics("mock_interview_completed", { score: report.overallScore });
 
     addBotMessage(
-      `Great mock interview session! Your overall score is ${report.overallScore}/10.\nTop strength: "${report.strengths[0]}". Full feedback report saved to your dashboard.`,
+      `Mock interview complete. Overall rating: ${report.overallScore}/10.\nTop strength: "${report.strengths[0]}". Full feedback report saved to My Space.`,
       [
-        { id: "c-dash", label: "📊 Open My Space Dashboard", value: "go_dashboard" },
+        { id: "c-dash", label: "Open My Space Dashboard", value: "go_dashboard" },
         { id: "c-rm", label: strings.seeRoadmapChip, value: "feature_roadmap" },
         { id: "c-jobs", label: strings.checkJobsChip, value: "feature_jobs" }
       ],
@@ -519,78 +517,74 @@ export default function ChatContainer({
 
   return (
     <div
-      className={`flex flex-col bg-slate-50 transition-colors ${
-        isEmbedded ? "h-full w-full" : "h-[calc(100vh-4rem)] max-w-4xl mx-auto border-x border-slate-200 shadow-md"
+      className={`flex flex-col bg-[#FAFAF8] transition-colors ${
+        isEmbedded ? "h-full w-full" : "h-[calc(100vh-4rem)] max-w-4xl mx-auto w-full border-x border-[#E7E5DE] shadow-atelier"
       }`}
     >
       {/* Active Student Status Header */}
-      <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center justify-between text-xs">
+      <div className="bg-white border-b border-[#E7E5DE] px-5 py-3 flex items-center justify-between text-xs">
         <div className="flex items-center gap-2.5">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-blue-600 opacity-75 animate-ping" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
-          </span>
-          <span className="text-slate-600 font-sans">
+          <span className="w-2 h-2 rounded-full bg-[#166534]" />
+          <span className="text-[#52555E] font-sans">
             {profile ? (
               <>
-                <strong className="text-slate-900 font-medium">{profile.branch}</strong> ({profile.year} Year) • Target: <strong className="text-blue-600 font-medium">{profile.targetRole}</strong>
+                <strong className="text-[#141518] font-medium">{profile.branch}</strong> ({profile.year} Year) · Target:{" "}
+                <strong className="text-[#183059] font-semibold">{profile.targetRole}</strong>
               </>
             ) : (
-              <span>CareerPilot AI Personal Career Guide Online 👋</span>
+              <span>CareerPilot Advisor Ready</span>
             )}
           </span>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          {profile && (
-            <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-medium">
-              Profile Active
-            </span>
-          )}
-        </div>
+        {profile && (
+          <span className="font-mono text-[10px] uppercase tracking-wider text-[#52555E] bg-[#F4F3EE] border border-[#E7E5DE] px-2 py-0.5 rounded-md font-medium">
+            Profile Active
+          </span>
+        )}
       </div>
 
       {/* Messages Feed */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
         {messages.map(msg => (
           <div
             key={msg.id}
-            className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"} animate-in fade-in duration-200`}
+            className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"} animate-in fade-in duration-150`}
           >
-            {/* Sender Badge */}
-            <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-400 font-medium">
+            {/* Sender Tag */}
+            <div className="flex items-center gap-2 mb-1.5 text-[11px] text-[#82858E] font-mono">
               {msg.sender === "bot" ? (
                 <>
-                  <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white text-[9px] font-mono font-bold shadow-xs">
-                    CP
-                  </div>
-                  <span className="font-sans font-medium text-slate-600">CareerPilot Guide</span>
+                  <span className="w-5 h-5 rounded-md bg-[#183059] flex items-center justify-center text-white text-[9px] font-bold">
+                    CP/
+                  </span>
+                  <span className="font-sans font-medium text-[#52555E]">CareerPilot Guide</span>
                 </>
               ) : (
                 <>
-                  <span className="font-sans">You</span>
-                  <div className="w-5 h-5 rounded-full bg-slate-800 text-white flex items-center justify-center text-[9px] font-mono">
+                  <span className="font-sans text-[#52555E]">You</span>
+                  <span className="w-5 h-5 rounded-md bg-[#E7E5DE] text-[#141518] flex items-center justify-center text-[9px] font-bold">
                     U
-                  </div>
+                  </span>
                 </>
               )}
             </div>
 
             {/* Message Bubble */}
             <div
-              className={`max-w-[88%] sm:max-w-[80%] rounded-2xl px-5 py-3.5 text-sm leading-relaxed ${
+              className={`max-w-[90%] sm:max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
                 msg.sender === "user"
-                  ? "bg-blue-600 text-white rounded-tr-none shadow-xs"
-                  : "bg-white text-slate-900 rounded-tl-none border border-slate-200 shadow-xs"
+                  ? "bg-[#183059] text-white"
+                  : "bg-white text-[#141518] border border-[#E7E5DE] shadow-xs"
               }`}
             >
               {msg.text ? (
                 <p className="whitespace-pre-line font-sans">{msg.text}</p>
               ) : (
                 <div className="flex items-center gap-2 py-0.5">
-                  <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-                  <span className="font-mono text-xs text-slate-500">
-                    Generating guidance...
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#183059] animate-pulse" />
+                  <span className="font-mono text-xs text-[#82858E]">
+                    Formulating guidance...
                   </span>
                 </div>
               )}
@@ -600,29 +594,26 @@ export default function ChatContainer({
             {msg.cardPayload && (
               <div className="w-full mt-3">
                 {msg.cardPayload.type === "onboarding_summary" && (
-                  <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-blue-600" />
-                        <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-blue-600">
-                          Profile Verified
-                        </h4>
-                      </div>
-                      <span className="font-mono text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-semibold">
+                  <div className="p-4 rounded-xl bg-white border border-[#E7E5DE] shadow-xs space-y-3 max-w-xl">
+                    <div className="flex items-center justify-between border-b border-[#F4F3EE] pb-2">
+                      <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#183059]">
+                        Profile Verified
+                      </span>
+                      <span className="font-mono text-[10px] bg-[#F0FDF4] text-[#166534] border border-[#BBF7D0] px-2 py-0.5 rounded font-semibold">
                         Ready
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                        <span className="text-slate-400 text-[10px] font-mono block">Branch & Year</span>
-                        <span className="font-semibold text-slate-900">
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div className="bg-[#FAFAF8] p-2.5 rounded-lg border border-[#E7E5DE]">
+                        <span className="text-[#82858E] text-[10px] font-mono block">Branch &amp; Year</span>
+                        <span className="font-semibold text-[#141518]">
                           {msg.cardPayload.data?.branch} ({msg.cardPayload.data?.year} Year)
                         </span>
                       </div>
-                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                        <span className="text-slate-400 text-[10px] font-mono block">Target Role</span>
-                        <span className="font-semibold text-slate-900">
+                      <div className="bg-[#FAFAF8] p-2.5 rounded-lg border border-[#E7E5DE]">
+                        <span className="text-[#82858E] text-[10px] font-mono block">Target Role</span>
+                        <span className="font-semibold text-[#141518]">
                           {msg.cardPayload.data?.targetRole}
                         </span>
                       </div>
@@ -661,7 +652,7 @@ export default function ChatContainer({
                   <button
                     key={chip.id}
                     onClick={() => handleChipClick(chip)}
-                    className="px-3.5 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-800 text-[#0F172A] dark:text-slate-200 hover:text-[#0052FF] dark:hover:text-[#4D7CFF] border border-slate-200 dark:border-slate-800 hover:border-[#0052FF]/30 shadow-sm transition-all duration-200 flex items-center gap-1 active:scale-95 cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-[#F4F3EE] text-[#141518] border border-[#E7E5DE] hover:border-[#183059]/40 transition-colors flex items-center gap-1.5 active:translate-y-px cursor-pointer"
                   >
                     <span>{chip.label}</span>
                   </button>
@@ -673,12 +664,10 @@ export default function ChatContainer({
 
         {/* Bot Typing Indicator */}
         {isBotTyping && (
-          <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 w-fit shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-bounce" />
-            <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-bounce delay-150" />
-            <span className="w-2 h-2 rounded-full bg-[#0052FF] animate-bounce delay-300" />
-            <span className="text-xs text-slate-400 font-sans ml-1">
-              Career guide formulating response...
+          <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white border border-[#E7E5DE] w-fit shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#183059] animate-pulse" />
+            <span className="text-xs text-[#82858E] font-mono">
+              Reviewing data...
             </span>
           </div>
         )}
@@ -687,13 +676,12 @@ export default function ChatContainer({
       </div>
 
       {/* Bottom Input Area */}
-      <div className="p-4 bg-white border-t border-slate-200">
+      <div className="p-3.5 sm:p-4 bg-white border-t border-[#E7E5DE]">
         <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-          {/* Quick Upload Icon Shortcut */}
           <button
             type="button"
             onClick={() => setIsResumeModalOpen(true)}
-            className="p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:text-blue-600 hover:border-blue-300 transition-colors cursor-pointer"
+            className="h-11 px-3 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#52555E] hover:text-[#183059] hover:border-[#D3D0C7] transition-colors cursor-pointer flex items-center justify-center"
             title="Upload or Paste Resume"
           >
             <FileText className="w-4 h-4" />
@@ -703,15 +691,15 @@ export default function ChatContainer({
             type="text"
             value={inputText}
             onChange={e => setInputText(e.target.value)}
-            placeholder="Ask any question about placement preparation, resume fixes, or interview prep..."
-            className="flex-1 h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all font-sans"
+            placeholder="Ask about resume fixes, roadmaps, or interview prep..."
+            className="flex-1 h-11 px-3.5 rounded-lg bg-[#FAFAF8] border border-[#E7E5DE] text-sm text-[#141518] placeholder:text-[#82858E] focus:outline-none focus:ring-2 focus:ring-[#183059] focus:border-transparent transition-all font-sans"
             autoFocus
           />
 
           <button
             type="submit"
             disabled={!inputText.trim() || isBotTyping}
-            className="h-12 w-12 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-40 text-white shadow-xs flex items-center justify-center transition-all cursor-pointer"
+            className="h-11 w-11 rounded-lg bg-[#183059] hover:bg-[#102344] disabled:opacity-40 text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
           >
             <Send className="w-4 h-4" />
           </button>

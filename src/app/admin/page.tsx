@@ -5,7 +5,7 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 
 export default function AdminPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FAFAF8] flex flex-col font-sans text-[#141518]">
       <Navbar />
       <main className="flex-1 pb-16">
         <AdminDashboard />

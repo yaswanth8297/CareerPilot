@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Calistoga, JetBrains_Mono } from "next/font/google";
+import { Inter, Newsreader, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,10 +8,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const calistoga = Calistoga({
-  variable: "--font-calistoga",
-  weight: "400",
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -22,18 +22,18 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CareerPilot AI — Personal Career Guide for College Students",
+  title: "CareerPilot — Personal Career Guide for College Students",
   description:
-    "AI personal career guide for college students. 30-second profile, deterministic ATS resume scoring with 3 fixable mistakes, 90-day roadmap with vetted free resources, verified job matches, and 5-min mock interview practice.",
+    "Personal career studio for college students. Deterministic ATS resume auditing, 90-day placement roadmaps with vetted free resources, verified job matches, and 5-minute mock interviews.",
   keywords: [
-    "CareerPilot AI",
+    "CareerPilot",
     "ATS Resume Checker",
     "College Career Guide",
     "Mock Interview",
     "90 Day Roadmap",
     "Fresher Jobs"
   ],
-  authors: [{ name: "CareerPilot AI Team" }]
+  authors: [{ name: "CareerPilot Team" }]
 };
 
 export default function RootLayout({
@@ -44,9 +44,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${newsreader.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-white text-slate-900 font-sans selection:bg-[#2563EB] selection:text-white antialiased">
+      <body className="min-h-full flex flex-col bg-[#FAFAF8] text-[#141518] font-sans selection:bg-[#183059] selection:text-white antialiased">
         {children}
       </body>
     </html>

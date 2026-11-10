@@ -8,27 +8,20 @@ interface SectionLabelProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function SectionLabel({
   children,
-  pulse = true,
+  pulse: _pulse,
   className,
   ...props
 }: SectionLabelProps) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/90 px-3 py-1 shadow-xs transition-all",
+        "inline-flex items-center gap-2 rounded-md border border-[#E7E5DE] bg-[#F4F3EE] px-2.5 py-1 text-[11px] font-mono font-medium tracking-[0.14em] uppercase text-[#52555E]",
         className
       )}
       {...props}
     >
-      <span className="relative flex h-2 w-2">
-        {pulse && (
-          <span className="absolute inline-flex h-full w-full rounded-full bg-blue-600 opacity-75 animate-ping" />
-        )}
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
-      </span>
-      <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 font-sans">
-        {children}
-      </span>
+      <span className="w-1.5 h-1.5 rounded-sm bg-[#183059]" />
+      <span>{children}</span>
     </div>
   );
 }

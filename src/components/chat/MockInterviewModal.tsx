@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Mic, MicOff, Send, Clock, X, Award, AlertCircle, Sparkles, Volume2, Radio, CheckCircle2 } from "lucide-react";
+import { Mic, Send, Clock, X, Award, AlertCircle, Radio } from "lucide-react";
 import { InterviewQuestion, InterviewUserAnswer, InterviewReport } from "@/lib/types";
 import { evaluateInterviewSession } from "@/lib/ai/mockInterviewEngine";
 import { getInterviewQuestionsForRole } from "@/lib/data/interviewQuestions";
 import { Button } from "@/components/ui/Button";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 
 export default function MockInterviewModal({
   roleId,
@@ -23,11 +22,10 @@ export default function MockInterviewModal({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentInput, setCurrentInput] = useState("");
   const [userAnswers, setUserAnswers] = useState<InterviewUserAnswer[]>([]);
-  const [secondsRemaining, setSecondsRemaining] = useState(300); // 5 minutes (300s)
+  const [secondsRemaining, setSecondsRemaining] = useState(300);
   const [isFinished, setIsFinished] = useState(false);
   const [finalReport, setFinalReport] = useState<InterviewReport | null>(null);
 
-  // Voice / STT State
   const [isListening, setIsListening] = useState(false);
   const [sttSupported, setSttSupported] = useState(true);
   const recognitionRef = useRef<any>(null);
@@ -46,7 +44,6 @@ export default function MockInterviewModal({
     }
   }, [isOpen, roleId]);
 
-  // 5-minute countdown timer
   useEffect(() => {
     if (!isOpen || isFinished) return;
     const timer = setInterval(() => {
@@ -63,7 +60,6 @@ export default function MockInterviewModal({
     return () => clearInterval(timer);
   }, [isOpen, isFinished, userAnswers]);
 
-  // Setup Web Speech API (STT Interface)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -203,33 +199,34 @@ export default function MockInterviewModal({
   const seconds = secondsRemaining % 60;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-xl bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Top Header - Clean Light Theme */}
-        <div className="relative bg-slate-50 text-slate-900 p-5 flex items-center justify-between border-b border-slate-200 overflow-hidden">
-          <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
-          <div className="relative z-10 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs">
-              <Sparkles className="w-5 h-5" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150">
+      <div className="w-full max-w-xl bg-white rounded-xl border border-[#E7E5DE] shadow-atelier-lg overflow-hidden flex flex-col max-h-[90vh]">
+        {/* Header */}
+        <div className="bg-[#FAFAF8] text-[#141518] p-5 flex items-center justify-between border-b border-[#E7E5DE]">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-[#183059] flex items-center justify-center text-white">
+              <Award className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-bold text-lg leading-tight text-slate-900">
+              <h3 className="font-semibold text-base leading-tight text-[#141518]">
                 5-Min Mock Interview Practice
               </h3>
-              <p className="text-[11px] text-slate-500">Supportive & constructive • College fresher rubric</p>
+              <p className="text-[11px] font-mono text-[#82858E]">
+                Supportive &amp; constructive · College fresher rubric
+              </p>
             </div>
           </div>
 
-          <div className="relative z-10 flex items-center gap-3">
+          <div className="flex items-center gap-3">
             {!isFinished && (
               <div
-                className={`px-3 py-1 rounded-full text-xs font-mono font-semibold flex items-center gap-1.5 ${
+                className={`px-3 py-1 rounded-md text-xs font-mono font-semibold flex items-center gap-1.5 tabular-nums border ${
                   secondsRemaining < 60
-                    ? "bg-rose-50 text-rose-700 border border-rose-200 animate-pulse"
-                    : "bg-white text-slate-700 border border-slate-200 shadow-xs"
+                    ? "bg-[#FEF2F2] text-[#991B1B] border-[#FECACA]"
+                    : "bg-white text-[#141518] border-[#E7E5DE]"
                 }`}
               >
-                <Clock className="w-3.5 h-3.5 text-blue-600" />
+                <Clock className="w-3.5 h-3.5 text-[#183059]" />
                 <span>
                   {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                 </span>
@@ -238,7 +235,7 @@ export default function MockInterviewModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-[#82858E] hover:text-[#141518] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -248,63 +245,63 @@ export default function MockInterviewModal({
         {/* Modal Body */}
         {!isFinished ? (
           <div className="p-6 space-y-5 overflow-y-auto flex-1">
-            {/* Progress indicator */}
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs text-slate-500 font-medium">
-                <span className="font-mono">
+              <div className="flex justify-between text-xs text-[#52555E] font-mono">
+                <span>
                   Question {currentIndex + 1} of {questions.length}
                 </span>
-                <span className="font-mono text-[#0052FF] dark:text-[#4D7CFF] uppercase tracking-wider text-[11px]">
+                <span className="text-[#183059] uppercase tracking-wider text-[11px]">
                   {currentQ?.category}
                 </span>
               </div>
-              <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-[#F4F3EE] h-1.5 rounded-full overflow-hidden border border-[#E7E5DE]">
                 <div
-                  className="bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] h-full rounded-full transition-all duration-300"
+                  className="bg-[#183059] h-full rounded-full transition-all duration-300"
                   style={{ width: `${((currentIndex + 1) / (questions.length || 1)) * 100}%` }}
                 />
               </div>
             </div>
 
             {/* Question Prompt */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4 space-y-2">
+            <div className="rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] p-4 space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#0052FF] text-white text-[10px] font-mono font-bold flex items-center justify-center">
-                  AI
+                <span className="w-5 h-5 rounded bg-[#183059] text-white text-[9px] font-mono font-bold flex items-center justify-center">
+                  CP/
                 </span>
-                <span className="font-mono text-xs font-semibold text-[#0052FF] dark:text-[#4D7CFF] uppercase tracking-wider">
+                <span className="font-mono text-[11px] font-semibold text-[#52555E] uppercase tracking-wider">
                   Senior Interviewer
                 </span>
               </div>
-              <p className="font-display font-normal text-base text-[#0F172A] dark:text-white leading-relaxed">
+              <p className="font-display text-lg text-[#141518] leading-snug">
                 {currentQ?.question}
               </p>
             </div>
 
             {/* Answer Input Box */}
             <div className="space-y-2">
-              <div className="flex justify-between text-xs text-slate-500">
-                <label className="font-medium text-[#0F172A] dark:text-slate-300">Your Answer (Text or Voice):</label>
-                <span className="font-mono text-[11px]">{currentInput.trim().split(/\s+/).filter(Boolean).length} words</span>
+              <div className="flex justify-between text-xs text-[#52555E]">
+                <label className="font-medium text-[#141518]">Your Answer (Text or Voice):</label>
+                <span className="font-mono text-[11px] tabular-nums">
+                  {currentInput.trim().split(/\s+/).filter(Boolean).length} words
+                </span>
               </div>
               <textarea
                 value={currentInput}
                 onChange={e => setCurrentInput(e.target.value)}
-                placeholder="Type your answer or speak using the voice mic... Speak freely, zero CGPA judgment!"
+                placeholder="Type your answer or speak using the voice mic... Zero CGPA judgment."
                 rows={5}
-                className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#090D16] text-[#0F172A] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0052FF] transition-all resize-none font-sans"
+                className="w-full p-3.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] text-sm focus:outline-none focus:ring-2 focus:ring-[#183059] transition-all resize-none font-sans"
               />
 
-              {/* Voice / STT Interface Controls */}
               <div className="flex items-center justify-between text-xs pt-1">
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={toggleVoiceRecording}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                       isListening
-                        ? "bg-rose-500 text-white border-rose-600 shadow-md animate-pulse"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200"
+                        ? "bg-[#991B1B] text-white border-[#991B1B]"
+                        : "bg-[#F4F3EE] text-[#141518] border-[#E7E5DE] hover:bg-[#ECEBE4]"
                     }`}
                   >
                     {isListening ? (
@@ -314,32 +311,23 @@ export default function MockInterviewModal({
                       </>
                     ) : (
                       <>
-                        <Mic className="w-3.5 h-3.5 text-[#0052FF]" />
-                        <span>Speak Answer (Voice / STT)</span>
+                        <Mic className="w-3.5 h-3.5 text-[#183059]" />
+                        <span>Speak Answer (Voice)</span>
                       </>
                     )}
                   </button>
-
-                  {isListening && (
-                    <div className="flex items-center gap-0.5 h-4">
-                      <span className="w-1 h-3 bg-rose-500 rounded-full animate-bounce" />
-                      <span className="w-1 h-4 bg-rose-500 rounded-full animate-bounce delay-100" />
-                      <span className="w-1 h-2 bg-rose-500 rounded-full animate-bounce delay-200" />
-                    </div>
-                  )}
                 </div>
 
                 <button
                   type="button"
                   onClick={handleSkip}
-                  className="text-slate-500 hover:text-[#0F172A] dark:hover:text-white font-medium cursor-pointer"
+                  className="text-[#52555E] hover:text-[#141518] font-medium cursor-pointer"
                 >
                   Skip Question →
                 </button>
               </div>
             </div>
 
-            {/* Next / Submit Button */}
             <div className="pt-2">
               <Button
                 variant="primary"
@@ -349,7 +337,7 @@ export default function MockInterviewModal({
                 className="w-full justify-center group"
               >
                 <span>
-                  {currentIndex + 1 === questions.length ? "Finish & Generate Feedback Report" : "Submit & Next Question"}
+                  {currentIndex + 1 === questions.length ? "Finish & Generate Report" : "Submit & Next Question"}
                 </span>
                 <Send className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
               </Button>
@@ -360,103 +348,87 @@ export default function MockInterviewModal({
           <div className="p-6 space-y-5 overflow-y-auto flex-1">
             {finalReport && (
               <div className="space-y-5">
-                {/* Score Hero - Inverted Slate with Accent Glow */}
-                <div className="relative rounded-2xl bg-[#0F172A] border border-slate-800 p-5 text-center space-y-2 text-white overflow-hidden">
-                  <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-                  <div className="relative z-10">
-                    <span className="font-mono text-xs uppercase tracking-wider text-[#4D7CFF] font-semibold">
-                      Overall Interview Score
-                    </span>
-                    <div className="text-4xl font-mono font-bold text-white mt-1">
-                      {finalReport.overallScore} <span className="text-base text-slate-400 font-sans font-normal">/ 10</span>
-                    </div>
-                    <p className="text-xs text-slate-300 font-sans mt-1">
-                      Strong attempt! This is a solid fresher baseline for technical placement rounds.
-                    </p>
+                <div className="rounded-xl bg-[#183059] p-5 text-center space-y-1.5 text-white">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-white/70">
+                    Overall Interview Score
+                  </span>
+                  <div className="text-4xl font-mono font-bold text-white tabular-nums">
+                    {finalReport.overallScore}{" "}
+                    <span className="text-base text-white/60 font-sans font-normal">/ 10</span>
                   </div>
+                  <p className="text-xs text-white/80 font-sans">
+                    Solid fresher baseline for technical placement rounds.
+                  </p>
                 </div>
 
-                {/* 4 Pillars Breakdown */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
                   {[
-                    { label: "Content Accuracy", score: finalReport.contentAccuracyScore },
+                    { label: "Accuracy", score: finalReport.contentAccuracyScore },
                     { label: "Clarity", score: finalReport.clarityScore },
                     { label: "Confidence", score: finalReport.confidenceScore },
                     { label: "Communication", score: finalReport.communicationScore }
                   ].map(p => (
                     <div
                       key={p.label}
-                      className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900"
+                      className="p-3 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8]"
                     >
-                      <div className="text-lg font-mono font-bold text-[#0052FF] dark:text-[#4D7CFF]">{p.score}/10</div>
-                      <div className="font-mono text-[10px] text-slate-500 uppercase mt-0.5">{p.label}</div>
+                      <div className="text-lg font-mono font-bold text-[#183059] tabular-nums">{p.score}/10</div>
+                      <div className="font-mono text-[10px] text-[#82858E] uppercase mt-0.5">{p.label}</div>
                     </div>
                   ))}
                 </div>
 
-                {/* 3 Strengths */}
                 <div className="space-y-2">
-                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-[#166534] flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5" />
                     <span>Top 3 Strengths</span>
                   </h4>
-                  <ul className="space-y-1 text-xs text-slate-700 dark:text-slate-300 font-sans">
+                  <ul className="space-y-1 text-xs text-[#52555E] font-sans">
                     {finalReport.strengths.map((s, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="text-emerald-500 font-bold">✓</span>
+                        <span className="text-[#166534] font-bold">✓</span>
                         <span>{s}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                {/* 3 Improvements */}
                 <div className="space-y-2">
-                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                  <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-[#92400E] flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5" />
                     <span>Areas to Polish</span>
                   </h4>
-                  <ul className="space-y-1 text-xs text-slate-700 dark:text-slate-300 font-sans">
+                  <ul className="space-y-1 text-xs text-[#52555E] font-sans">
                     {finalReport.improvements.map((imp, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <span className="text-amber-500 font-bold">→</span>
+                        <span className="text-[#92400E] font-bold">→</span>
                         <span>{imp}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                {/* Ideal Sample Answer */}
-                <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 space-y-1.5">
-                  <span className="font-mono text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-                    Model Answer Example:
+                <div className="rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] p-4 space-y-1.5">
+                  <span className="font-mono text-[10px] font-semibold text-[#82858E] uppercase tracking-wider">
+                    Model Answer Example
                   </span>
-                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-sans italic">
+                  <p className="text-xs text-[#141518] leading-relaxed font-display italic">
                     &quot;{finalReport.idealAnswerForWeakest}&quot;
                   </p>
                 </div>
 
-                {/* Next Roadmap Action */}
-                <div className="p-3.5 rounded-xl bg-[#0052FF]/10 border border-[#0052FF]/20 text-xs text-[#0052FF] dark:text-[#4D7CFF] flex items-center justify-between">
-                  <span>
-                    <strong>Next Step:</strong> {finalReport.nextRoadmapAction}
-                  </span>
+                <div className="p-3.5 rounded-lg bg-[#F4F3EE] border border-[#E7E5DE] text-xs text-[#141518]">
+                  <strong>Next Step:</strong> {finalReport.nextRoadmapAction}
                 </div>
               </div>
             )}
           </div>
         )}
 
-        {/* Close Button when finished */}
         {isFinished && (
-          <div className="p-4 bg-slate-50 dark:bg-[#090D16] border-t border-slate-200 dark:border-slate-800">
-            <Button
-              variant="primary"
-              size="md"
-              onClick={onClose}
-              className="w-full justify-center"
-            >
-              Done & Save to My Space
+          <div className="p-4 bg-[#FAFAF8] border-t border-[#E7E5DE]">
+            <Button variant="primary" size="md" onClick={onClose} className="w-full justify-center">
+              Done &amp; Save to My Space
             </Button>
           </div>
         )}

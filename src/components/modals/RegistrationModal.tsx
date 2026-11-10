@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, CheckCircle2, Sparkles, Phone, Mail, ArrowRight, Globe, Check } from "lucide-react";
+import { X, CheckCircle2, Phone, Mail, ArrowRight, Globe, Check, ShieldCheck } from "lucide-react";
 import {
   initiatePhoneOtp,
   verifyPhoneOtp,
@@ -10,7 +10,6 @@ import {
   verifyGoogleOAuthCallback
 } from "@/lib/services/authService";
 import { Button } from "@/components/ui/Button";
-import { SectionLabel } from "@/components/ui/SectionLabel";
 
 export default function RegistrationModal({
   isOpen,
@@ -32,7 +31,6 @@ export default function RegistrationModal({
 
   if (!isOpen) return null;
 
-  // 1. Phone OTP Flow
   const handleSendPhoneOtp = (e: React.FormEvent) => {
     e.preventDefault();
     if (!phone.trim()) return;
@@ -59,7 +57,6 @@ export default function RegistrationModal({
     }, 300);
   };
 
-  // 2. Google OAuth Flow
   const handleGoogleOAuth = () => {
     setLoading(true);
     setTimeout(() => {
@@ -75,7 +72,6 @@ export default function RegistrationModal({
     }, 450);
   };
 
-  // 3. Email Magic Link Flow
   const handleSendMagicLink = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
@@ -102,7 +98,6 @@ export default function RegistrationModal({
     }, 300);
   };
 
-  // 4. Instant 1-Tap Demo
   const handleInstantDemoVerify = () => {
     verifyPhoneOtp("+91 98765 43210", "7890", "Demo Student Pilot");
     if (onSuccess) onSuccess();
@@ -110,64 +105,61 @@ export default function RegistrationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150">
+      <div className="w-full max-w-md bg-white rounded-xl border border-[#E7E5DE] shadow-atelier-lg overflow-hidden relative">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-20 p-1.5 rounded-lg text-[#82858E] hover:text-[#141518] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
 
-        {/* Modal Header - Clean Light Theme */}
-        <div className="relative bg-slate-50 text-slate-900 p-6 pb-5 space-y-3 border-b border-slate-200 overflow-hidden">
-          <div className="absolute inset-0 dot-pattern-light opacity-50 pointer-events-none" />
-          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 blur-[70px] rounded-full pointer-events-none" />
-
-          <div className="relative z-10 w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs">
-            <Sparkles className="w-5 h-5" />
+        {/* Modal Header */}
+        <div className="bg-[#FAFAF8] text-[#141518] p-6 pb-5 space-y-3 border-b border-[#E7E5DE]">
+          <div className="w-9 h-9 rounded-lg bg-[#183059] flex items-center justify-center text-white">
+            <ShieldCheck className="w-4 h-4" />
           </div>
 
-          <div className="relative z-10">
-            <h3 className="text-xl font-bold tracking-tight text-slate-900">
-              Save Progress & Unlock Features
+          <div>
+            <h3 className="text-lg font-semibold tracking-tight text-[#141518]">
+              Save Progress &amp; Unlock Features
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
-              Zero-spam promise • Takes 15 seconds • 100% Free for students
+            <p className="text-xs text-[#52555E] mt-1 font-mono">
+              Zero spam · Takes 15 seconds · 100% Free
             </p>
           </div>
 
           {/* Value Perks List */}
-          <div className="relative z-10 bg-white rounded-2xl p-3 border border-slate-200 space-y-1.5 text-xs text-slate-700 shadow-xs">
+          <div className="bg-white rounded-lg p-3 border border-[#E7E5DE] space-y-1.5 text-xs text-[#52555E]">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#183059] shrink-0" />
               <span>Full 90-Day (12-Week) Personalised Roadmap</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span>Unlock ATS Mistakes #2 & #3 with Before/After bullets</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#183059] shrink-0" />
+              <span>Unlock ATS Mistakes #2 &amp; #3 with Before/After diffs</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-              <span>5-Minute AI Senior Mock Interview with scoring report</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#183059] shrink-0" />
+              <span>5-Minute Mock Interview with full scoring report</span>
             </div>
           </div>
         </div>
 
         {/* Tab Selection */}
         <div className="px-6 pt-5">
-          <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-medium border border-slate-200">
+          <div className="flex rounded-lg bg-[#F4F3EE] p-1 text-xs font-medium border border-[#E7E5DE]">
             <button
               type="button"
               onClick={() => {
                 setAuthMethod("phone");
                 setStep("input");
               }}
-              className={`flex-1 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
+              className={`flex-1 py-1.5 rounded-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                 authMethod === "phone"
-                  ? "bg-white shadow-xs text-blue-600 font-semibold"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white shadow-xs text-[#183059] font-semibold"
+                  : "text-[#52555E] hover:text-[#141518]"
               }`}
             >
               <Phone className="w-3 h-3" />
@@ -179,13 +171,13 @@ export default function RegistrationModal({
                 setAuthMethod("google");
                 setStep("input");
               }}
-              className={`flex-1 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
+              className={`flex-1 py-1.5 rounded-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                 authMethod === "google"
-                  ? "bg-white shadow-xs text-blue-600 font-semibold"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white shadow-xs text-[#183059] font-semibold"
+                  : "text-[#52555E] hover:text-[#141518]"
               }`}
             >
-              <Globe className="w-3 h-3 text-blue-600" />
+              <Globe className="w-3 h-3" />
               <span>Google</span>
             </button>
             <button
@@ -194,10 +186,10 @@ export default function RegistrationModal({
                 setAuthMethod("magic_link");
                 setStep("input");
               }}
-              className={`flex-1 py-1.5 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
+              className={`flex-1 py-1.5 rounded-md transition-colors flex items-center justify-center gap-1.5 cursor-pointer ${
                 authMethod === "magic_link"
-                  ? "bg-white shadow-xs text-blue-600 font-semibold"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-white shadow-xs text-[#183059] font-semibold"
+                  : "text-[#52555E] hover:text-[#141518]"
               }`}
             >
               <Mail className="w-3 h-3" />
@@ -208,13 +200,12 @@ export default function RegistrationModal({
 
         {/* Tab Body */}
         <div className="p-6 space-y-4">
-          {/* Method 1: Phone OTP */}
           {authMethod === "phone" && (
             <>
               {step === "input" ? (
                 <form onSubmit={handleSendPhoneOtp} className="space-y-3">
                   <div>
-                    <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                    <label className="text-xs font-medium text-[#141518] block mb-1.5">
                       Mobile Number (India +91)
                     </label>
                     <div className="relative">
@@ -224,9 +215,9 @@ export default function RegistrationModal({
                         onChange={e => setPhone(e.target.value)}
                         placeholder="+91 98765 43210"
                         required
-                        className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] text-sm focus:outline-none focus:ring-2 focus:ring-[#183059]"
                       />
-                      <div className="absolute left-3 top-3 text-slate-400">
+                      <div className="absolute left-3 top-3 text-[#82858E]">
                         <Phone className="w-4 h-4" />
                       </div>
                     </div>
@@ -240,19 +231,17 @@ export default function RegistrationModal({
                     className="w-full justify-center group"
                   >
                     <span>{loading ? "Sending OTP..." : "Send Verification OTP"}</span>
-                    <ArrowRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </Button>
                 </form>
               ) : (
                 <form onSubmit={handleVerifyPhoneOtp} className="space-y-3">
-                  <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 text-xs text-blue-700">
-                    <span>
-                      Demo Mock OTP generated: <strong>7890</strong> (Ready to submit)
-                    </span>
+                  <div className="p-3 bg-[#F4F3EE] rounded-lg border border-[#E7E5DE] text-xs text-[#141518]">
+                    Demo OTP generated: <strong className="font-mono">7890</strong>
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-slate-700 block mb-1.5">
+                    <label className="text-xs font-medium text-[#141518] block mb-1.5">
                       Enter 4-digit OTP
                     </label>
                     <input
@@ -262,7 +251,7 @@ export default function RegistrationModal({
                       onChange={e => setOtp(e.target.value)}
                       placeholder="7890"
                       required
-                      className="w-full text-center tracking-widest text-lg font-mono py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full text-center tracking-widest text-lg font-mono py-2 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] focus:outline-none focus:ring-2 focus:ring-[#183059]"
                     />
                   </div>
 
@@ -279,7 +268,7 @@ export default function RegistrationModal({
                   <button
                     type="button"
                     onClick={() => setStep("input")}
-                    className="w-full text-center text-xs text-slate-500 hover:text-slate-800 font-medium cursor-pointer"
+                    className="w-full text-center text-xs text-[#52555E] hover:text-[#141518] font-medium cursor-pointer"
                   >
                     ← Change number
                   </button>
@@ -288,10 +277,9 @@ export default function RegistrationModal({
             </>
           )}
 
-          {/* Method 2: Google OAuth */}
           {authMethod === "google" && (
             <div className="space-y-3 py-2 text-center">
-              <p className="text-xs text-slate-600">
+              <p className="text-xs text-[#52555E]">
                 Sign in with your Google account. Your guest profile and messages will migrate automatically.
               </p>
               <Button
@@ -302,19 +290,18 @@ export default function RegistrationModal({
                 disabled={loading}
                 className="w-full justify-center gap-2"
               >
-                <Globe className="w-4 h-4 text-blue-600" />
-                <span>{loading ? "Connecting Google..." : "Continue with Google OAuth"}</span>
+                <Globe className="w-4 h-4 text-[#183059]" />
+                <span>{loading ? "Connecting Google..." : "Continue with Google"}</span>
               </Button>
             </div>
           )}
 
-          {/* Method 3: Email Magic Link */}
           {authMethod === "magic_link" && (
             <>
               {step !== "magic_sent" ? (
                 <form onSubmit={handleSendMagicLink} className="space-y-3">
                   <div>
-                    <label className="text-xs font-medium text-slate-700 block mb-1.5">
+                    <label className="text-xs font-medium text-[#141518] block mb-1.5">
                       College / Personal Email
                     </label>
                     <div className="relative">
@@ -324,9 +311,9 @@ export default function RegistrationModal({
                         onChange={e => setEmail(e.target.value)}
                         placeholder="student@college.edu"
                         required
-                        className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-[#E7E5DE] bg-[#FAFAF8] text-[#141518] text-sm focus:outline-none focus:ring-2 focus:ring-[#183059]"
                       />
-                      <div className="absolute left-3 top-3 text-slate-400">
+                      <div className="absolute left-3 top-3 text-[#82858E]">
                         <Mail className="w-4 h-4" />
                       </div>
                     </div>
@@ -340,14 +327,14 @@ export default function RegistrationModal({
                     className="w-full justify-center group"
                   >
                     <span>{loading ? "Generating Link..." : "Send Magic Link"}</span>
-                    <ArrowRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </Button>
                 </form>
               ) : (
                 <div className="space-y-3">
-                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-700 space-y-1">
+                  <div className="p-3 bg-[#F0FDF4] rounded-lg border border-[#BBF7D0] text-xs text-[#166534] space-y-1">
                     <p className="font-semibold flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" /> Magic Link Sent!
+                      <Check className="w-3.5 h-3.5" /> Magic Link Sent
                     </p>
                     <p className="text-[11px]">{magicLinkSentMsg}</p>
                   </div>
@@ -360,7 +347,7 @@ export default function RegistrationModal({
                     disabled={loading}
                     className="w-full justify-center"
                   >
-                    {loading ? "Verifying..." : "⚡ Simulate 1-Tap Magic Link Click"}
+                    {loading ? "Verifying..." : "Simulate 1-Tap Magic Link Click"}
                   </Button>
                 </div>
               )}
@@ -368,14 +355,13 @@ export default function RegistrationModal({
           )}
 
           {/* Quick 1-Tap Demo Button */}
-          <div className="pt-2 border-t border-slate-100">
+          <div className="pt-3 border-t border-[#E7E5DE]">
             <button
               type="button"
               onClick={handleInstantDemoVerify}
-              className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-2.5 rounded-lg bg-[#F4F3EE] hover:bg-[#ECEBE4] text-[#141518] font-medium text-xs transition-colors flex items-center justify-center gap-1.5 border border-[#E7E5DE] cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-              <span>⚡ 1-Click Instant Demo Verification</span>
+              <span>1-Click Instant Demo Verification</span>
             </button>
           </div>
         </div>
